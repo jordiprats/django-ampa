@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Create user</h2>
+  <ul>
+    <li><a href="{% url 'social:begin' 'github' %}">Login with GitHub</a></li>
+    <li><a href="{% url 'social:begin' 'gitlab' %}">Login with GitLab</a></li>
+  </ul>
+  <div class="py-4 px-4 px-md-3 px-lg-4">
+    <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Sign up</button>
+    </form>
+  </div>
+{% endblock %}
