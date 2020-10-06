@@ -10,8 +10,10 @@
   <div class="auth-form-body mt-3">
     {% if next %}
     <input type="hidden" id="next" name="next" value="{{ next }}">
-
     {% endif %}
+
+    {% csrf_token %}
+
     <label for="login_field">
       Username or email address
     </label>

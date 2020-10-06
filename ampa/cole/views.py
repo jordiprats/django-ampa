@@ -1,5 +1,11 @@
+from django.contrib.auth import login, logout, authenticate
+from django.core.files.storage import FileSystemStorage
 from django.views.decorators.http import require_GET
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate
+from django.conf import settings
+
+import time
 
 @require_GET
 def robots_txt(request):
@@ -8,6 +14,20 @@ def robots_txt(request):
         "Disallow: /wp-admin/",
     ]
     return HttpResponse("\n".join(lines), content_type="text/plain")
+
+def home(request):
+    return render(request, 'home.html')
+
+def upload_xls(request):
+    if request.method == 'POST' and request.FILES['xlsfile']:
+        myfile = request.FILES['xlsfile']
+        fs = FileSystemStorage(location=settings.XLS_ROOT+'/'+str(int(time.time())))
+        filename = fs.save(myfile.name, myfile)
+        uploaded_file_url = fs.url(filename)
+        return render(request, 'upload.html', {
+            'uploaded_file_url': uploaded_file_url
+        })
+    return render(request, 'upload.html')
 
 def login_builtin_user(request):
     if request.method == 'POST':

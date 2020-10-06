@@ -48,3 +48,20 @@ class Alumne(models.Model):
         indexes = [
             models.Index(fields=['-num_llista',]),
         ]
+
+
+class FileUpload(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    owners = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uploads')
+    classe = models.ForeignKey(Classe, on_delete=models.CASCADE, related_name='uploads')
+
+    processed = models.BooleanField(default=False)
+    error = models.BooleanField(default=False)
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-updated_at']
+        indexes = [
+            models.Index(fields=['-updated_at',]),
+        ]

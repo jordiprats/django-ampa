@@ -31,16 +31,16 @@
       {% if user.is_authenticated %}
       <div class="list-group list-group-flush">
         {% if user.is_superuser %}
-        <!-- <a href="{% url 'admin_action_db_check' %}" class="list-group-item list-group-item-action bg-danger">check DB</a> -->
+        <!-- <a href="{% url 'home' %}" class="list-group-item list-group-item-action bg-danger">check DB</a> -->
         {% endif %}
         {% if user.is_staff %}
-        <!-- <a href="{% url 'create.instance' user_slug=user.slug %}" class="list-group-item list-group-item-action bg-info">Create instance</a> -->
+        <!-- <a href="" class="list-group-item list-group-item-action bg-info">Create instance</a> -->
         {% endif %}
-        <!-- <a href="{% url 'create.platform' user_slug=user.slug %}" class="list-group-item list-group-iteem-action bg-info">Create platform</a>
-        <a href="{% url 'list.modules' %}" class="list-group-item list-group-item-action bg-lightdark">List available modules</a>
-        <a href="{% url 'list.instances' user_slug=user.slug %}" class="list-group-item list-group-item-action bg-lightdark">Instances</a>
-        <a href="{% url 'list.platforms' user_slug=user.slug %}" class="list-group-item list-group-item-action bg-lightdark">Platforms</a>
-        <a href="{% url 'jobs.list' user_slug=user.slug %}" class="list-group-item list-group-item-action bg-lightdark">Jobs </a> -->
+        <!-- <a href="" class="list-group-item list-group-iteem-action bg-info">Create platform</a>
+        <a href="" class="list-group-item list-group-item-action bg-lightdark">List available modules</a>
+        <a href="" class="list-group-item list-group-item-action bg-lightdark">Instances</a>
+        <a href="" class="list-group-item list-group-item-action bg-lightdark">Platforms</a>
+        <a href="" class="list-group-item list-group-item-action bg-lightdark">Jobs </a> -->
       </div>
       {% endif %}
     </div>
@@ -74,18 +74,15 @@
             <li class="nav-item active">
               <a class="nav-link" href="{% url 'home' %}">Home</a>
             </li>
-            <li class="nav-item active">
-              <a class="nav-link" href="{% url 'explore' %}">Explore</a>
-            </li>
             {% if user.is_authenticated %}
             <li class="nav-item active dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Menu
               </a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="{% url 'show.profile' user_slug=user.slug %}">Profile</a>
+                <a class="dropdown-item" href="{% url 'upload' %}">Upload XLS</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'edit.profile' user_slug=user.slug %}">Settings</a>
+                Settings
                 <a class="dropdown-item" href="{% url 'logout' %}">Sign out</a>
               </div>
             </li>
