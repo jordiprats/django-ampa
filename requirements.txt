@@ -3,3 +3,4 @@ django-crispy-forms
 pandas
 django
 xlrd
+psycopg2
