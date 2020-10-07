@@ -23,9 +23,11 @@ def upload_xls(request):
         myfile = request.FILES['xlsfile']
         fs = FileSystemStorage(location=settings.XLS_ROOT+'/'+str(int(time.time())))
         filename = fs.save(myfile.name, myfile)
-        uploaded_file_url = fs.url(filename)
+
+        upload = new FileUpload(filepath=fs.url(filename), owner=request.user)
+
         return render(request, 'upload.html', {
-            'uploaded_file_url': uploaded_file_url
+            'uploaded_file_url': upload.filepath
         })
     return render(request, 'upload.html')
 

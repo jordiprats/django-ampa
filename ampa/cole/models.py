@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth.models import AbstractUser
 from django.utils.text import slugify
 from django.db import models
@@ -26,6 +27,16 @@ class Classe(models.Model):
     delegat = models.ForeignKey(User, on_delete=models.CASCADE, related_name='delegatsclasses')
     subdelegat = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subdelegatsclasses')
 
+    def _get_validada(self):
+        classe_validada = True
+        for alumne in Alumne.objects.filter(classe=self):
+            if not alumne.validat:
+                classe_validada = False
+        return classe_validada
+
+
+    validada = property(_get_validada)
+
 class Alumne(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     #id_nen         nom        cognom1     cognom2            naixement         pare      telf1       mare      telf2                                              email     cessio signatura
@@ -38,6 +49,9 @@ class Alumne(models.Model):
     telf_tutor1 = models.CharField(max_length=256, default='', blank=True)
     tutor2 = models.CharField(max_length=256, default='', blank=True)
     telf_tutor2 = models.CharField(max_length=256, default='', blank=True)
+    emails = ArrayField(models.CharField(max_length=200), default=None, blank=True, null=True)
+    cessio = models.BooleanField(default=False)
+    validat = models.BooleanField(default=False)
 
     updated_at = models.DateTimeField(auto_now=True)
     classe = models.ForeignKey(User, on_delete=models.CASCADE, related_name='alumnes')
@@ -52,6 +66,9 @@ class Alumne(models.Model):
 
 class FileUpload(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    filepath = models.CharField(max_length=256)
+
     owners = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uploads')
     classe = models.ForeignKey(Classe, on_delete=models.CASCADE, related_name='uploads')
 
