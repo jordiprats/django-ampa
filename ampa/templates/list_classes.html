@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<table class="table table-bordred table-striped">
+    <thead>
+      <tr>
+        <th>classe</th>
+        <th>curs</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for classe in list_classes.all %}
+        <tr>
+          <td><a href="{% url 'show.classe' classe_id=classe.id %}">{{ classe.nom }}</a></td>
+          <td>{{ classe.curs }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}

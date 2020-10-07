@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<table class="table table-bordred table-striped">
+    <thead>
+      <tr>
+        <th>número llista</th>
+        <th>nom</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for alumne in instance_classe.alumnes.all %}
+        <tr>
+          <td>{{ alumne.num_llista }}</td>
+          <td><a href="{% url 'edit.alumne' alumne_id=alumne.id %}">{{ alumne.print_name }}</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}

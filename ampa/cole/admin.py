@@ -1,3 +1,7 @@
 from django.contrib import admin
+from cole.models import *
 
-# Register your models here.
+admin.site.register(User)
+admin.site.register(Classe)
+admin.site.register(Alumne)
+admin.site.register(FileUpload)
