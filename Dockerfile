@@ -8,6 +8,8 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY ampa .
 
+RUN apk del make cmake gcc g++ gfortran
+
 EXPOSE 8000
 
-CMD [ "python", "./ampa/manage.py", "runserver", "0.0.0.0:65530" ] 
+CMD [ "python", "/code/ampa/manage.py", "runserver", "0.0.0.0:8000" ] 
