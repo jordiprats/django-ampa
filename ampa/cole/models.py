@@ -13,7 +13,8 @@ class User(AbstractUser):
         max_length=100,
         unique=True,
     )
-    email = models.CharField(max_length=256)
+    email = models.EmailField(max_length=256, unique=True)
+    invite = models.CharField(max_length=256)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.username, allow_unicode=False)
@@ -31,6 +32,9 @@ class Classe(models.Model):
     delegat = models.ForeignKey(User, on_delete=models.CASCADE, related_name='delegatsclasses')
     subdelegat = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subdelegatsclasses', blank=True, null=True)
 
+    ultim_email = models.DateTimeField(blank=True, null=True, default=None)
+    ready_to_send = models.BooleanField(default=False)
+
     def _get_validada(self):
         classe_validada = True
         for alumne in Alumne.objects.filter(classe=self):
@@ -44,7 +48,7 @@ class Classe(models.Model):
         return self.nom+'/'+self.curs
 
     class Meta:
-        unique_together = ('nom', 'curs')
+        unique_together = ('nom', 'curs', 'delegat')
 
 
 class Alumne(models.Model):
@@ -56,7 +60,7 @@ class Alumne(models.Model):
     cognom1 = models.CharField(max_length=256)
     cognom2 = models.CharField(max_length=256, default=None, blank=True, null=True)
     
-    naixement = models.DateTimeField()
+    naixement = models.DateTimeField(blank=True, null=True)
 
     tutor1 = models.CharField(max_length=256, default='', blank=True, null=True)
     telf_tutor1 = models.CharField(max_length=256, default='', blank=True, null=True)
@@ -85,8 +89,6 @@ class Alumne(models.Model):
 
     def __str__(self):
         return self._get_print_name()
-
-
 
     class Meta:
         unique_together = ('num_llista', 'nom', 'cognom1', 'classe')

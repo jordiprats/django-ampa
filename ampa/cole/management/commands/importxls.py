@@ -53,8 +53,19 @@ class Command(BaseCommand):
                         stripped_cognom2 = row['cognom2'].strip()
                     else:
                         stripped_cognom2 = row['cognom2']
-                    try:
 
+                    if type(row['naixement']) == str:
+                        print("str: "+row['naixement'])
+                        try:
+                            parsed_naixement = datetime.datetime.strptime(row['naixement'], "%m/%d/%Y").date()
+                        except:
+                            try:
+                                parsed_naixement = datetime.datetime.strptime(row['naixement'], "%d/%m/%Y").date()
+                            except:
+                                parsed_naixement = None
+                    else:
+                        parsed_naixement = row['naixement']
+                    try:
                         nou_alumne = Alumne.objects.filter(
                                                             classe = fileupload.classe,
                                                             nom = stripped_nom, 
@@ -71,7 +82,7 @@ class Command(BaseCommand):
                                 cognom1 = stripped_cognom1, 
                                 cognom2 = stripped_cognom2, 
                                 num_llista = row['id_nen'],
-                                naixement = row['naixement'],
+                                naixement = parsed_naixement,
                             
                                 tutor1 = row['pare'],
                                 telf_tutor1 = row['telf1'],

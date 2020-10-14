@@ -1,3 +1,5 @@
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import get_user_model
 from django.forms import ModelForm
 from django import forms
 
@@ -24,3 +26,26 @@ class EditAlumneForm(ModelForm):
             'emails': 'emails', 
             'validat': 'Firma de conformitat amb les dades'
         }
+
+class WIUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = get_user_model()
+        fields = ("email", "password1", "password2", "invite")
+        labels = {
+            "email": "email",
+            "invite": "codi d'activació",
+        }
+    def save(self, commit=True):
+        if self.cleaned_data["invite"] == 'lestodelegats':
+            user = super(WIUserCreationForm, self).save(commit=False)
+            user.username = user.email = self.cleaned_data["email"]
+            if commit:
+                user.save()
+            return user
+        else:
+            return None
+
+class AreYouSureForm(forms.Form):
+    pass

@@ -3,6 +3,7 @@ from django.core.files.storage import FileSystemStorage
 from django.views.decorators.http import require_GET
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate
+from django.contrib import messages
 from django.conf import settings
 from django.db.models import Q
 from cole.models import *
@@ -38,21 +39,24 @@ def list_classes(request):
         return redirect('home')
 
 def edit_alumne(request, alumne_id):
-    try:
-        alumne_edit = Alumne.objects.filter(id=alumne_id)[0]
+    if request.user.is_authenticated:
+        try:
+            alumne_edit = Alumne.objects.filter(id=alumne_id)[0]
 
-        if request.method == 'POST':
-            form = EditAlumneForm(request.POST, instance=alumne_edit)
-            if form.is_valid():
-                form.save()
+            if request.method == 'POST':
+                form = EditAlumneForm(request.POST, instance=alumne_edit)
+                if form.is_valid():
+                    form.save()
+                else:
+                    return render(request, 'edit_alumne.html', {'form': form, 'instance': alumne_edit, 'message': 'Form invalid'})
+                return redirect('home')
             else:
-                return render(request, 'edit_alumne.html', {'form': form, 'instance': alumne_edit, 'message': 'Form invalid'})
+                form = EditAlumneForm(instance=alumne_edit)
+            return render(request, 'edit_alumne.html', {'form': form, 'instance': alumne_edit})
+        except Exception as e:
+            print(str(e))
             return redirect('home')
-        else:
-            form = EditAlumneForm(instance=alumne_edit)
-        return render(request, 'edit_alumne.html', {'form': form, 'instance': alumne_edit})
-    except Exception as e:
-        print(str(e))
+    else:
         return redirect('home')
 
 def home(request):
@@ -60,25 +64,51 @@ def home(request):
 
 def upload_xls(request):
     if request.user.is_authenticated:
-        if request.method == 'POST' and request.FILES['xlsfile']:
-            myfile = request.FILES['xlsfile']
-            fs = FileSystemStorage(location=settings.XLS_ROOT+'/'+str(int(time.time())))
-            filename = fs.save(myfile.name, myfile)
+        try:
+            if request.method == 'POST' and request.FILES['xlsfile']:
+                myfile = request.FILES['xlsfile']
+                fs = FileSystemStorage(location=settings.XLS_ROOT+'/'+str(int(time.time())))
+                filename = fs.save(myfile.name, myfile)
+                try:
+                    current_classe = Classe.objects.filter(nom=request.POST['classe'], curs=request.POST['curs'])[0]
+                except IndexError:
+                    current_classe = Classe(nom=request.POST['classe'], curs=request.POST['curs'], delegat=request.user)
+                    current_classe.save()
 
-            try:
-                current_classe = Classe.objects.filter(nom=request.POST['classe'], curs=request.POST['curs'])[0]
-            except IndexError:
-                current_classe = Classe(nom=request.POST['classe'], curs=request.POST['curs'], delegat=request.user)
-                current_classe.save()
+                upload = FileUpload(filepath=fs.location+'/'+filename, owner=request.user, classe=current_classe)
+                upload.save()
 
-            upload = FileUpload(filepath=fs.location+'/'+filename, owner=request.user, classe=current_classe)
-            upload.save()
+                #return render(request, 'upload.html', {'uploaded_file_url': upload.filepath})
+                return redirect('show.classe', classe_id=upload.classe.id)
+        except:
+            messages.error(request, 'Error pujant XLS')
+            return render(request, 'upload.html')
 
-            return render(request, 'upload.html', {
-                'uploaded_file_url': upload.filepath
-            })
         return render(request, 'upload.html')
     else:
+        return redirect('home')
+
+def are_you_sure_email(request, classe_id,):
+    try:
+        if request.user.is_authenticated:
+            instance_classe = Classe.objects.filter(id=classe_id)[0]
+
+            if request.method == 'POST':
+                form = AreYouSureForm(request.POST)
+                if form.is_valid():
+                    messages.info(request, 'Programat l\'enviament de emails')
+
+                    instance_classe.ready_to_send = True
+                    instance_classe.save()
+
+                    return redirect('show.classe', classe_id=instance_classe.id)
+            else:
+                form = AreYouSureForm(request.GET)
+            return render(request, 'email_ready.html', {'instance_classe': instance_classe})
+        else:
+            return redirect('home')
+    except Exception as e:
+        print(str(e))
         return redirect('home')
 
 def login_builtin_user(request):
@@ -110,10 +140,10 @@ def signup(request):
         form = WIUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get('username')
+            username = form.cleaned_data.get('email')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
-            login(request, user)
+            login(request, user,backend='cole.backends.EmailBackend')
             return redirect('home')
     else:
         form = WIUserCreationForm()

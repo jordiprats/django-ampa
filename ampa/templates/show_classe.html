@@ -4,6 +4,33 @@
 
 {% block content %}
 
+{% if instance_classe.alumnes.count == 0 %}
+
+<center>
+<h1>procesant...</h1>
+
+<img src="{% static 'img/bored_kid.gif' %}">
+
+</center>
+<input type="hidden" id="refresh_interval_ms" name="refresh_interval_ms" value="10000">
+
+<script>
+    setTimeout(function() {
+  location.reload();
+}, document.getElementById("refresh_interval_ms").value);
+</script>
+
+{% else %}
+
+  {% if not instance_classe.ready_to_send %}
+  <form style="display: inline;" action="{% url 'send.email' classe_id=instance_classe.id %}" method="GET">
+    <button class="float-right btn btn-danger" type="submit">enviar email</button>
+  </form>
+  {% endif %}
+
+<h1>{{ instance_classe.nom }}</h1>
+{{ instance_classe.curs }}
+
 <table class="table table-bordred table-striped">
     <thead>
       <tr>
@@ -20,5 +47,6 @@
       {% endfor %}
     </tbody>
   </table>
+{% endif %}
 
 {% endblock %}
