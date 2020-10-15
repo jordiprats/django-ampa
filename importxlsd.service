@@ -1,0 +1,14 @@
+[Unit]
+Description=importXLS
+After=network-online.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+ExecStart=/bin/bash /opt/ampa/importxlsd.sh
+Restart=on-failure
+User=root
+Group=root
+PermissionsStartOnly=false
+PrivateTmp=no

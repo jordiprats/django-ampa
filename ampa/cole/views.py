@@ -39,24 +39,22 @@ def list_classes(request):
         return redirect('home')
 
 def edit_alumne(request, alumne_id):
-    if request.user.is_authenticated:
-        try:
-            alumne_edit = Alumne.objects.filter(id=alumne_id)[0]
+    try:
+        alumne_edit = Alumne.objects.filter(id=alumne_id)[0]
 
-            if request.method == 'POST':
-                form = EditAlumneForm(request.POST, instance=alumne_edit)
-                if form.is_valid():
-                    form.save()
-                else:
-                    return render(request, 'edit_alumne.html', {'form': form, 'instance': alumne_edit, 'message': 'Form invalid'})
-                return redirect('home')
+        if request.method == 'POST':
+            form = EditAlumneForm(request.POST, instance=alumne_edit)
+            if form.is_valid():
+                form.save()
+                messages.info(request, 'Dades guardades correctament')
             else:
-                form = EditAlumneForm(instance=alumne_edit)
-            return render(request, 'edit_alumne.html', {'form': form, 'instance': alumne_edit})
-        except Exception as e:
-            print(str(e))
+                return render(request, 'edit_alumne.html', {'form': form, 'instance': alumne_edit, 'message': 'Form invalid'})
             return redirect('home')
-    else:
+        else:
+            form = EditAlumneForm(instance=alumne_edit)
+        return render(request, 'edit_alumne.html', {'form': form, 'instance': alumne_edit})
+    except Exception as e:
+        print(str(e))
         return redirect('home')
 
 def home(request):
@@ -88,10 +86,10 @@ def upload_xls(request):
     else:
         return redirect('home')
 
-def are_you_sure_email(request, classe_id,):
+def are_you_sure_email(request, classe_id):
     try:
         if request.user.is_authenticated:
-            instance_classe = Classe.objects.filter(id=classe_id)[0]
+            instance_classe = Classe.objects.filter(id=classe_id, ultim_email=None, ready_to_send=False)[0]
 
             if request.method == 'POST':
                 form = AreYouSureForm(request.POST)
@@ -102,6 +100,8 @@ def are_you_sure_email(request, classe_id,):
                     instance_classe.save()
 
                     return redirect('show.classe', classe_id=instance_classe.id)
+                else:
+                    messages.error(request, 'Error de login')
             else:
                 form = AreYouSureForm(request.GET)
             return render(request, 'email_ready.html', {'instance_classe': instance_classe})
