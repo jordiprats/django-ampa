@@ -9,7 +9,7 @@
 {% if instance_classe.is_upload_error %}
 
 <center>
-  <h1>{{ instance_classe.nom }}</h1>
+  <h1>{{ instance_classe.nom }} <a href="{% url 'edit.classe' classe_id=instance_classe.id %}"><i class="far fa-edit"></i></a></h1>
   {{ instance_classe.curs }}
   <h2>Error procesant fitxer excel</h2>
   Si us plau, avisa del problema
@@ -38,7 +38,7 @@
 
   {% if not instance_classe.ready_to_send and instance_classe.alumnes.count != 0 and not instance_classe.ultim_email %}
   <form style="display: inline;" action="{% url 'send.email' classe_id=instance_classe.id %}" method="GET">
-    <button class="float-right btn btn-danger" type="submit">enviar email</button>
+    <button class="float-right btn btn-warning" type="submit">enviar email</button>
   </form>
   {% endif %}
 

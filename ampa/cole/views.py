@@ -55,6 +55,31 @@ def edit_classe(request, classe_id=None):
         else:
             return redirect('list.classes')
 
+@login_required
+def delete_classe(request, classe_id):
+    try:
+        if request.user.is_authenticated:
+            if request.user.is_superuser:
+                instance_classe = Classe.objects.filter(id=classe_id)[0]
+            else:
+                instance_classe = Classe.objects.filter(id=classe_id, delegat=request.user)[0]
+            if request.method == 'POST':
+                form = AreYouSureForm(request.POST)
+                if form.is_valid():
+                    instance_classe.delete()
+                    messages.info(request, 'Classe eliminada')
+
+                    return redirect('list.classes')
+                else:
+                    messages.error(request, 'Error de login')
+            else:
+                form = AreYouSureForm(request.GET)
+            return render(request, 'delete_classe.html', {'instance_classe': instance_classe})
+        else:
+            return redirect('show.classe', classe_id=classe_id)
+    except Exception as e:
+        print(str(e))
+        return redirect('show.classe', classe_id=classe_id)
 
 @login_required
 def edit_alumne(request, classe_id, alumne_id=None):
