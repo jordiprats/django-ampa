@@ -4,9 +4,12 @@
 
 {% block content %}
 
+{% if classe_id %}
+<h1>editar classe</h1>
+{% else %}
 <h1>afegir classe</h1>
-
 Aquesta opció es per afegir manualment una classe en cas que la importació desde el fitxer excel no funcioni
+{% endif %}
 
 <div class="py-4 px-4 px-md-3 px-lg-4">
     <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">

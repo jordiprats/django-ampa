@@ -31,24 +31,29 @@ def show_classe(request, classe_id):
         return redirect('home')
 
 @login_required
-def add_classe(request):
+def edit_classe(request, classe_id=None):
     try:
-        classe_instance = Classe(delegat=request.user, nom='', curs='')
-        if request.method == 'POST':
+        if classe_id:
+            classe_instance = Classe.objects.filter(id=classe_id)[0]
+        else:
             classe_instance = Classe(delegat=request.user)
+        if request.method == 'POST':
             form = ClasseForm(request.POST, instance=classe_instance)
             if form.is_valid():
                 form.save()
                 messages.info(request, 'Dades guardades correctament')
             else:
-                return render(request, 'add_classe.html', { 'form': form })
-            return redirect('home')
+                return render(request, 'edit_classe.html', { 'form': form, 'classe_id': classe_id })
+            return redirect('show.classe', classe_id=classe_instance.id)
         else:
             form = ClasseForm(instance=classe_instance)
-        return render(request, 'add_classe.html', { 'form': form })
+        return render(request, 'edit_classe.html', { 'form': form, 'classe_id': classe_id })
     except Exception as e:
         print(str(e))
-        return redirect('home')
+        if classe_id:
+            return redirect('show.classe', classe_id=classe_id)
+        else:
+            return redirect('list.classes')
 
 
 @login_required
@@ -66,11 +71,11 @@ def edit_alumne(request, classe_id, alumne_id=None):
                 form.save()
                 messages.info(request, 'Dades guardades correctament')
             else:
-                return render(request, 'add_alumne.html', { 'form': form, 'alumne_id': alumne_id})
+                return render(request, 'edit_alumne.html', { 'form': form, 'alumne_id': alumne_id})
             return redirect('home')
         else:
             form = EditAlumneForm(instance=alumne_instance)
-        return render(request, 'add_alumne.html', { 'form': form, 'alumne_id': alumne_id})
+        return render(request, 'edit_alumne.html', { 'form': form, 'alumne_id': alumne_id})
     except Exception as e:
         print(str(e))
         return redirect('list.classes')

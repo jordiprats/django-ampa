@@ -26,8 +26,8 @@ class User(AbstractUser):
 class Classe(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
-    nom = models.CharField(max_length=256, default='?')
-    curs = models.CharField(max_length=256, default='?')
+    nom = models.CharField(max_length=256, default='')
+    curs = models.CharField(max_length=256, default='')
 
     delegat = models.ForeignKey(User, on_delete=models.CASCADE, related_name='delegatsclasses')
     subdelegat = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subdelegatsclasses', blank=True, null=True)
