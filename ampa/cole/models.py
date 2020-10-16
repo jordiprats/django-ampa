@@ -44,6 +44,16 @@ class Classe(models.Model):
 
     validada = property(_get_validada)
 
+    def _is_procesant(self):
+        return self.alumnes.count() == 0 and self.uploads.count() != 0
+
+    is_procesant = property(_is_procesant)
+
+    def _is_upload_error(self):
+        return self.uploads.filter(error=True).count() > 0 and self.uploads.filter(error=False, processed=True).count() == 0
+
+    is_upload_error = property(_is_upload_error)
+
     def __str__(self):
         return self.nom+'/'+self.curs
 

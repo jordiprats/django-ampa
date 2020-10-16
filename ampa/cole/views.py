@@ -1,4 +1,5 @@
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 from django.views.decorators.http import require_GET
 from django.shortcuts import render, redirect
@@ -23,36 +24,84 @@ def show_classe(request, classe_id):
     if request.user.is_authenticated:
         try:
             instance_classe = Classe.objects.filter(id=classe_id)[0]
-
             return render(request, 'show_classe.html', {'instance_classe': instance_classe})
         except:
             return redirect('home')
     else:
         return redirect('home')
 
-def list_classes(request):
-    if request.user.is_authenticated:
-        list_classes = Classe.objects.filter(Q(delegat=request.user) | Q(subdelegat=request.user))
-
-        return render(request, 'list_classes.html', {'list_classes': list_classes})
-    else:
-        return redirect('home')
-
-def edit_alumne(request, alumne_id):
+@login_required
+def add_classe(request):
     try:
-        alumne_edit = Alumne.objects.filter(id=alumne_id)[0]
-
+        classe_instance = Classe(delegat=request.user, nom='', curs='')
         if request.method == 'POST':
-            form = EditAlumneForm(request.POST, instance=alumne_edit)
+            classe_instance = Classe(delegat=request.user)
+            form = ClasseForm(request.POST, instance=classe_instance)
             if form.is_valid():
                 form.save()
                 messages.info(request, 'Dades guardades correctament')
             else:
-                return render(request, 'edit_alumne.html', {'form': form, 'instance': alumne_edit, 'message': 'Form invalid'})
+                return render(request, 'add_classe.html', { 'form': form })
             return redirect('home')
         else:
-            form = EditAlumneForm(instance=alumne_edit)
-        return render(request, 'edit_alumne.html', {'form': form, 'instance': alumne_edit})
+            form = ClasseForm(instance=classe_instance)
+        return render(request, 'add_classe.html', { 'form': form })
+    except Exception as e:
+        print(str(e))
+        return redirect('home')
+
+
+@login_required
+def edit_alumne(request, classe_id, alumne_id=None):
+    try:
+        classe_instance = Classe.objects.filter(delegat=request.user, id=classe_id)[0]
+
+        if alumne_id:
+            alumne_instance = Alumne.objects.filter(classe=classe_instance, id=alumne_id)[0]
+        else:
+            alumne_instance = Alumne(classe=classe_instance)
+        if request.method == 'POST':
+            form = EditAlumneForm(request.POST, instance=alumne_instance)
+            if form.is_valid():
+                form.save()
+                messages.info(request, 'Dades guardades correctament')
+            else:
+                return render(request, 'add_alumne.html', { 'form': form, 'alumne_id': alumne_id})
+            return redirect('home')
+        else:
+            form = EditAlumneForm(instance=alumne_instance)
+        return render(request, 'add_alumne.html', { 'form': form, 'alumne_id': alumne_id})
+    except Exception as e:
+        print(str(e))
+        return redirect('list.classes')
+
+def list_classes(request):
+    if request.user.is_authenticated:
+        if request.user.is_superuser and request.GET.get('admin', ''):
+            list_classes = Classe.objects.all()
+            return render(request, 'list_classes.html', {'list_classes': list_classes, 'admin': True})
+        else:
+            list_classes = Classe.objects.filter(Q(delegat=request.user) | Q(subdelegat=request.user))
+            return render(request, 'list_classes.html', {'list_classes': list_classes, 'admin': False})
+        
+    else:
+        return redirect('home')
+
+def edit_alumne_form_pares(request, alumne_id):
+    try:
+        alumne_edit = Alumne.objects.filter(id=alumne_id)[0]
+
+        if request.method == 'POST':
+            form = EditAlumneParesForm(request.POST, instance=alumne_edit)
+            if form.is_valid():
+                form.save()
+                messages.info(request, 'Dades guardades correctament')
+            else:
+                return render(request, 'edit_alumne_form_pares.html', {'form': form, 'instance': alumne_edit, 'message': 'Form invalid'})
+            return redirect('home')
+        else:
+            form = EditAlumneParesForm(instance=alumne_edit)
+        return render(request, 'edit_alumne_form_pares.html', {'form': form, 'instance': alumne_edit})
     except Exception as e:
         print(str(e))
         return redirect('home')

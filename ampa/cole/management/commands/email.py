@@ -17,8 +17,8 @@ class Command(BaseCommand):
     #     parser.add_argument('curs', nargs='+', type=str)
     
     def handle(self, *args, **options):
-        try:
-            for classe in Classe.objects.filter(ready_to_send=True, ultim_email=None):
+        for classe in Classe.objects.filter(ready_to_send=True, ultim_email=None):
+            try:
                 print("classe: "+classe.nom)
                 for alumne in classe.alumnes.all():
                     if alumne.emails:
@@ -36,8 +36,10 @@ class Command(BaseCommand):
                 classe.ready_to_send = False
                 classe.ultim_email = datetime.datetime.now()
                 classe.save()
-        except Exception as e:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-            print(str(e))
+            except Exception as e:
+                classe.ready_to_send = False
+                classe.save()
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                print(exc_type, fname, exc_tb.tb_lineno)
+                print(str(e))

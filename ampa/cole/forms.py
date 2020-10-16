@@ -5,7 +5,32 @@ from django import forms
 
 from cole.models import *
 
+class ClasseForm(forms.ModelForm):
+    class Meta:
+        model = Classe
+        fields = (['nom', 'curs'])
+
 class EditAlumneForm(ModelForm):
+    class Meta:
+        model = Alumne
+        fields = ([ 'num_llista', 'nom', 'cognom1', 'cognom2', 'naixement', 'tutor1', 'telf_tutor1', 'tutor2', 'telf_tutor2', 'emails' ])
+        widgets = {
+            'naixement': forms.DateInput(format=('%Y-%m-%d'), attrs={"type": 'date'}),
+        }
+        labels = {
+            'num_llista': 'Numero de la llista',
+            "nom": "Nom",
+            "cognom1": "Primer cognom",
+            "cognom2": "Segon cognom",
+            'naixement': 'Data de naixement', 
+            'tutor1': 'Primer tutor', 
+            'telf_tutor1': 'Telèfon del primer tutor', 
+            'tutor2': 'Segon tutor', 
+            'telf_tutor2': 'Telèfon del segon tutor', 
+            'emails': 'emails', 
+        }
+
+class EditAlumneParesForm(ModelForm):
     class Meta:
         model = Alumne
         fields = (['nom', 'cognom1', 'cognom2', 'naixement', 'tutor1', 'telf_tutor1', 'tutor1_cessio', 'tutor2', 'telf_tutor2', 'tutor2_cessio', 'emails', 'validat' ])

@@ -4,3 +4,4 @@ pandas
 django
 xlrd
 psycopg2
+pytz

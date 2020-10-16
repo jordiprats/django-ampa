@@ -10,9 +10,14 @@ class Command(BaseCommand):
     help = 'Import uploaded XLS files'
 
     def handle(self, *args, **options):
-            for fileupload in FileUpload.objects.filter(processed=False).order_by('updated_at'):
-                try:                
-                    excel_data_df = pandas.read_excel(fileupload.filepath, sheet_name='Hoja1', )
+        for fileupload in FileUpload.objects.filter(processed=False).order_by('updated_at'):
+            try:                
+                # excel_data_df = pandas.read_excel(fileupload.filepath, sheet_name='Hoja1', )
+
+                all_sheets_excel = pandas.read_excel(fileupload.filepath, sheet_name=None, )
+
+                for sheet_name in all_sheets_excel.keys():
+                    excel_data_df = pandas.read_excel(fileupload.filepath, sheet_name=sheet_name, )
 
                     excel_data_df = excel_data_df[6:]
 
@@ -119,12 +124,12 @@ class Command(BaseCommand):
                     fileupload.processed = True
                     fileupload.save()
 
-                except Exception as e:
-                    exc_type, exc_obj, exc_tb = sys.exc_info()
-                    fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-                    print(exc_type, fname, exc_tb.tb_lineno)
-                    print(str(e))
-                    fileupload.error = True
-                    fileupload.processed = True
-                    fileupload.save()
+            except Exception as e:
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                print(exc_type, fname, exc_tb.tb_lineno)
+                print(str(e))
+                fileupload.error = True
+                fileupload.processed = True
+                fileupload.save()
 
