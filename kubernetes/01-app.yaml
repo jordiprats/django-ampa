@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: ampa
-        image: ampa:latest
+        image: django/ampa:1.1
         ports:
         - containerPort: 8000
