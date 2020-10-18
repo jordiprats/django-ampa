@@ -12,4 +12,5 @@ RUN apk del make cmake gcc g++ gfortran
 
 EXPOSE 8000
 
-CMD [ "python", "/code/manage.py", "runserver", "0.0.0.0:8000" ] 
+CMD [ "python", "/code/manage.py", "runserver", "0.0.0.0:8000" ]
+
