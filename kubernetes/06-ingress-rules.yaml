@@ -1,0 +1,12 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress
+spec:
+  rules:
+  - host: ampa.systemadmin.es
+    http:
+      paths:
+      - backend:
+          serviceName: ampa-1.1-svc
+          servicePort: 80

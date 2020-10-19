@@ -1,20 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ampa-deployment
+  name: ampa-1.1
+  namespace: ampa
+  labels:
+    app: ampa-1.1
 spec:
+  replicas: 3
   selector:
     matchLabels:
-      app: ampa
-  replicas: 1
+      app: ampa-1.1
   template:
     metadata:
       labels:
-        app: ampa
+        app: ampa-1.1
     spec:
       containers:
       - name: ampa
         image: django/ampa:1.1
         ports:
         - containerPort: 8000
-
