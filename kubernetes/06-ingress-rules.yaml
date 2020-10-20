@@ -8,5 +8,5 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: ampa-1.1-svc
+          serviceName: ampa-11-svc
           servicePort: 80

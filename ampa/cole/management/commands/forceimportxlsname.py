@@ -20,15 +20,15 @@ class Command(BaseCommand):
             print('Class no trobada')
             return False
 
-        fileupload = FileUpload.objects.filter(classe=classe_instance).order_by('updated_at')[0]
-        try:                
+        fileupload = FileUpload.objects.filter(classe=classe_instance).order_by('updated_at')[0]                
             # excel_data_df = pandas.read_excel(fileupload.filepath, sheet_name='Hoja1', )
 
-            all_sheets_excel = pandas.read_excel(fileupload.filepath, sheet_name=None, )
+        all_sheets_excel = pandas.read_excel(fileupload.filepath, sheet_name=None, )
 
-            for sheet_name in all_sheets_excel.keys():
+        for sheet_name in all_sheets_excel.keys():
+            try:
                 excel_data_df = pandas.read_excel(fileupload.filepath, sheet_name=sheet_name, )
-
+                print(excel_data_df)
                 excel_data_df = excel_data_df[6:]
 
                 excel_data_df.columns = [
@@ -51,7 +51,7 @@ class Command(BaseCommand):
                 excel_data_df = excel_data_df.where(pandas.notnull(excel_data_df), None)
 
                 # print whole sheet data
-                # print(excel_data_df)
+                print(excel_data_df)
                 for index, row in excel_data_df.iterrows():
                     if row['nom']:
                         stripped_nom = row['nom'].strip()
@@ -77,6 +77,8 @@ class Command(BaseCommand):
                                 parsed_naixement = datetime.datetime.strptime(row['naixement'], "%d/%m/%Y").date()
                             except:
                                 parsed_naixement = None
+                    elif type(row['naixement']) == int:
+                        parsed_naixement = None
                     else:
                         parsed_naixement = row['naixement']
                     try:
@@ -132,14 +134,16 @@ class Command(BaseCommand):
 
                     print(str(nou_alumne))
                 fileupload.processed = True
+                fileupload.error = False
                 fileupload.save()
+                break
 
-        except Exception as e:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-            print(str(e))
-            fileupload.error = True
-            fileupload.processed = True
-            fileupload.save()
+            except Exception as e:
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                print(exc_type, fname, exc_tb.tb_lineno)
+                print(str(e))
+                fileupload.error = True
+                fileupload.processed = True
+                fileupload.save()
 

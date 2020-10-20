@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ampa-1.1
-  namespace: ampa
+  namespace: kube-system
   labels:
     app: ampa-1.1
 spec:
@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
       - name: ampa
-        image: django/ampa:1.1
+        image: 172.18.1.46:5000/ampa:1.1
         ports:
         - containerPort: 8000
