@@ -1,7 +1,9 @@
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: ingress
+  namespace: kube-system
 spec:
   rules:
   - host: ampa.systemadmin.es
@@ -9,4 +11,4 @@ spec:
       paths:
       - backend:
           serviceName: ampa-11-svc
-          servicePort: 80
+          servicePort: 8000

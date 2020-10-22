@@ -6,7 +6,7 @@ metadata:
   labels:
     app: ampa-1.1
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: ampa-1.1
@@ -19,4 +19,5 @@ spec:
       - name: ampa
         image: 172.18.1.46:5000/ampa:1.1
         ports:
-        - containerPort: 8000
+        - name: http
+          containerPort: 8000
