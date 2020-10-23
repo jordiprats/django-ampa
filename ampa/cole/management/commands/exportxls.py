@@ -61,15 +61,15 @@ class Command(BaseCommand):
             worksheet.write('F1', '', text_normal)
             worksheet.write('H1', 'Telèfon:', bold)
             worksheet.write('I1', '', text_normal)
-            worksheet.write('J1', 'e-Mail:', bold)
-            worksheet.write('J2', '', text_normal)
+            worksheet.write('K1', 'e-Mail:', bold)
+            worksheet.write('L1', '', text_normal)
             
             worksheet.write('E3', 'SUBDELEGAT:', bold)
             worksheet.write('F3', '', text_normal)
             worksheet.write('H3', 'Telèfon:', bold)
             worksheet.write('I3', '', text_normal)
-            worksheet.write('J3', 'e-Mail:', bold)
-            worksheet.write('J4', '', text_normal)
+            worksheet.write('K3', 'e-Mail:', bold)
+            worksheet.write('L3', '', text_normal)
 
             # M1 imatge AMPA
             worksheet.write('M5', 'Associació de Mapes i Pares del Col·legi', bold_center)
