@@ -42,6 +42,10 @@
   </form>
   {% endif %}
 
+  <form style="display: inline;" action="{% url 'exportar.xls' classe_id=instance_classe.id %}" method="GET">
+    <button class="float-right btn btn-info" type="submit">exportar Excel</button>
+  </form>
+
 <h1>{{ instance_classe.nom }} <a href="{% url 'edit.classe' classe_id=instance_classe.id %}"><i class="far fa-edit"></i></a></h1>
 {{ instance_classe.curs }}
 

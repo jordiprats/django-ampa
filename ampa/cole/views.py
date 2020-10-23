@@ -4,6 +4,7 @@ from django.core.files.storage import FileSystemStorage
 from django.views.decorators.http import require_GET
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate
+from django.http import HttpResponse
 from django.contrib import messages
 from django.conf import settings
 from django.db.models import Q
@@ -11,6 +12,7 @@ from cole.models import *
 from cole.forms import *
 
 import time
+import os
 
 @require_GET
 def robots_txt(request):
@@ -139,6 +141,34 @@ def edit_alumne_form_pares(request, alumne_id):
 def home(request):
     return render(request, 'home.html')
 
+def wait_export(request, classe_id):
+    if request.user.is_authenticated:
+        try:
+            instance_classe = Classe.objects.filter(id=classe_id)[0]
+            return render(request, 'wait_classe_export.html', {'instance_classe': instance_classe})
+        except Exception as e:
+            print(str(e))
+            return redirect('show.classe', classe_id=classe_id)
+    else:
+        return redirect('home')
+
+@login_required
+def get_export(request, classe_id, export_name):
+    try:
+        instance_classe = Classe.objects.filter(id=classe_id, waiting_export=False, latest_export=export_name)[0]
+
+        file_path = os.path.join(settings.XLS_ROOT, 'export/', instance_classe.latest_export)
+
+        print(file_path)
+
+        test_file = open(file_path, 'rb')
+        response = HttpResponse(content=test_file)
+        response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        return response
+    except Exception as e:
+        print(str(e))
+        return redirect('show.classe', classe_id=classe_id)
+
 def upload_xls(request):
     if request.user.is_authenticated:
         try:
@@ -165,6 +195,41 @@ def upload_xls(request):
     else:
         return redirect('home')
 
+@login_required
+def exportar_classe(request, classe_id):
+    try:
+        if request.user.is_authenticated:
+            if request.user.is_superuser:
+                instance_classe = Classe.objects.filter(id=classe_id)[0]
+            else:
+                instance_classe = Classe.objects.filter(id=classe_id, delegat=request.user)[0]
+
+            if request.method == 'POST':
+                form = AreYouSureForm(request.POST)
+                if form.is_valid():
+                    # export classe
+                    if instance_classe.latest_export:
+                        try:
+                            os.remove(os.path.join(settings.XLS_ROOT, 'export', instance_classe.latest_export))
+                        except:
+                            pass
+                        instance_classe.latest_export = None
+                    instance_classe.waiting_export = True
+
+                    instance_classe.save()
+                    # redirect export
+                    return redirect('wait.export', classe_id=instance_classe.id)
+                else:
+                    messages.error(request, 'Error programant exportació de dades')
+            else:
+                form = AreYouSureForm(request.GET)
+            return render(request, 'do_export.html', {'instance_classe': instance_classe})
+        else:
+            return redirect('home')
+    except Exception as e:
+        print(str(e))
+        return redirect('home')    
+
 def are_you_sure_email(request, classe_id):
     try:
         if request.user.is_authenticated:
@@ -180,7 +245,7 @@ def are_you_sure_email(request, classe_id):
 
                     return redirect('show.classe', classe_id=instance_classe.id)
                 else:
-                    messages.error(request, 'Error de login')
+                    messages.error(request, 'Error programent enviament')
             else:
                 form = AreYouSureForm(request.GET)
             return render(request, 'email_ready.html', {'instance_classe': instance_classe})

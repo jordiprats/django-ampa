@@ -35,6 +35,19 @@ class Classe(models.Model):
     ultim_email = models.DateTimeField(blank=True, null=True, default=None)
     ready_to_send = models.BooleanField(default=False)
 
+    latest_export = models.CharField(max_length=256, blank=True, null=True, default=None)
+    waiting_export = models.BooleanField(default=False)
+
+    tutor = models.CharField(max_length=256, blank=True, null=True, default='')
+    
+    nom_delegat = models.CharField(max_length=256, blank=True, null=True, default='')
+    telefon_delegat = models.CharField(max_length=256, blank=True, null=True, default='')
+    email_delegat = models.CharField(max_length=256, blank=True, null=True, default='')
+
+    nom_subdelegat = models.CharField(max_length=256, blank=True, null=True, default='')
+    telefon_subdelegat = models.CharField(max_length=256, blank=True, null=True, default='')
+    email_subdelegat = models.CharField(max_length=256, blank=True, null=True, default='')
+
     def _get_validada(self):
         classe_validada = True
         for alumne in Alumne.objects.filter(classe=self):

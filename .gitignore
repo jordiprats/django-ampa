@@ -1,6 +1,7 @@
 *.log
 *.xls
 *.xlsx
+.~lock.*.xlsx#
 *.pot
 *.py[cod]
 __pycache__/
