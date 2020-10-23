@@ -5,3 +5,4 @@ django
 xlrd
 psycopg2
 pytz
+XlsxWriter
