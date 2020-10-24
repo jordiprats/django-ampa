@@ -63,6 +63,7 @@ class Command(BaseCommand):
             text_normal_taula_bg_vermell = workbook.add_format({ 'font_size': 9, 'bg_color': '#FFC7CE', 'border': 1 })
             text_normal_centre = workbook.add_format({ 'font_size': 9, 'align': 'center' })
             data_normal = workbook.add_format({ 'font_size': 9, 'num_format': 'dd/mm/yy' })
+            data_normal_taula = workbook.add_format({ 'font_size': 9, 'num_format': 'dd/mm/yy', 'border': 1 })
             bold = workbook.add_format({ 'bold': True, 'font_size': 9 })
             bold_destacat = workbook.add_format({ 'bold': True, 'font_size': 14 })
             bold_taula = workbook.add_format({ 'bold': True, 'font_size': 9, 'border': 1 })
@@ -73,23 +74,23 @@ class Command(BaseCommand):
             worksheet.write('B1', classe_instance.nom, bold_destacat)
 
             worksheet.write('A3', 'TUTOR:', bold)
-            worksheet.write('B3', '', text_normal)
+            worksheet.write('B3', classe_instance.tutor, text_normal)
 
             worksheet.write('E1', 'DELEGAT:', bold)
-            worksheet.write('F1', '', text_normal)
+            worksheet.write('F1', classe_instance.nom_delegat, text_normal)
             worksheet.write('H1', 'Telèfon:', bold)
-            worksheet.write('I1', '', text_normal)
+            worksheet.write('I1', classe_instance.telefon_delegat, text_normal)
             worksheet.write('K1', 'e-Mail:', bold)
-            worksheet.write('L1', '', text_normal)
+            worksheet.write('L1', classe_instance.email_delegat, text_normal)
 
             worksheet.insert_image('M1', os.path.join(settings.STATIC_FULLPATH, 'logo_cole.jpg'), {'x_scale': 0.34, 'y_scale': 0.34})
             
             worksheet.write('E3', 'SUBDELEGAT:', bold)
-            worksheet.write('F3', '', text_normal)
+            worksheet.write('F3', classe_instance.nom_subdelegat, text_normal)
             worksheet.write('H3', 'Telèfon:', bold)
-            worksheet.write('I3', '', text_normal)
+            worksheet.write('I3', classe_instance.telefon_subdelegat, text_normal)
             worksheet.write('K3', 'e-Mail:', bold)
-            worksheet.write('L3', '', text_normal)
+            worksheet.write('L3', classe_instance.email_subdelegat, text_normal)
 
             # M1 imatge AMPA
             worksheet.write('M5', 'Associació de Mapes i Pares del Col·legi', bold_center)
@@ -123,7 +124,7 @@ class Command(BaseCommand):
                 worksheet.write('C'+str(linea), alumne.cognom1, text_normal_taula)
                 worksheet.write('D'+str(linea), alumne.cognom2, text_normal_taula)
                 
-                worksheet.write('E'+str(linea), alumne.naixement.replace(tzinfo=None), data_normal)
+                worksheet.write('E'+str(linea), alumne.naixement.replace(tzinfo=None), data_normal_taula)
 
                 worksheet.write('F'+str(linea), alumne.tutor1, text_normal_taula)
                 worksheet.write('G'+str(linea), alumne.telf_tutor1, text_normal_taula)
