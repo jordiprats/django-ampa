@@ -7,7 +7,7 @@
 
 while true
 do
-    for i in {1..30};
+    for i in $(seq 1 30);
     do
         python /code/manage.py importxls
         sleep 5
