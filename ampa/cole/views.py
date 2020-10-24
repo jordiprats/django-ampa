@@ -45,17 +45,43 @@ def edit_classe(request, classe_id=None):
                 form.save()
                 messages.info(request, 'Dades guardades correctament')
             else:
-                return render(request, 'edit_classe.html', { 'form': form, 'classe_id': classe_id })
+                return render(request, 'edit_classe.html', { 'form': form, 'classe_id': classe_id, 'classe_instance': classe_instance })
             return redirect('show.classe', classe_id=classe_instance.id)
         else:
             form = ClasseForm(instance=classe_instance)
-        return render(request, 'edit_classe.html', { 'form': form, 'classe_id': classe_id })
+        return render(request, 'edit_classe.html', { 'form': form, 'classe_id': classe_id, 'classe_instance': classe_instance })
     except Exception as e:
         print(str(e))
         if classe_id:
             return redirect('show.classe', classe_id=classe_id)
         else:
             return redirect('list.classes')
+
+@login_required
+def delete_alumne(request, classe_id, alumne_id):
+    try:
+        if request.user.is_authenticated:
+            if request.user.is_superuser:
+                instance_alumne = Alumne.objects.filter(id=alumne_id, classe__id=classe_id)[0]
+            else:
+                instance_alumne = Alumne.objects.filter(id=alumne_id, classe__id=classe_id, classe__delegat=request.user)[0]
+            if request.method == 'POST':
+                form = AreYouSureForm(request.POST)
+                if form.is_valid():
+                    instance_alumne.delete()
+                    messages.info(request, 'Alumne eliminat')
+
+                    return redirect('show.classe', classe_id=classe_id)
+                else:
+                    messages.error(request, 'Error eliminant l\'alumne')
+            else:
+                form = AreYouSureForm(request.GET)
+            return render(request, 'delete_alumne.html', {'instance_alumne': instance_alumne})
+        else:
+            return redirect('show.classe', classe_id=classe_id)
+    except Exception as e:
+        print(str(e))
+        return redirect('show.classe', classe_id=classe_id)
 
 @login_required
 def delete_classe(request, classe_id):
@@ -73,7 +99,7 @@ def delete_classe(request, classe_id):
 
                     return redirect('list.classes')
                 else:
-                    messages.error(request, 'Error de login')
+                    messages.error(request, 'Error eliminant la classe')
             else:
                 form = AreYouSureForm(request.GET)
             return render(request, 'delete_classe.html', {'instance_classe': instance_classe})
@@ -98,11 +124,11 @@ def edit_alumne(request, classe_id, alumne_id=None):
                 form.save()
                 messages.info(request, 'Dades guardades correctament')
             else:
-                return render(request, 'edit_alumne.html', { 'form': form, 'alumne_id': alumne_id})
-            return redirect('home')
+                return render(request, 'edit_alumne.html', { 'form': form, 'alumne_id': alumne_id, 'classe_id': classe_id, 'alumne_instance': alumne_instance})
+            return redirect('show.classe', classe_id=classe_id)
         else:
             form = EditAlumneForm(instance=alumne_instance)
-        return render(request, 'edit_alumne.html', { 'form': form, 'alumne_id': alumne_id})
+        return render(request, 'edit_alumne.html', { 'form': form, 'alumne_id': alumne_id, 'classe_id': classe_id, 'alumne_instance': alumne_instance})
     except Exception as e:
         print(str(e))
         return redirect('list.classes')

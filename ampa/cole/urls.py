@@ -17,6 +17,7 @@ urlpatterns = [
     path('classes/<classe_id>/delete', views.delete_classe, name='delete.classe'),
     path('classes/<classe_id>/addalumne', views.edit_alumne, name='add.alumne'),
     path('classes/<classe_id>/<alumne_id>/edit', views.edit_alumne, name='edit.alumne'),
+    path('classes/<classe_id>/<alumne_id>/delete', views.delete_alumne, name='delete.alumne'),
     path('alumnes/<alumne_id>', views.edit_alumne_form_pares, name='form.pares.edit.alumne'),
     path('email/<classe_id>', views.are_you_sure_email, name='send.email'),
     path('', views.home, name='home')

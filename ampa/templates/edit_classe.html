@@ -5,7 +5,7 @@
 {% block content %}
 
 {% if classe_id %}
-<h1>editar classe</h1>
+<h1><a href="{% url 'show.classe' classe_id=classe_id %}">{{ classe_instance.nom }}</a> / editar classe</h1>
 {% else %}
 <h1>afegir classe</h1>
 Aquesta opció es per afegir manualment una classe en cas que la importació desde el fitxer excel no funcioni

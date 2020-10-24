@@ -57,18 +57,20 @@ class Command(BaseCommand):
 
             # Formats
             text_normal = workbook.add_format({ 'font_size': 9 })
+            text_destacat = workbook.add_format({ 'font_size': 14 })
             text_normal_taula = workbook.add_format({ 'font_size': 9, 'border': 1 })
             text_normal_taula_centre = workbook.add_format({ 'font_size': 9, 'border': 1, 'align': 'center' })
             text_normal_taula_bg_vermell = workbook.add_format({ 'font_size': 9, 'bg_color': '#FFC7CE', 'border': 1 })
             text_normal_centre = workbook.add_format({ 'font_size': 9, 'align': 'center' })
             data_normal = workbook.add_format({ 'font_size': 9, 'num_format': 'dd/mm/yy' })
             bold = workbook.add_format({ 'bold': True, 'font_size': 9 })
+            bold_destacat = workbook.add_format({ 'bold': True, 'font_size': 14 })
             bold_taula = workbook.add_format({ 'bold': True, 'font_size': 9, 'border': 1 })
             bold_taula_centre = workbook.add_format({ 'bold': True, 'font_size': 9, 'border': 1, 'align': 'center' })
             bold_center = workbook.add_format({ 'bold': True, 'font_size': 9, 'align': 'center' })
 
             worksheet.write('A1', 'CLASSE:', bold)
-            worksheet.write('B1', classe_instance.nom, bold)
+            worksheet.write('B1', classe_instance.nom, bold_destacat)
 
             worksheet.write('A3', 'TUTOR:', bold)
             worksheet.write('B3', '', text_normal)
@@ -79,6 +81,8 @@ class Command(BaseCommand):
             worksheet.write('I1', '', text_normal)
             worksheet.write('K1', 'e-Mail:', bold)
             worksheet.write('L1', '', text_normal)
+
+            worksheet.insert_image('M1', os.path.join(settings.STATIC_FULLPATH, 'logo_cole.jpg'), {'x_scale': 0.34, 'y_scale': 0.34})
             
             worksheet.write('E3', 'SUBDELEGAT:', bold)
             worksheet.write('F3', '', text_normal)
@@ -167,7 +171,7 @@ class Command(BaseCommand):
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             print(str(e))
-       
-        classe_instance.latest_export = output_file_name
-        classe_instance.waiting_export = False
-        classe_instance.save()
+        if not options['output']:
+            classe_instance.latest_export = output_file_name
+            classe_instance.waiting_export = False
+            classe_instance.save()

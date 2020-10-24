@@ -12,3 +12,4 @@ db.sqlite3-journal
 .env
 sendgrid.env
 00template-*.yaml
+logo_cole.jpg
