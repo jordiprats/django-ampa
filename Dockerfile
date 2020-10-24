@@ -6,9 +6,9 @@ RUN apk update && apk add --update postgresql-dev python3-dev musl-dev make cmak
 
 COPY requirements.txt .
 RUN pip install -r requirements.txt
-COPY ampa .
-
 RUN apk del make cmake gcc g++ gfortran
+
+COPY ampa .
 
 EXPOSE 8000
 
