@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ampa-static-1.0
+  namespace: kube-system
+  labels:
+    app: ampa-static-1.0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ampa-static-1.0
+  template:
+    metadata:
+      labels:
+        app: ampa-static-1.0
+    spec:
+      volumes:
+        - name: static-ampa
+          persistentVolumeClaim:
+            claimName: nfs-static-pvc
+      containers:
+      - name: ampa-static
+        image: nginx:alpine
+        ports:
+          - name: http
+            containerPort: 80
+        volumeMounts:
+          - mountPath: /usr/share/nginx/html
+            name: static-ampa

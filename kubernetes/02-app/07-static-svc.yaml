@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: ampa-static-10-svc
+  namespace: kube-system
+spec:
+  selector:
+    app: ampa-static-1.0
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80

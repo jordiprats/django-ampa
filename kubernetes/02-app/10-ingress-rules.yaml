@@ -12,3 +12,9 @@ spec:
       - backend:
           serviceName: ampa-16-svc
           servicePort: 8000
+  - host: static.ampa.systemadmin.es
+    http:
+      paths:
+      - backend:
+          serviceName: ampa-static-10-svc
+          servicePort: 80
