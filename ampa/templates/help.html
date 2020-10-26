@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load markdown_library %}
+
+{% block content %}
+
+{% if topic_content %}
+
+{{ topic_content | markdown | safe }}
+
+{% else %}
+<h1>Ajuda</h1>
+
+<ul>
+    {% for key, value in topics.items %}
+        <li><a href="{% url 'show.topic' topic=key %}">{{ value }}</a></li>
+    {% endfor %}
+    </ul>
+</ul>
+
+{% endif %}
+
+{% endblock %}

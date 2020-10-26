@@ -20,5 +20,8 @@ urlpatterns = [
     path('classes/<classe_id>/<alumne_id>/delete', views.delete_alumne, name='delete.alumne'),
     path('alumnes/<alumne_id>', views.edit_alumne_form_pares, name='form.pares.edit.alumne'),
     path('email/<classe_id>', views.are_you_sure_email, name='send.email'),
+    path('help', views.show_help, name='show.help'),
+    path('help/<topic>/index.html', views.show_help, name='show.topic'),
+    path('help/<topic>/<file>.<ext>', views.redirect_to_static, name='redirct.static'),
     path('', views.home, name='home')
 ]

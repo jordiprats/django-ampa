@@ -11,10 +11,6 @@ import re
 
 class Command(BaseCommand):
     help = 'send emails'
-
-    # def add_arguments(self, parser):
-    #     parser.add_argument('classe', nargs='+', type=str)
-    #     parser.add_argument('curs', nargs='+', type=str)
     
     def handle(self, *args, **options):
         for classe in Classe.objects.filter(ready_to_send=True, ultim_email=None):
@@ -29,10 +25,6 @@ class Command(BaseCommand):
                         email_from = 'Delegats Lestonnac <noreply@systemadmin.es>'
                         recipient_list = emails
                         send_mail( subject=subject, message=message, from_email=email_from, recipient_list=recipient_list, html_message=html_message)
-                        # print('subject:' +subject)
-                        # print('message:' +message)
-                        # print('html_message:' +html_message)
-                        # print('recipient_list:' +str(recipient_list))
                 classe.ready_to_send = False
                 classe.ultim_email = datetime.datetime.now()
                 classe.save()

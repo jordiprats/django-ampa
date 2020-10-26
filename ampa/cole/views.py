@@ -4,10 +4,13 @@ from django.core.files.storage import FileSystemStorage
 from django.views.decorators.http import require_GET
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate
+from django.utils.text import slugify
 from django.http import HttpResponse
 from django.contrib import messages
 from django.conf import settings
 from django.db.models import Q
+from pathlib import Path
+
 from cole.models import *
 from cole.forms import *
 
@@ -31,6 +34,32 @@ def show_classe(request, classe_id):
             return redirect('home')
     else:
         return redirect('home')
+
+@login_required
+def redirect_to_static(request, topic, file, ext):
+    return redirect('http://'+settings.STATIC_URL+'help/'+topic+'/'+file+'.'+ext)
+
+@login_required
+def show_help(request, topic=None):
+    if topic:
+        topic_clean = slugify(topic, allow_unicode=False)
+
+        file_path = os.path.join(settings.STATIC_FULLPATH, 'help', topic_clean+'.md')
+
+        print(file_path)
+        try:
+            topic_content = Path(file_path).read_text()
+
+            print(topic_content)
+
+            return render(request, 'help.html', {'topic_content': topic_content})
+        except Exception as e:
+            print(str(e))
+            messages.error(request, 'Error accedint al fitxer d\'ajuda')
+            return redirect('home')
+    else:
+        topics = { 'exportXLS': 'Exportar a Excel' }
+        return render(request, 'help.html', { 'topics': topics })
 
 @login_required
 def edit_classe(request, classe_id=None):
@@ -185,8 +214,6 @@ def get_export(request, classe_id, export_name):
 
         file_path = os.path.join(settings.XLS_ROOT, 'export/', instance_classe.latest_export)
 
-        print(file_path)
-
         test_file = open(file_path, 'rb')
         response = HttpResponse(content=test_file)
         response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -213,8 +240,10 @@ def upload_xls(request):
 
                 #return render(request, 'upload.html', {'uploaded_file_url': upload.filepath})
                 return redirect('show.classe', classe_id=upload.classe.id)
-        except:
+        except Exception as e:
             messages.error(request, 'Error pujant XLS')
+            if request.user.is_superuser:
+                messages.error(request, str(e))
             return render(request, 'upload.html')
 
         return render(request, 'upload.html')

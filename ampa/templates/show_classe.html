@@ -13,7 +13,6 @@
   {{ instance_classe.curs }}
   <h2>Error procesant fitxer excel</h2>
   Si us plau, avisa del problema
-  <!-- <img src="{% static 'img/bored_kid.gif' %}"> -->
   </center>
   
 
@@ -21,7 +20,6 @@
 
 <center>
 <h1>procesant...</h1>
-<!-- <img src="{% static 'img/bored_kid.gif' %}"> -->
 </center>
 
 <input type="hidden" id="refresh_interval_ms" name="refresh_interval_ms" value="10000">
@@ -48,6 +46,12 @@
 
 <h1>{{ instance_classe.nom }} <a href="{% url 'edit.classe' classe_id=instance_classe.id %}"><i class="far fa-edit"></i></a></h1>
 {{ instance_classe.curs }}
+
+{% if instance_classe.latest_export and not instance_classe.waiting_export %}
+<ul>
+  <li><a href="{% url 'get.classe.export' classe_id=instance_classe.id export_name=instance_classe.latest_export%}">Descarregar fitxer exportació</a></li>
+</ul>
+{% endif %}
 
 <table class="table table-bordred table-striped">
     <thead>

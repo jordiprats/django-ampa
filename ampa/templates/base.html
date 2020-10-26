@@ -15,38 +15,13 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
   {% load static %}
-  <!-- Custom styles for this template -->
-  <link href="{% static 'css/simple-sidebar.css' %}" rel="stylesheet">
-
+  
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-  <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
 </head>
 
 <body>
 
   <div class="d-flex" id="wrapper">
-
-    <!-- Sidebar #5285C6 -->
-    <div class="bg-lightdark border-right" id="sidebar-wrapper">
-      <!-- <div class="text-center bg-light sidebar-heading"><a href="{% url 'home' %}"><img class="w-100 img-thumbnail img-fluid rounded mx-auto d-block" src="{% static 'logo/logo225tng.png' %}" alt='eyp'></a></div> -->
-      {% if user.is_authenticated %}
-      <div class="list-group list-group-flush">
-        {% if user.is_superuser %}
-        <!-- <a href="{% url 'home' %}" class="list-group-item list-group-item-action bg-danger">check DB</a> -->
-        {% endif %}
-        {% if user.is_staff %}
-        <!-- <a href="" class="list-group-item list-group-item-action bg-info">Create instance</a> -->
-        {% endif %}
-        <!-- <a href="" class="list-group-item list-group-iteem-action bg-info">Create platform</a>
-        <a href="" class="list-group-item list-group-item-action bg-lightdark">List available modules</a>
-        <a href="" class="list-group-item list-group-item-action bg-lightdark">Instances</a>
-        <a href="" class="list-group-item list-group-item-action bg-lightdark">Platforms</a>
-        <a href="" class="list-group-item list-group-item-action bg-lightdark">Jobs </a> -->
-      </div>
-      {% endif %}
-    </div>
-    <!-- /#sidebar-wrapper -->
-
 
     <!-- Page Content -->
     <div id="page-content-wrapper" class="container-fluid">
@@ -80,9 +55,6 @@
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'login' %}">Sign in</a>
             </li>
-            <!-- <li class="nav-item active">
-                <a class="nav-link" href="% url 'signup' %">Register</a>
-            </li> -->
             {% endif %}
           </ul>
         </div>
@@ -97,9 +69,6 @@
         {% endblock %}
       </div>
     </div>
-    <!-- /#page-content-wrapper -->
-
-    
 
   </div>
 

@@ -28,7 +28,7 @@ class Command(BaseCommand):
             try:
                 classe_instance = Classe.objects.filter(waiting_export=True)[0]
             except:
-                print('Res a procesar')
+                # print('Res a procesar')
                 return False
 
         if options['output']:
@@ -123,8 +123,11 @@ class Command(BaseCommand):
                 worksheet.write('B'+str(linea), alumne.nom, text_normal_taula)
                 worksheet.write('C'+str(linea), alumne.cognom1, text_normal_taula)
                 worksheet.write('D'+str(linea), alumne.cognom2, text_normal_taula)
-                
-                worksheet.write('E'+str(linea), alumne.naixement.replace(tzinfo=None), data_normal_taula)
+
+                if alumne.naixement:
+                    worksheet.write('E'+str(linea), alumne.naixement.replace(tzinfo=None), data_normal_taula)
+                else:
+                     worksheet.write('E'+str(linea), '', text_normal_taula)
 
                 worksheet.write('F'+str(linea), alumne.tutor1, text_normal_taula)
                 worksheet.write('G'+str(linea), alumne.telf_tutor1, text_normal_taula)
