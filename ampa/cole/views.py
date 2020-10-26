@@ -36,6 +36,16 @@ def show_classe(request, classe_id):
         return redirect('home')
 
 @login_required
+def enviar_nota(request, classe_id=None):
+    if classe_id:
+        if request.user.is_superuser:
+            instance_classe = Classe.objects.filter(id=classe_id)[0]
+        else:
+            instance_classe = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
+    else:
+        return HttpResponse("not implemented", content_type="text/plain")
+
+@login_required
 def redirect_to_static(request, topic, file, ext):
     return redirect('http://'+settings.STATIC_URL+'help/'+topic+'/'+file+'.'+ext)
 
@@ -93,7 +103,7 @@ def delete_alumne(request, classe_id, alumne_id):
             if request.user.is_superuser:
                 instance_alumne = Alumne.objects.filter(id=alumne_id, classe__id=classe_id)[0]
             else:
-                instance_alumne = Alumne.objects.filter(id=alumne_id, classe__id=classe_id, classe__delegat=request.user)[0]
+                instance_alumne = Alumne.objects.filter(id=alumne_id, classe__id=classe_id).filter(Q(classe__delegat=request.user) | Q(classe__subdelegat=request.user))[0]
             if request.method == 'POST':
                 form = AreYouSureForm(request.POST)
                 if form.is_valid():
@@ -119,7 +129,7 @@ def delete_classe(request, classe_id):
             if request.user.is_superuser:
                 instance_classe = Classe.objects.filter(id=classe_id)[0]
             else:
-                instance_classe = Classe.objects.filter(id=classe_id, delegat=request.user)[0]
+                instance_classe = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
             if request.method == 'POST':
                 form = AreYouSureForm(request.POST)
                 if form.is_valid():
@@ -141,7 +151,7 @@ def delete_classe(request, classe_id):
 @login_required
 def edit_alumne(request, classe_id, alumne_id=None):
     try:
-        classe_instance = Classe.objects.filter(delegat=request.user, id=classe_id)[0]
+        classe_instance = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
 
         if alumne_id:
             alumne_instance = Alumne.objects.filter(classe=classe_instance, id=alumne_id)[0]
@@ -257,7 +267,7 @@ def exportar_classe(request, classe_id):
             if request.user.is_superuser:
                 instance_classe = Classe.objects.filter(id=classe_id)[0]
             else:
-                instance_classe = Classe.objects.filter(id=classe_id, delegat=request.user)[0]
+                instance_classe = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
 
             if request.method == 'POST':
                 form = AreYouSureForm(request.POST)
