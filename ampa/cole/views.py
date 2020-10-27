@@ -36,14 +36,44 @@ def show_classe(request, classe_id):
         return redirect('home')
 
 @login_required
-def enviar_nota(request, classe_id=None):
-    if classe_id:
+def list_classe_mailings(request, classe_id):
+    if request.user.is_superuser:
+        classe_instance = Classe.objects.filter(id=classe_id)[0]
+    else:
+        classe_instance = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
+    
+    list_mailings = Mailing.objects.filter(classes__id=classe_instance.id)
+
+    return render(request, 'mailing/list_classe_mailings.html', { 'list_mailings': list_mailings })
+
+@login_required
+def editar_mailing_classe(request, classe_id):
+    try:
         if request.user.is_superuser:
             instance_classe = Classe.objects.filter(id=classe_id)[0]
         else:
             instance_classe = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
-    else:
-        return HttpResponse("not implemented", content_type="text/plain")
+        
+        instance_mailing = Mailing(email_from='', email_reply_to=request.user.email)
+        
+        if request.method == 'POST':
+            form = ClasseMailingForm(request.POST, instance=instance_mailing)
+            if form.is_valid():
+                # TODO
+                form.save()
+                instance_mailing.classes.add(instance_classe)
+                instance_mailing.save()
+                messages.info(request, 'Guardat mailing')
+            else:
+                return render(request, 'mailing/edit_classe_mailing.html', { 'form': form })
+            return redirect('show.classe', classe_id=instance_classe.id)
+        else:
+            form = ClasseMailingForm(instance=instance_mailing)
+        return render(request, 'mailing/edit_classe_mailing.html', { 'form': form })
+
+    except Exception as e:
+        print(str(e))
+        return redirect('show.classe', classe_id=classe_id)
 
 @login_required
 def redirect_to_static(request, topic, file, ext):
@@ -180,7 +210,6 @@ def list_classes(request):
         else:
             list_classes = Classe.objects.filter(Q(delegat=request.user) | Q(subdelegat=request.user))
             return render(request, 'list_classes.html', {'list_classes': list_classes, 'admin': False})
-        
     else:
         return redirect('home')
 

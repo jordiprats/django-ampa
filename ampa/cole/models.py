@@ -5,6 +5,18 @@ from django.db import models
 
 import uuid
 
+MAILING_STATUS_DRAFT = 'D'
+MAILING_STATUS_PROGRAMAT = 'P'
+MAILING_STATUS_ENVIANT = 'S'
+MAILING_STATUS_ENVIAT = 'C'
+MAILING_STATUS = [
+    (MAILING_STATUS_DRAFT, 'borrador'),
+    (MAILING_STATUS_PROGRAMAT, 'enviament programat'),
+    (MAILING_STATUS_ENVIANT, 'enviant...'),
+    (MAILING_STATUS_ENVIAT, 'enviament completat')
+]
+
+
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     slug = models.SlugField(
@@ -120,6 +132,27 @@ class Alumne(models.Model):
             models.Index(fields=['num_llista','classe']),
         ]
 
+class Mailing(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    #subject, html_message, email_from, email_reply_to, recipient_list
+    subject = models.CharField(max_length=256)
+    html_message = models.TextField(max_length=10000, default=None, blank=True, null=True)
+    email_from = models.CharField(max_length=256, default='')
+    email_reply_to = models.CharField(max_length=256, default=None)
+
+    classes = models.ManyToManyField(Classe, related_name='mailings')
+    nomes_delegats = models.BooleanField(default=False)
+
+    status = models.CharField(
+        max_length=1,
+        choices=MAILING_STATUS,
+        default=MAILING_STATUS_DRAFT,
+    )
+    progress = models.IntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 class FileUpload(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

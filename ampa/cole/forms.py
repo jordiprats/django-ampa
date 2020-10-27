@@ -5,20 +5,13 @@ from django import forms
 
 from cole.models import *
 
-class ClasseForm(forms.ModelForm):
+class ClasseMailingForm(forms.ModelForm):
     class Meta:
-        model = Classe
-        fields = (['nom', 'curs', 'tutor', 'nom_delegat', 'telefon_delegat', 'email_delegat', 'nom_subdelegat', 'telefon_subdelegat', 'email_subdelegat'])
+        model = Mailing
+        fields = (['subject', 'html_message'])
         labels = {
-            'nom': 'Nom de la classe', 
-            'curs': 'Curs escolar', 
-            'tutor:': 'Nom tutor de la classe', 
-            'nom_delegat': 'Nom del delegat', 
-            'telefon_delegat': 'Telèfon del delegat', 
-            'email_delegat': 'e-Mail del delegat', 
-            'nom_subdelegat': 'Nom del subdelegat', 
-            'telefon_subdelegat': 'Telèfon del subdelegat', 
-            'email_subdelegat': 'e-Mail del subdelegat',
+            'subject': 'Asumpte', 
+            'html_message': 'Missatge', 
         }
 
 class EditAlumneForm(ModelForm):

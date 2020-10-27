@@ -4,6 +4,8 @@
 
 {% block content %}
 
+{% static 'img/bored_kid.gif' %}
+
 <h1><a href="{% url 'show.classe' classe_id=instance_classe.id %}">{{ instance_classe.nom }}</a></h1>
 {{ instance_classe.curs }}
 

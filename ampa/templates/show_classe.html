@@ -35,7 +35,7 @@
 {% else %}
 
   {% if not instance_classe.ready_to_send and instance_classe.alumnes.count != 0 and not instance_classe.ultim_email %}
-  <form style="display: inline;" action="{% url 'send.email' classe_id=instance_classe.id %}" method="GET">
+  <form style="display: inline;" action="{% url 'send.cessio.dades.email' classe_id=instance_classe.id %}" method="GET">
     <button class="float-right btn btn-warning" style="margin: 3px;" type="submit">enviar email</button>
   </form>
   {% endif %}
@@ -44,7 +44,7 @@
     <button class="float-right btn btn-info" style="margin: 3px;" type="submit">exportar Excel</button>
   </form>
 
-  <form style="display: inline;" action="{% url 'enviar.nota' classe_id=instance_classe.id %}" method="GET">
+  <form style="display: inline;" action="{% url 'enviar.email' classe_id=instance_classe.id %}" method="GET">
     <button class="float-right btn btn-info" style="margin: 3px;" type="submit">enviar comunicació</button>
   </form>
 
