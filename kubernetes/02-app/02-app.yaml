@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ampa-1.9
+  name: ampa-2.0
   namespace: kube-system
   labels:
-    app: ampa-1.9
+    app: ampa-2.0
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ampa-1.9
+      app: ampa-2.0
   template:
     metadata:
       labels:
-        app: ampa-1.9
+        app: ampa-2.0
     spec:
       volumes:
         - name: xls-data-ampa
@@ -21,7 +21,7 @@ spec:
             claimName: nfs-ampa-pvc
       containers:
       - name: ampa
-        image: 172.18.1.46:5000/ampa:1.9
+        image: 172.18.1.46:5000/ampa:2.0
         ports:
         - name: http
           containerPort: 8000
