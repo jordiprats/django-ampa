@@ -8,3 +8,4 @@ pytz
 XlsxWriter
 Markdown
 html2text
+python-magic

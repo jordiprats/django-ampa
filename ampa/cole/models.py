@@ -158,7 +158,7 @@ class FileAttachment(models.Model):
     is_image = property(_is_image)
 
     def _get_url(self):
-        return 'uploads/'+self.upload_path+'/'+self.filename
+        return settings.STATIC_DOMAIN+'uploads/'+self.upload_path+'/'+self.filename
 
     url = property(_get_url)
 
@@ -210,6 +210,14 @@ class Mailing(models.Model):
         return mailing_emails
     
     recipient_list = property(_get_recipient_emails)
+
+    def _get_attachment_hash(self):
+        attachments_dict = {}
+        for attachment in self.attachments.all():
+            attachments_dict[attachment.filename] = attachment.filepath
+        return attachments_dict
+
+    attachment_hash = property(_get_attachment_hash)
 
     def __str__(self):
         return self.subject

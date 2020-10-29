@@ -18,7 +18,7 @@ tinymce.init({
     height: '600',
     image_list: [
     {% for attach in instance_mailing.attachments.all %}
-        {title: '{{ attach.filename }}', value: '{% static attach.url %}'},
+        {title: '{{ attach.filename }}', value: '{{ attach.url }}'},
     {% endfor %}
     ]
 });
@@ -32,7 +32,5 @@ tinymce.init({
         <button class="btn btn-primary" type="submit">guardar</button>
     </form>
 </div>
-
-
 
 {% endblock %}

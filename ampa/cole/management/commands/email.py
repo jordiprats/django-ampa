@@ -6,6 +6,7 @@ from cole.models import *
 import html2text
 import datetime
 import pandas
+import magic
 import sys
 import os
 import re
@@ -18,7 +19,7 @@ class Command(BaseCommand):
         parser.add_argument('--email', nargs='?', default=None)
 
     # funció genèrica de emails
-    def send_html_email(self, subject, html_message, email_from, email_reply_to, recipient_list):
+    def send_html_email(self, subject, html_message, email_from, email_reply_to, recipient_list, attachments={}):
 
         text_maker = html2text.HTML2Text()
         text_maker.ignore_links = True
@@ -33,6 +34,13 @@ class Command(BaseCommand):
 
         mail = EmailMultiAlternatives(subject, text_message, email_from, recipient_list, headers=headers)
         mail.attach_alternative(html_message, 'text/html')
+
+        for key in attachments:
+            mime = magic.Magic(mime=True)
+            mimetype = mime.from_file(attachments[key])
+            
+            attachment_fd = open(attachments[key], 'rb')
+            mail.attach(key, attachment_fd.read(), mimetype)
 
         return mail.send()
 
@@ -65,18 +73,22 @@ class Command(BaseCommand):
         else:
             # mailing programats
             for mailing in Mailing.objects.filter(status=MAILING_STATUS_PROGRAMAT):
+
+                if mailing.email_from:
+                    email_from = mailing.email_from
+                else:
+                    email_from = 'Delegats Lestonnac <noreply@systemadmin.es>'
+
+                if mailing.email_reply_to:
+                    email_reply_to = mailing.email_reply_to
+                else:
+                    email_reply_to = None
+
+                mailing_attachments = mailing.attachment_hash
+
                 for email in mailing.recipient_list:
                     if settings.DEBUG:
                         print(email)
-                    if mailing.email_from:
-                        email_from = mailing.email_from
-                    else:
-                        email_from = 'Delegats Lestonnac <noreply@systemadmin.es>'
-
-                    if mailing.email_reply_to:
-                        email_reply_to = mailing.email_reply_to
-                    else:
-                        email_reply_to = None
 
                     try:
                         self.send_html_email(
@@ -84,10 +96,13 @@ class Command(BaseCommand):
                                                 html_message=mailing.html_message,
                                                 email_from=email_from,
                                                 email_reply_to=email_reply_to,
-                                                recipient_list= [ email ]
+                                                recipient_list= [ email ],
+                                                attachments=mailing_attachments
                                             )
-                    except:
-                        pass
+                    except Exception as e:
+                        if settings.DEBUG:
+                            print(str(e))
+
                 mailing.status = MAILING_STATUS_ENVIAT
                 mailing.save()
             # cessió de dades

@@ -146,6 +146,26 @@ def enviar_mailing_classe(request, classe_id, mailing_id):
         return redirect('show.classe', classe_id=classe_id)
 
 @login_required
+def show_mailing_classe(request, classe_id, mailing_id):
+    try:
+        if request.user.is_superuser:
+            instance_classe = Classe.objects.filter(id=classe_id)[0]
+        else:
+            instance_classe = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
+        
+        instance_mailing = Mailing.objects.filter(classes__id=instance_classe.id)[0]
+        
+        return render(request, 'mailing/classes/show.html', { 'instance_mailing': instance_mailing, 'instance_classe': instance_classe })
+
+    except Exception as e:
+        if settings.DEBUG:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            print(str(e))
+        return redirect('show.classe', classe_id=classe_id)
+
+@login_required
 def editar_mailing_classe(request, classe_id, mailing_id=None):
     try:
         if request.user.is_superuser:
@@ -181,8 +201,12 @@ def editar_mailing_classe(request, classe_id, mailing_id=None):
         return redirect('show.classe', classe_id=classe_id)
 
 @login_required
-def redirect_to_static(request, topic, file, ext):
-    return redirect('http://'+settings.STATIC_URL+'help/'+topic+'/'+file+'.'+ext)
+def help_media_redirect_to_static(request, topic, file, ext):
+    return redirect(settings.STATIC_DOMAIN+'help/'+topic+'/'+file+'.'+ext)
+
+@login_required
+def redirect_to_static(request, file):
+    return redirect(settings.STATIC_DOMAIN+file)
 
 @login_required
 def show_help(request, topic=None):

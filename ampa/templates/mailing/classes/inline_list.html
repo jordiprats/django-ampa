@@ -20,7 +20,7 @@
               </form>
             </td>
             {% else %}
-            <td>{{ mailing.subject }}</td>
+            <td>{{ mailing.subject }} <a href="{% url 'show.classe.mailing' classe_id=instance_classe.id mailing_id=mailing.id %}">veure</a></td>
             <td>{{ mailing.get_status_display }}</td>
             {% endif %}
             <td>{{ mailing.attachments.count }}

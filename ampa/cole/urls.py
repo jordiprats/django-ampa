@@ -18,6 +18,7 @@ urlpatterns = [
     path('classes/<classe_id>/mailing', views.list_classe_mailings, name='list.classe.mailings'),
     path('classes/<classe_id>/mailing/new', views.editar_mailing_classe, name='nou.classe.mailing'),
     path('classes/<classe_id>/mailing/<mailing_id>', views.editar_mailing_classe, name='edit.classe.mailing'),
+    path('classes/<classe_id>/mailing/<mailing_id>/show', views.show_mailing_classe, name='show.classe.mailing'),
     path('classes/<classe_id>/mailing/<mailing_id>/send', views.enviar_mailing_classe, name='enviar.classe.mailing'),
     path('classes/<classe_id>/addalumne', views.edit_alumne, name='add.alumne'),
     path('classes/<classe_id>/<alumne_id>/edit', views.edit_alumne, name='edit.alumne'),
@@ -28,6 +29,7 @@ urlpatterns = [
     path('mailing/<mailing_id>/attachment/<attachment_id>/remove', views.remove_attachment_mailing, name='remove.attachment.mailing'),
     path('help', views.show_help, name='show.help'),
     path('help/<topic>/index.html', views.show_help, name='show.topic'),
-    path('help/<topic>/<file>.<ext>', views.redirect_to_static, name='redirct.static'),
+    path('help/<topic>/<file>.<ext>', views.help_media_redirect_to_static, name='help.media.redirect.static'),
+    path('sr/<path:file>', views.redirect_to_static, name='redirect.static'),
     path('', views.home, name='home')
 ]
