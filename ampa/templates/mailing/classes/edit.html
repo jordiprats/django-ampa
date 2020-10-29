@@ -14,8 +14,13 @@ tinymce.init({
     language: 'ca',
     menubar: false,
     plugins: "link image code",
-    toolbar: 'styleselect | forecolor | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link | undo redo | code',
-    height: '600'
+    toolbar: 'styleselect | forecolor | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link image | undo redo | code',
+    height: '600',
+    image_list: [
+    {% for attach in instance_mailing.attachments.all %}
+        {title: '{{ attach.filename }}', value: '{% static attach.url %}'},
+    {% endfor %}
+    ]
 });
 
 </script>

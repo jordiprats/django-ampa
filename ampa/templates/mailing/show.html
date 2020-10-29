@@ -1,0 +1,23 @@
+<h1>{{ instance_classe.nom }}</h1>
+{{ instance_classe.curs }}
+
+<hr />
+
+<h2>{{ instance_mailing.subject }}</h2>
+
+{{ instance_mailing.html_message | safe }}
+
+{% if instance_mailing.attachments.count > 0 %}
+<ul>
+    {% for attachament in instance_mailing.attachments.all %}
+     <li>
+         {{ attachament.filename }}
+         <form style="display: inline" action="{% url 'remove.attachment.mailing' mailing_id=instance_mailing.id attachment_id=attachament.id %}" method="GET">
+            <button class="btn btn-danger" type="submit">eliminar adjunt</button>
+          </form>
+     </li>   
+    {% endfor %}
+</ul>
+{% endif %}
+
+<hr />

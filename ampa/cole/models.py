@@ -1,14 +1,16 @@
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth.models import AbstractUser
 from django.utils.text import slugify
+from django.conf import settings
 from django.db import models
 
 import uuid
+import re
 
-MAILING_STATUS_DRAFT = 'D'
-MAILING_STATUS_PROGRAMAT = 'P'
-MAILING_STATUS_ENVIANT = 'S'
-MAILING_STATUS_ENVIAT = 'C'
+MAILING_STATUS_DRAFT = '0'
+MAILING_STATUS_PROGRAMAT = '1'
+MAILING_STATUS_ENVIANT = '2'
+MAILING_STATUS_ENVIAT = '3'
 MAILING_STATUS = [
     (MAILING_STATUS_DRAFT, 'borrador'),
     (MAILING_STATUS_PROGRAMAT, 'enviament programat'),
@@ -112,6 +114,14 @@ class Alumne(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     classe = models.ForeignKey(Classe, on_delete=models.CASCADE, related_name='alumnes')
 
+    def _get_mailing_emails(self):
+        if self.tutor1_cessio and self.tutor2_cessio and self.validat:
+            return re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", self.emails.lower())
+        else:
+            return []
+    
+    mailing_emails = property(_get_mailing_emails)
+
     def _get_print_name(self):
         composite_name = self.nom
         if self.cognom1:
@@ -132,6 +142,42 @@ class Alumne(models.Model):
             models.Index(fields=['num_llista','classe']),
         ]
 
+class FileAttachment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    filename = models.CharField(max_length=256)
+    upload_path = models.CharField(max_length=256)
+    filepath = models.CharField(max_length=256)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def _is_image(self):
+        return re.match('.jpg$', filename) or re.match('.jpeg$', filename) or re.match('.png$', filename)
+
+    is_image = property(_is_image)
+
+    def _get_url(self):
+        return 'uploads/'+self.upload_path+'/'+self.filename
+
+    url = property(_get_url)
+
+    def __str__(self):
+        return self.filename
+    
+    def delete(self, *args, **kwargs):
+        try:
+            os.remove(self.filepath)
+        except:
+            pass
+        super(FileAttachment, self).delete(*args, **kwargs)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['-created_at',]),
+        ]
+
 class Mailing(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
@@ -142,6 +188,7 @@ class Mailing(models.Model):
     email_reply_to = models.CharField(max_length=256, default=None)
 
     classes = models.ManyToManyField(Classe, related_name='mailings')
+    attachments = models.ManyToManyField(FileAttachment, related_name='mailings')
     nomes_delegats = models.BooleanField(default=False)
 
     status = models.CharField(
@@ -153,6 +200,26 @@ class Mailing(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def _get_recipient_emails(self):
+        mailing_emails = set()
+        for classe in self.classes.all():
+            for alumne in classe.alumnes.all():
+                for email in alumne.mailing_emails:
+                    mailing_emails.add(email)
+        return mailing_emails
+    
+    recipient_list = property(_get_recipient_emails)
+
+    def __str__(self):
+        return self.subject
+
+    class Meta:
+        ordering = ['-updated_at', 'status']
+        indexes = [
+            models.Index(fields=['-updated_at', 'status']),
+            models.Index(fields=['status']),
+        ]
 
 class FileUpload(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

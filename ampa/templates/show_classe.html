@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load static %}
+{% load humanize %}
 
 {% block content %}
 
@@ -36,16 +37,12 @@
 
   {% if not instance_classe.ready_to_send and instance_classe.alumnes.count != 0 and not instance_classe.ultim_email %}
   <form style="display: inline;" action="{% url 'send.cessio.dades.email' classe_id=instance_classe.id %}" method="GET">
-    <button class="float-right btn btn-warning" style="margin: 3px;" type="submit">enviar email</button>
+    <button class="float-right btn btn-warning" style="margin: 3px;" type="submit">enviar formulari de cessió dades</button>
   </form>
   {% endif %}
 
   <form style="display: inline;" action="{% url 'exportar.xls' classe_id=instance_classe.id %}" method="GET">
     <button class="float-right btn btn-info" style="margin: 3px;" type="submit">exportar Excel</button>
-  </form>
-
-  <form style="display: inline;" action="{% url 'enviar.email' classe_id=instance_classe.id %}" method="GET">
-    <button class="float-right btn btn-info" style="margin: 3px;" type="submit">enviar comunicació</button>
   </form>
 
 <h1>{{ instance_classe.nom }} <a href="{% url 'edit.classe' classe_id=instance_classe.id %}"><i class="far fa-edit"></i></a></h1>
@@ -57,32 +54,22 @@
 </ul>
 {% endif %}
 
-<table class="table table-bordred table-striped">
-    <thead>
-      <tr>
-        <th>número llista</th>
-        <th>nom</th>
-        <th>Tutor 1</th>
-        <th>Tutor 2</th>
-        <th>Validat</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for alumne in instance_classe.alumnes.all %}
-        <tr>
-          <td><a href="{% url 'edit.alumne' classe_id=instance_classe.id alumne_id=alumne.id %}">{{ alumne.num_llista }}</a></td>
-          <td><a href="{% url 'form.pares.edit.alumne' alumne_id=alumne.id %}">{{ alumne.print_name }}</a></td>
-          <td>{{ alumne.tutor1_cessio|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
-          <td>{{ alumne.tutor2_cessio|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
-          <td>{{ alumne.validat|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+{% include 'classes/inline_nav.html' %}
+
+{% if content == 'overview' %}
+  {% include 'classes/inline_show.html' %}
+
+  <form style="display: inline" action="{% url 'add.alumne' classe_id=instance_classe.id %}" method="GET">
+    <button class="float-left btn btn-info" type="submit"><i class="fas fa-plus"></i> alumne</button>
+  </form>
+{% elif content == 'mailing' %}
+  {% include 'mailing/classes/inline_list.html' %}
+
+  <form style="display: inline" action="{% url 'nou.classe.mailing' classe_id=instance_classe.id %}" method="GET">
+    <button class="float-left btn btn-info" type="submit"><i class="fas fa-plus"></i> nova comunicació</button>
+  </form>
 {% endif %}
 
-<form style="display: inline" action="{% url 'add.alumne' classe_id=instance_classe.id %}" method="GET">
-  <button class="float-left btn btn-info" type="submit"><i class="fas fa-plus"></i> alumne</button>
-</form>
+{% endif %}
 
 {% endblock %}

@@ -1,0 +1,8 @@
+<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link {% if content == 'overview' %}active{% endif %}" href="{% url 'show.classe' classe_id=instance_classe.id %}">Llistat d'alumnes</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if content == 'mailing' %}active{% endif %}" href="{% url 'list.classe.mailings' classe_id=instance_classe.id %}">Comunicacions</a>
+    </li>
+  </ul>

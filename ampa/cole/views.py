@@ -15,6 +15,7 @@ from cole.models import *
 from cole.forms import *
 
 import time
+import sys
 import os
 
 @require_GET
@@ -29,50 +30,154 @@ def show_classe(request, classe_id):
     if request.user.is_authenticated:
         try:
             instance_classe = Classe.objects.filter(id=classe_id)[0]
-            return render(request, 'show_classe.html', {'instance_classe': instance_classe})
+            return render(request, 'show_classe.html', { 'instance_classe': instance_classe, 'content': 'overview' })
         except:
             return redirect('home')
     else:
         return redirect('home')
 
 @login_required
-def list_classe_mailings(request, classe_id):
-    if request.user.is_superuser:
-        classe_instance = Classe.objects.filter(id=classe_id)[0]
-    else:
-        classe_instance = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
-    
-    list_mailings = Mailing.objects.filter(classes__id=classe_instance.id)
+def remove_attachment_mailing(request, mailing_id, attachment_id):
+    try:
+        instance_mailing = Mailing.objects.filter(id=mailing_id)[0]
 
-    return render(request, 'mailing/list_classe_mailings.html', { 'list_mailings': list_mailings })
+        instance_attachment = FileAttachment.objects.filter(id=attachment_id)[0]
+        
+        if request.method == 'POST':
+            form = AreYouSureForm(request.POST)
+            if form.is_valid():
+                instance_mailing.attachments.remove(instance_attachment)
+                instance_mailing.save()
+                if instance_attachment.mailings.count() == 0:
+                    instance_attachment.delete()
+                messages.info(request, 'Fitxer adjunt eliminat')
+
+                if instance_mailing.classes.count() == 1:
+                    return redirect('list.classe.mailings', classe_id=instance_mailing.classes.all()[0].id)
+                else:
+                    # TODO
+                    return redirect('home')
+            else:
+                messages.error(request, 'Error eliminant l\'alumne')
+        else:
+            form = AreYouSureForm(request.GET)
+        return render(request, 'mailing/attachments/delete.html', { 'instance_mailing': instance_mailing, 'instance_attachment': instance_attachment })
+
+    except Exception as e:
+        if settings.DEBUG:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            print(str(e))
+        if instance_mailing.classes.count() == 1:
+            return redirect('list.classe.mailings', classe_id=instance_mailing.classes.all()[0].id)
+        else:
+            # TODO
+            return redirect('home')
+
 
 @login_required
-def editar_mailing_classe(request, classe_id):
+def afegir_attachment_mailing_classe(request, mailing_id):
+    try:
+        instance_mailing = Mailing.objects.filter(id=mailing_id)[0]
+        if request.method == 'POST' and request.FILES['attachment']:
+            myfile = request.FILES['attachment']
+            upload_subdir = str(int(time.time()))
+            fs = FileSystemStorage(location=settings.UPLOADS_ROOT+'/'+upload_subdir)
+            filename = fs.save(myfile.name, myfile)
+
+            upload = FileAttachment(filename=myfile.name, filepath=fs.location+'/'+filename, upload_path=upload_subdir)
+            upload.save()
+
+            instance_mailing.attachments.add(upload)
+            instance_mailing.save()
+
+            messages.info(request, 'Fitxer pujat correctament')
+            if instance_mailing.classes.count() == 1:
+                return redirect('list.classe.mailings', classe_id=instance_mailing.classes.all()[0].id)
+            else:
+                # TODO
+                return redirect('home')
+        else:
+            return render(request, 'mailing/attachments/upload.html', { 'instance_mailing': instance_mailing })
+    except Exception as e:
+        messages.error(request, 'Error pujant arxiu')
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+    return redirect('home')
+            
+@login_required
+def list_classe_mailings(request, classe_id):
+    if request.user.is_superuser:
+        instance_classe = Classe.objects.filter(id=classe_id)[0]
+    else:
+        instance_classe = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
+    
+    list_mailings = Mailing.objects.filter(classes__id=instance_classe.id)
+
+    return render(request, 'show_classe.html', { 'instance_classe': instance_classe, 'list_mailings': list_mailings, 'content': 'mailing' })
+
+@login_required
+def enviar_mailing_classe(request, classe_id, mailing_id):
     try:
         if request.user.is_superuser:
             instance_classe = Classe.objects.filter(id=classe_id)[0]
         else:
             instance_classe = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
         
-        instance_mailing = Mailing(email_from='', email_reply_to=request.user.email)
+        instance_mailing = Mailing.objects.filter(classes__id=instance_classe.id)[0]
+        
+        if request.method == 'POST':
+            form = AreYouSureForm(request.POST)
+            if form.is_valid():
+                instance_mailing.status = MAILING_STATUS_PROGRAMAT
+                instance_mailing.save()
+                messages.info(request, 'e-Mail programat per enviar-se')
+
+                return redirect('list.classe.mailings', classe_id=instance_classe.id)
+            else:
+                messages.error(request, 'Error eliminant l\'alumne')
+        else:
+            form = AreYouSureForm(request.GET)
+        return render(request, 'mailing/classes/enviar.html', { 'instance_mailing': instance_mailing, 'instance_classe': instance_classe })
+
+    except Exception as e:
+        print(str(e))
+        return redirect('show.classe', classe_id=classe_id)
+
+@login_required
+def editar_mailing_classe(request, classe_id, mailing_id=None):
+    try:
+        if request.user.is_superuser:
+            instance_classe = Classe.objects.filter(id=classe_id)[0]
+        else:
+            instance_classe = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
+        
+        if mailing_id:
+            instance_mailing = Mailing.objects.filter(classes__id=instance_classe.id)[0]
+        else:
+            instance_mailing = Mailing(email_from='', email_reply_to=request.user.email)
         
         if request.method == 'POST':
             form = ClasseMailingForm(request.POST, instance=instance_mailing)
             if form.is_valid():
-                # TODO
                 form.save()
                 instance_mailing.classes.add(instance_classe)
                 instance_mailing.save()
                 messages.info(request, 'Guardat mailing')
             else:
-                return render(request, 'mailing/edit_classe_mailing.html', { 'form': form })
-            return redirect('show.classe', classe_id=instance_classe.id)
+                return render(request, 'mailing/classes/edit.html', { 'form': form, 'instance_mailing': instance_mailing })
+            return redirect('list.classe.mailings', classe_id=instance_classe.id)
         else:
             form = ClasseMailingForm(instance=instance_mailing)
-        return render(request, 'mailing/edit_classe_mailing.html', { 'form': form })
+        return render(request, 'mailing/classes/edit.html', { 'form': form, 'instance_mailing': instance_mailing })
 
     except Exception as e:
-        print(str(e))
+        if settings.DEBUG:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            print(str(e))
         return redirect('show.classe', classe_id=classe_id)
 
 @login_required

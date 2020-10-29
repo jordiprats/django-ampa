@@ -1,0 +1,35 @@
+{% load humanize %}
+
+<table class="table table-bordred table-striped">
+    <thead>
+      <tr>
+        <th>subject</th>
+        <th>Estat</th>
+        <th>Fitxers adjunts</th>
+        <th>Última actualització</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for mailing in list_mailings.all %}
+        <tr>
+            {% if mailing.status == '0' %}
+            <td><a href="{% url 'edit.classe.mailing' classe_id=instance_classe.id mailing_id=mailing.id %}">{{ mailing.subject }}</a></td>
+            <td>{{ mailing.get_status_display }}
+              <form style="display: inline" action="{% url 'enviar.classe.mailing' classe_id=instance_classe.id mailing_id=mailing.id %}" method="GET">
+                <button class="btn btn-success" type="submit">enviar</button>
+              </form>
+            </td>
+            {% else %}
+            <td>{{ mailing.subject }}</td>
+            <td>{{ mailing.get_status_display }}</td>
+            {% endif %}
+            <td>{{ mailing.attachments.count }}
+              <form style="display: inline" action="{% url 'add.attachment.mailing' mailing_id=mailing.id %}" method="GET">
+                <button class="btn btn-success" type="submit">gestionar adjunts</button>
+              </form>
+            </td>
+            <td>{{ mailing.updated_at | naturaltime | default_if_none:"Never" }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>

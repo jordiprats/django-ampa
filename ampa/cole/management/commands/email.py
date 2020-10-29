@@ -24,7 +24,10 @@ class Command(BaseCommand):
         text_maker.ignore_links = True
         text_message = text_maker.handle(html_message)
 
-        headers = { 'Reply-To': email_reply_to }
+        if email_reply_to:
+            headers = { 'Reply-To': email_reply_to }
+        else:
+            headers = {}
 
         # send_mail(subject=subject, message=text_email, from_email=email_from, recipient_list=recipient_list, html_message=html_message, headers=headers)
 
@@ -60,6 +63,33 @@ class Command(BaseCommand):
                 print('Error enviament')
                 return False           
         else:
+            # mailing programats
+            for mailing in Mailing.objects.filter(status=MAILING_STATUS_PROGRAMAT):
+                for email in mailing.recipient_list:
+                    if settings.DEBUG:
+                        print(email)
+                    if mailing.email_from:
+                        email_from = mailing.email_from
+                    else:
+                        email_from = 'Delegats Lestonnac <noreply@systemadmin.es>'
+
+                    if mailing.email_reply_to:
+                        email_reply_to = mailing.email_reply_to
+                    else:
+                        email_reply_to = None
+
+                    try:
+                        self.send_html_email(
+                                                subject=mailing.subject, 
+                                                html_message=mailing.html_message,
+                                                email_from=email_from,
+                                                email_reply_to=email_reply_to,
+                                                recipient_list= [ email ]
+                                            )
+                    except:
+                        pass
+                mailing.status = MAILING_STATUS_ENVIAT
+                mailing.save()
             # cessió de dades
             for classe in Classe.objects.filter(ready_to_send=True, ultim_email=None):
                 try:
