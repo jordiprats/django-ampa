@@ -95,6 +95,7 @@ def afegir_attachment_mailing_classe(request, mailing_id):
             messages.info(request, 'Fitxer pujat correctament')
             if request.user.is_superuser:
                 messages.info(request, upload.filepath)
+                messages.info(request, upload.static_url)
             if instance_mailing.classes.count() == 1:
                 return redirect('edit.classe.mailing', classe_id=instance_mailing.classes.all()[0].id, mailing_id=instance_mailing.id)
                 # return redirect('list.classe.mailings', classe_id=instance_mailing.classes.all()[0].id)

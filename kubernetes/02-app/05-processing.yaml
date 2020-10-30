@@ -21,7 +21,7 @@ spec:
             claimName: nfs-ampa-pvc
       containers:
       - name: ampa-processing
-        image: 172.18.1.46:5000/ampa:2.3
+        image: 172.18.1.46:5000/ampa:2.5
         command: ["/code/processingtool.sh"]
         volumeMounts:
           - mountPath: /code/xls

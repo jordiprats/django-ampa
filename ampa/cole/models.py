@@ -153,14 +153,14 @@ class FileAttachment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def _is_image(self):
-        return re.match('\.jpg$', self.filename) or re.match('\.jpeg$', self.filename) or re.match('\.png$', self.filename)
+        return re.search('\.jpg$', self.filename) or re.search('\.jpeg$', self.filename) or re.search('\.png$', self.filename)
 
     is_image = property(_is_image)
 
-    def _get_url(self):
+    def _get_static_url(self):
         return settings.STATIC_DOMAIN+'uploads/'+self.upload_path+'/'+self.filename
 
-    url = property(_get_url)
+    static_url = property(_get_static_url)
 
     def __str__(self):
         return self.filename
@@ -214,7 +214,7 @@ class Mailing(models.Model):
     def _get_attachment_hash(self):
         attachments_dict = {}
         for attachment in self.attachments.all():
-            attachments_dict[attachment.filename] = attachment.filepath
+            attachments_dict[attachment.filename] = attachment.static_url
         return attachments_dict
 
     attachment_hash = property(_get_attachment_hash)
@@ -223,10 +223,10 @@ class Mailing(models.Model):
         attachments_dict = {}
         for attachment in self.attachments.all():
             if attachment.is_image:
-                attachments_dict[attachment.filename] = attachment.url
+                attachments_dict[attachment.filename] = attachment.static_url
         return attachments_dict
 
-    images_hash = property(_get_attachment_hash)
+    images_hash = property(_get_images_hash)
 
     def __str__(self):
         return self.subject

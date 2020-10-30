@@ -17,8 +17,8 @@ tinymce.init({
     toolbar: 'styleselect | forecolor | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link image | undo redo | code',
     height: '600',
     image_list: [
-    {% for key, value in image_hash.items %}
-        {title: '{{ key }}', value: '{{ value }}'},
+    {% for filename, static_url in image_hash.items %}
+        {title: '{{ filename }}', value: '{{ static_url }}'},
     {% endfor %}
     ]
 });
@@ -32,8 +32,8 @@ tinymce.init({
         {% if attachment_hash %}
         Adjunts:
         <ul>
-            {% for key, value in attachment_hash.items %}
-            <li>{{ key }}</li>
+            {% for filename, static_url in attachment_hash.items %}
+            <li><a href="{{ static_url }}">{{ filename }}</a></li>
             {% endfor %}
         </ul>
         {% endif %}
