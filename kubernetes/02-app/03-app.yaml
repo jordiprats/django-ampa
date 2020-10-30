@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ampa-2.6
+  name: ampa-2.7
   namespace: kube-system
   labels:
-    app: ampa-2.6
+    app: ampa-2.7
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ampa-2.6
+      app: ampa-2.7
   template:
     metadata:
       labels:
-        app: ampa-2.6
+        app: ampa-2.7
     spec:
       volumes:
         - name: xls-data-ampa
@@ -24,12 +24,12 @@ spec:
             claimName: nfs-static-pvc
       containers:
       - name: ampa
-        image: 172.18.1.46:5000/ampa:2.6
+        image: 172.18.1.46:5000/ampa:2.7
         ports:
         - name: http
           containerPort: 8000
         volumeMounts:
           - mountPath: /code/xls
             name: xls-data-ampa
-          - mountPath: /usr/share/nginx/html
+          - mountPath: /code/static
             name: static-ampa
