@@ -5,7 +5,7 @@
 {% block content %}
 
 
-<script src="{% static 'js/tinymce/tinymce.min.js' %}"></script>
+<script src="http://static.ampa.systemadmin.es/js/tinymce/tinymce.min.js"></script>
 
 
 <script type="text/javascript">
@@ -17,8 +17,8 @@ tinymce.init({
     toolbar: 'styleselect | forecolor | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link image | undo redo | code',
     height: '600',
     image_list: [
-    {% for attach in instance_mailing.attachments.all %}
-        {title: '{{ attach.filename }}', value: '{{ attach.url }}'},
+    {% for key, value in image_hash.items %}
+        {title: '{{ key }}', value: '{{ value }}'},
     {% endfor %}
     ]
 });
@@ -29,7 +29,16 @@ tinymce.init({
     <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <button class="btn btn-primary" type="submit">guardar</button>
+        {% if attachment_hash %}
+        Adjunts:
+        <ul>
+            {% for key, value in attachment_hash.items %}
+            <li>{{ key }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <button class="btn btn-success" type="submit" name="guardar" >guardar</button>
+        <button class="btn btn-info" type="submit" name="adjunts" >gestionar adjunts</button>
     </form>
 </div>
 

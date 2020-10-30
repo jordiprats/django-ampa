@@ -1,11 +1,11 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: ampa-21-svc
+  name: ampa-23-svc
   namespace: kube-system
 spec:
   selector:
-    app: ampa-2.1
+    app: ampa-2.3
   ports:
   - name: http
     port: 8000

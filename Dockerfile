@@ -8,6 +8,8 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 RUN apk del make cmake gcc g++ gfortran
 
+RUN apk add --update libmagic
+
 COPY ampa .
 
 EXPOSE 8000

@@ -93,8 +93,11 @@ def afegir_attachment_mailing_classe(request, mailing_id):
             instance_mailing.save()
 
             messages.info(request, 'Fitxer pujat correctament')
+            if request.user.is_superuser:
+                messages.info(request, upload.filepath)
             if instance_mailing.classes.count() == 1:
-                return redirect('list.classe.mailings', classe_id=instance_mailing.classes.all()[0].id)
+                return redirect('edit.classe.mailing', classe_id=instance_mailing.classes.all()[0].id, mailing_id=instance_mailing.id)
+                # return redirect('list.classe.mailings', classe_id=instance_mailing.classes.all()[0].id)
             else:
                 # TODO
                 return redirect('home')
@@ -174,7 +177,7 @@ def editar_mailing_classe(request, classe_id, mailing_id=None):
             instance_classe = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
         
         if mailing_id:
-            instance_mailing = Mailing.objects.filter(classes__id=instance_classe.id)[0]
+            instance_mailing = Mailing.objects.filter(classes__id=instance_classe.id, id=mailing_id)[0]
         else:
             instance_mailing = Mailing(email_from='', email_reply_to=request.user.email)
         
@@ -185,12 +188,29 @@ def editar_mailing_classe(request, classe_id, mailing_id=None):
                 instance_mailing.classes.add(instance_classe)
                 instance_mailing.save()
                 messages.info(request, 'Guardat mailing')
+
+                try:
+                    boto_apretat = str(form.data['guardar'])
+                    return redirect('list.classe.mailings', classe_id=instance_classe.id)
+                except:
+                    return redirect('add.attachment.mailing', mailing_id=instance_mailing.id)
+                
             else:
-                return render(request, 'mailing/classes/edit.html', { 'form': form, 'instance_mailing': instance_mailing })
+                return render(request, 'mailing/classes/edit.html', { 
+                                                                        'form': form, 
+                                                                        'instance_mailing': instance_mailing, 
+                                                                        'image_hash': instance_mailing.images_hash,
+                                                                        'attachment_hash': instance_mailing.attachment_hash
+                                                                    })
             return redirect('list.classe.mailings', classe_id=instance_classe.id)
         else:
             form = ClasseMailingForm(instance=instance_mailing)
-        return render(request, 'mailing/classes/edit.html', { 'form': form, 'instance_mailing': instance_mailing })
+        return render(request, 'mailing/classes/edit.html', { 
+                                                                'form': form, 
+                                                                'instance_mailing': instance_mailing, 
+                                                                'image_hash': instance_mailing.images_hash,
+                                                                'attachment_hash': instance_mailing.attachment_hash
+                                                            })
 
     except Exception as e:
         if settings.DEBUG:
