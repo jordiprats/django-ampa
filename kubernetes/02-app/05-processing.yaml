@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ampa-processing-2.0
+  name: ampa-processing-2.5
   namespace: kube-system
   labels:
-    app: ampa-processing-2.0
+    app: ampa-processing-2.5
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ampa-processing-2.0
+      app: ampa-processing-2.5
   template:
     metadata:
       labels:
-        app: ampa-processing-2.0
+        app: ampa-processing-2.5
     spec:
       volumes:
         - name: xls-data-ampa
