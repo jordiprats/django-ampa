@@ -55,7 +55,7 @@ class Command(BaseCommand):
 
         subject = 'Revisió dades AMPA - '+alumne.classe.nom
         html_message = '<html><body>Hola,<br>Des de l\'AMPA em demanen si podeu revisar les dades del vostre fill i donar el consentiment als delegats per fer-les servir per contactar amb vosaltres per temes del cole:<br><br><a href="http://ampa.systemadmin.es/alumnes/'+str(alumne.id)+'">http://ampa.systemadmin.es/alumnes/'+str(alumne.id)+'</a><br><br>Cal marcar la opció de cessió de dades per cada un dels pares, si voleu, rectificar si hi ha alguna dada incorrecte i al final hi ha també la opció per confirmar que les dades són correctes<br><br>Si us plau, no contesteu a aquest email, per qualsevol dubte contacteu amb el vostre delegat pels canals habituals<br><br>salutacions,</body></html>'
-        email_from = 'Delegats Lestonnac <noreply@systemadmin.es>'
+        email_from = settings.AMPA_DEFAULT_FROM
         recipient_list = emails
 
         self.send_html_email(subject, html_message, email_from, alumne.classe.delegat.email, recipient_list)       
@@ -77,7 +77,7 @@ class Command(BaseCommand):
                 if mailing.email_from:
                     email_from = mailing.email_from
                 else:
-                    email_from = 'Delegats Lestonnac <noreply@systemadmin.es>'
+                    email_from = settings.AMPA_DEFAULT_FROM
 
                 if mailing.email_reply_to:
                     email_reply_to = mailing.email_reply_to
