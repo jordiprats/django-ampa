@@ -2,6 +2,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth.models import AbstractUser
 from django.utils.text import slugify
 from django.conf import settings
+from django.urls import reverse
 from django.db import models
 
 import uuid
@@ -11,11 +12,13 @@ MAILING_STATUS_DRAFT = '0'
 MAILING_STATUS_PROGRAMAT = '1'
 MAILING_STATUS_ENVIANT = '2'
 MAILING_STATUS_ENVIAT = '3'
+MAILING_STATUS_ERROR_GENERAL = 'E'
 MAILING_STATUS = [
     (MAILING_STATUS_DRAFT, 'borrador'),
     (MAILING_STATUS_PROGRAMAT, 'enviament programat'),
     (MAILING_STATUS_ENVIANT, 'enviant...'),
-    (MAILING_STATUS_ENVIAT, 'enviament completat')
+    (MAILING_STATUS_ENVIAT, 'enviament completat'),
+    (MAILING_STATUS_ERROR_GENERAL, 'error general d\'enviament')
 ]
 
 
@@ -211,6 +214,14 @@ class Mailing(models.Model):
     
     recipient_list = property(_get_recipient_emails)
 
+    def _get_local_attachment_hash(self):
+        attachments_dict = {}
+        for attachment in self.attachments.all():
+            attachments_dict[attachment.filename] = attachment.filepath
+        return attachments_dict
+
+    localfile_attachment_hash = property(_get_local_attachment_hash)
+
     def _get_attachment_hash(self):
         attachments_dict = {}
         for attachment in self.attachments.all():
@@ -227,6 +238,15 @@ class Mailing(models.Model):
         return attachments_dict
 
     images_hash = property(_get_images_hash)
+
+    def get_manual_unsubscribe_links(self, email):
+        links = set()
+        for classe in self.classes.all():
+            for alumne in classe.alumnes.all():
+                if email in alumne.mailing_emails:
+                    url = reverse('form.pares.edit.alumne', kwargs={ 'alumne_id': alumne.id })
+                    links.add(url)
+        return links
 
     def __str__(self):
         return self.subject

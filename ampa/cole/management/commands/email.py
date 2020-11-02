@@ -73,6 +73,8 @@ class Command(BaseCommand):
         else:
             # mailing programats
             for mailing in Mailing.objects.filter(status=MAILING_STATUS_PROGRAMAT):
+                if settings.DEBUG:
+                    print(mailing.subject)
 
                 if mailing.email_from:
                     email_from = mailing.email_from
@@ -84,16 +86,23 @@ class Command(BaseCommand):
                 else:
                     email_reply_to = None
 
-                mailing_attachments = mailing.attachment_hash
+                mailing_attachments = mailing.localfile_attachment_hash
+
+                if settings.DEBUG:
+                    print(str(mailing_attachments))
 
                 for email in mailing.recipient_list:
                     if settings.DEBUG:
                         print(email)
 
+                    footer_html = '<br><br>Per gestionar les comunicacions que voleu rebre:<br>'
+                    for manual_unsubscribe_link in mailing.get_manual_unsubscribe_links(email):
+                        footer_html += '<a href="'+settings.PUBLIC_DOMAIN+manual_unsubscribe_link+'">'+settings.PUBLIC_DOMAIN+manual_unsubscribe_link+'</a><br>'
+
                     try:
                         self.send_html_email(
                                                 subject=mailing.subject, 
-                                                html_message=mailing.html_message,
+                                                html_message=mailing.html_message+footer_html,
                                                 email_from=email_from,
                                                 email_reply_to=email_reply_to,
                                                 recipient_list= [ email ],
@@ -101,6 +110,9 @@ class Command(BaseCommand):
                                             )
                     except Exception as e:
                         if settings.DEBUG:
+                            exc_type, exc_obj, exc_tb = sys.exc_info()
+                            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                            print(exc_type, fname, exc_tb.tb_lineno)
                             print(str(e))
 
                 mailing.status = MAILING_STATUS_ENVIAT
@@ -118,7 +130,8 @@ class Command(BaseCommand):
                 except Exception as e:
                     classe.ready_to_send = False
                     classe.save()
-                    exc_type, exc_obj, exc_tb = sys.exc_info()
-                    fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-                    print(exc_type, fname, exc_tb.tb_lineno)
-                    print(str(e))
+                    if settings.DEBUG:
+                        exc_type, exc_obj, exc_tb = sys.exc_info()
+                        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                        print(exc_type, fname, exc_tb.tb_lineno)
+                        print(str(e))

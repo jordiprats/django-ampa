@@ -1,28 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ampa-processing-2.7
+  name: ampa-processing-2.9
   namespace: kube-system
   labels:
-    app: ampa-processing-2.7
+    app: ampa-processing-2.9
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ampa-processing-2.7
+      app: ampa-processing-2.9
   template:
     metadata:
       labels:
-        app: ampa-processing-2.7
+        app: ampa-processing-2.9
     spec:
       volumes:
         - name: xls-data-ampa
           persistentVolumeClaim:
             claimName: nfs-ampa-pvc
+        - name: static-ampa
+          persistentVolumeClaim:
+            claimName: nfs-static-pvc
       containers:
       - name: ampa-processing
-        image: 172.18.1.46:5000/ampa:2.7
+        image: 172.18.1.46:5000/ampa:2.9
         command: ["/code/processingtool.sh"]
         volumeMounts:
           - mountPath: /code/xls
             name: xls-data-ampa
+          - mountPath: /code/static
+            name: static-ampa
