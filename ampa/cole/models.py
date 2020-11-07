@@ -21,7 +21,6 @@ MAILING_STATUS = [
     (MAILING_STATUS_ERROR_GENERAL, 'error general d\'enviament')
 ]
 
-
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     slug = models.SlugField(
@@ -187,8 +186,8 @@ class Mailing(models.Model):
     #subject, html_message, email_from, email_reply_to, recipient_list
     subject = models.CharField(max_length=256)
     html_message = models.TextField(max_length=10000, default=None, blank=True, null=True)
-    email_from = models.CharField(max_length=256, default='')
-    email_reply_to = models.CharField(max_length=256, default=None)
+    email_from = models.CharField(max_length=256, default='', blank=True, null=True)
+    email_reply_to = models.CharField(max_length=256, default=None, blank=True, null=True)
 
     classes = models.ManyToManyField(Classe, related_name='mailings')
     attachments = models.ManyToManyField(FileAttachment, related_name='mailings')

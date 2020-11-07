@@ -14,5 +14,5 @@ do
         python /code/manage.py exportxls
         sleep 5
     done
-    python /code/manage.py email
+    python /code/manage.py sendmailing
 done
