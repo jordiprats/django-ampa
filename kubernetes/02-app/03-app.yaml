@@ -25,6 +25,13 @@ spec:
       containers:
       - name: ampa
         image: 172.18.1.46:5000/ampa:3.0
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "250m"
+          limits:
+            memory: "200Mi"
+            cpu: "500m"
         ports:
         - name: http
           containerPort: 8000
