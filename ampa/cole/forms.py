@@ -96,3 +96,43 @@ class WIUserCreationForm(UserCreationForm):
 
 class AreYouSureForm(forms.Form):
     pass
+
+class PasswordChangeForm(forms.Form):
+    password_actual = forms.CharField(label='Contrasenya actual', required=False, widget=forms.PasswordInput)
+    password1 = forms.CharField(label='Contrasenya', required=False, widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Repeteix contrasenya', required=False, widget=forms.PasswordInput)
+
+    def __init__(self, data, **kwargs):
+        initial = kwargs.get('initial', {})
+        data = {**initial, **data}
+        super().__init__(data, **kwargs)
+
+    def clean(self):
+        try:
+            actual = self.data['password_actual'][0]
+            password1 = self.data['password1'][0]
+            password2 = self.data['password2'][0]
+        except:
+            return
+
+        if not password1:
+            raise forms.ValidationError(
+                'Si us plau, defineix una contrasenya',
+                code='change_password_password_not_set'
+            )            
+
+        if password1 != password2:
+            raise forms.ValidationError(
+                'Les contrasenyes no coincideixen',
+                code='change_password_password_does_not_match'
+            )
+
+        if len(password1) < 5:
+            raise forms.ValidationError(
+                'La contrasenya ha de ser de 5 caracters mínim',
+                code='change_password_password_too_short'
+            )
+        
+
+    class Meta:
+        fields = (['password1', 'password2'])

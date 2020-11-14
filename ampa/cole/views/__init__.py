@@ -11,6 +11,7 @@ from django.conf import settings
 from django.db.models import Q
 from pathlib import Path
 
+from cole.views.user_views import *
 from cole.models import *
 from cole.forms import *
 

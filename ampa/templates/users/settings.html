@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<h1>Perfil {{ user.email }}</h1>
+<ul>
+    <li><a href="{% url 'user.password.change' %}">Canviar contrasenya</a></li>
+</ul>
+{% endblock %}

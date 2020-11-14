@@ -6,6 +6,16 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('login/', views.login_builtin_user, name='login'),
     path('logout/', views.logout_builtin_user, name='logout'),
+    
+    # user management
+    path('user/settings', views.user_settings, name='user.settings'),
+    path('user/password/change', views.change_password, name='user.password.change'),
+    # path('user/password/change/status', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
+    # path('user/password/reset', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    # path('user/password/reset/status', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    # path('user/password/reset/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    # path('user/password/reset/status', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    # app
     path('upload/', views.upload_xls, name='upload'),
     path('classes/', views.list_classes, name='list.classes'),
     path('classes/add', views.edit_classe, name='add.classe'),
