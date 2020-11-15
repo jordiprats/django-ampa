@@ -89,7 +89,6 @@ class Classe(models.Model):
     class Meta:
         unique_together = ('nom', 'curs', 'delegat')
 
-
 class Alumne(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     #id_nen         nom        cognom1     cognom2            naixement         pare      telf1       mare      telf2                                              email     cessio signatura
