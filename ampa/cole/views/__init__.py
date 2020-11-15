@@ -357,10 +357,10 @@ def list_classes(request):
     if request.user.is_authenticated:
         if request.user.is_superuser and request.GET.get('admin', ''):
             list_classes = Classe.objects.all()
-            return render(request, 'list_classes.html', {'list_classes': list_classes, 'admin': True})
+            return render(request, 'list_classes.html', {'list_classes': list_classes, 'admin_view': True, 'user_admin': request.user.is_staff })
         else:
             list_classes = Classe.objects.filter(Q(delegat=request.user) | Q(subdelegat=request.user))
-            return render(request, 'list_classes.html', {'list_classes': list_classes, 'admin': False})
+            return render(request, 'list_classes.html', {'list_classes': list_classes, 'admin_view': False, 'user_admin': request.user.is_staff })
     else:
         return redirect('home')
 

@@ -16,7 +16,7 @@ urlpatterns = [
     # path('user/password/reset/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     # path('user/password/reset/status', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     # app
-    path('upload/', views.upload_xls, name='upload'),
+    path('upload/', views.upload_xls, name='upload.classe.xls'),
     path('classes/', views.list_classes, name='list.classes'),
     path('classes/add', views.edit_classe, name='add.classe'),
     path('classes/<classe_id>', views.show_classe, name='show.classe'),
