@@ -1,0 +1,13 @@
+{% extends 'voting/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<h1>Accions</h1>
+
+<ul>
+    <li><a href="{% url 'voting.list.elections' %}">Llistar votacions</a></li>
+</ul>
+
+{% endblock %}

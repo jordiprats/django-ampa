@@ -160,7 +160,12 @@ def show_mailing_classe(request, classe_id, mailing_id):
         
         instance_mailing = Mailing.objects.filter(classes__id=instance_classe.id)[0]
         
-        return render(request, 'mailing/classes/show.html', { 'instance_mailing': instance_mailing, 'instance_classe': instance_classe })
+        return render(request, 'mailing/classes/show.html', { 
+                                                                'instance_mailing': instance_mailing, 
+                                                                'instance_classe': instance_classe,
+                                                                'image_hash': instance_mailing.images_hash,
+                                                                'attachment_hash': instance_mailing.attachment_hash
+                                                            })
 
     except Exception as e:
         if settings.DEBUG:

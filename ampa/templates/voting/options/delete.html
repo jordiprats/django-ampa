@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+Estas segur que vols eliminar la opció:
+<br>
+{{ option_instance.text }}
+<br>
+<br>
+<form style="display: inline" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-danger" type="submit">Eliminar</button>
+</form>
+<form style="display: inline" action="{% url 'voting.edit.election' election_id=option_instance.election.id %}" method="GET">
+    <button class="btn btn-info" type="submit">Cancelar</button>
+  </form>
+{% endblock %}

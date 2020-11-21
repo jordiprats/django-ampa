@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+<div class="float-right">
+    {% if user_admin %}
+      {% if admin_view %}
+          <a href="{% url 'voting.list.elections' %}">veure com usuari</a>
+      {% else %}
+          <a href="{% url 'voting.list.elections' %}?admin=1">veure com admin</a>
+      {% endif %}
+    {% endif %}
+</div>
+
+<table class="table table-bordred table-striped">
+    <thead>
+      <tr>
+        <th>Titol</th>
+        <th>Estat</th>
+        <th>Última modificació</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for election in list_elections.all %}
+        <tr>
+          <td><a href="{% url 'voting.edit.election' election_id=election.id %}">{{ election.titol }}</a></td>
+          <td>{{ election.get_status_display }}</td>
+          <td>{{ election.updated_at | naturaltime }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <form style="display: inline;" action="{% url 'voting.add.election' %}" method="GET">
+    <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> votació</button>
+  </form>
+
+{% endblock %}

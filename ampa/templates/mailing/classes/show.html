@@ -13,4 +13,15 @@
 
 {{ instance_mailing.html_message | safe }}
 
+{% if attachment_hash %}
+<hr>
+<div class="float-right">
+<ul>
+    {% for filename, static_url in attachment_hash.items %}
+    <li><a href="{{ static_url }}">{{ filename }}</a></li>
+    {% endfor %}
+</ul>
+</div>
+{% endif %}
+
 {% endblock %}
