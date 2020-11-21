@@ -19,17 +19,51 @@
     <thead>
       <tr>
         <th>Titol</th>
-        <th>Estat</th>
+        <th>Estat de la votació</th>
+        <th>Multiresposta</th>
+        <th>Número d'opcions</th>
+        <th>Número de vots</th>
         <th>Última modificació</th>
       </tr>
     </thead>
     <tbody>
       {% for election in list_elections.all %}
+        {% if election.status == '1' %}
         <tr>
-          <td><a href="{% url 'voting.edit.election' election_id=election.id %}">{{ election.titol }}</a></td>
-          <td>{{ election.get_status_display }}</td>
+          <td><b>{{ election.titol }}</b> - <a href="{% url 'voting.vote.election' election_id=election.id token=election.open_id%}" target="_blank">Link votació</a></td>
+          <td>{{ election.get_status_display }}
+            <form style="display: inline" action="{% url 'voting.close.election' election_id=election.id %}" method="GET">
+              <button class="btn btn-danger" type="submit">tancar votació</button>
+            </form>
+          </td>
+          <td>{{ election.multianswer|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
+          <td>{{ election.options.count }}</td>
+          <td>{{ election.get_vote_count }}</td>
           <td>{{ election.updated_at | naturaltime }}</td>
         </tr>
+        {% elif election.status == '2' %}
+        <tr>
+          <td>{{ election.titol }}</td>
+          <td>{{ election.get_status_display }}</td>
+          <td>{{ election.multianswer|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
+          <td>{{ election.options.count }}</td>
+          <td>{{ election.get_vote_count }}</td>
+          <td>{{ election.updated_at | naturaltime }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td><a href="{% url 'voting.edit.election' election_id=election.id %}">{{ election.titol }}</a></td>
+          <td>{{ election.get_status_display }}
+            <form style="display: inline" action="{% url 'voting.open.election' election_id=election.id %}" method="GET">
+              <button class="btn btn-danger" type="submit">obrir votació</button>
+            </form>
+          </td>
+          <td>{{ election.multianswer|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
+          <td>{{ election.options.count }}</td>
+          <td>No disponible</td>
+          <td>{{ election.updated_at | naturaltime }}</td>
+        </tr>
+        {% endif %}
       {% endfor %}
     </tbody>
   </table>
@@ -37,5 +71,11 @@
   <form style="display: inline;" action="{% url 'voting.add.election' %}" method="GET">
     <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> votació</button>
   </form>
+
+  <script>
+    setTimeout(function() {
+  location.reload();
+}, 10000);
+</script>
 
 {% endblock %}

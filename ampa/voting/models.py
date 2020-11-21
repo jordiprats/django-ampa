@@ -17,6 +17,8 @@ class Election(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='elections', default=None, blank=True, null=True)
 
+    multianswer = models.BooleanField(default=False)
+
     titol = models.CharField(max_length=256)
     html_message = models.TextField(max_length=10000, default=None, blank=True, null=True)
 
@@ -31,10 +33,16 @@ class Election(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def get_vote_count(self):
+        total = 0
+        for option in self.options.all():
+            total += option.votes.count()
+        return total
+
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
         if not self.open_id and self.status==ELECTION_STATUS_OPEN:
-            self.open_id = uuid.uuid4
+            self.open_id = uuid.uuid4()
+        super().save(*args, **kwargs)
 
 class Option(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

@@ -1,0 +1,12 @@
+<h1>{{ election_instance.titol }}</h1>
+
+{{ election_instance.html_message | safe }}
+
+{% if election_instance.options.all %}
+Opcions:
+<ul>
+    {% for opcio in election_instance.options.all %}
+    <li>{{ opcio.text }}</li> 
+    {% endfor %}
+</ul>
+{% endif %}

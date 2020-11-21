@@ -24,9 +24,9 @@ def edit_election(request, election_id=None):
     try:
         if election_id:
             if request.user.is_staff:
-                election_instance = Election.objects.filter(id=election_id)[0]
+                election_instance = Election.objects.filter(id=election_id, status=ELECTION_STATUS_DRAFT)[0]
             else:
-                election_instance = Election.objects.filter(id=election_id, owner=request.user)[0]
+                election_instance = Election.objects.filter(id=election_id, owner=request.user, status=ELECTION_STATUS_DRAFT)[0]
         else:
             election_instance = Election(owner=request.user)
         if request.method == 'POST':
@@ -55,20 +55,72 @@ def edit_election(request, election_id=None):
         return render(request, 'voting/elections/edit.html', { 'form': form, 'election_id': election_id, 'election_instance': election_instance })
     except Exception as e:
         if request.user.is_superuser:
-            messages.error(str(e))
+            messages.error(request, str(e))
         if election_id:
             return redirect('voting.edit.election', election_id=election_instance.id)
         else:
             return redirect('voting.list.elections')
 
-def show_election(request, election_id):
-    pass
+@login_required
+def open_election(request, election_id):
+    if request.user.is_staff:
+        election_instance = Election.objects.filter(id=election_id, status=ELECTION_STATUS_DRAFT)[0]
+    else:
+        election_instance = Election.objects.filter(id=election_id, owner=request.user, status=ELECTION_STATUS_DRAFT)[0]
+
+    if election_instance.options.count() == 0:
+        messages.error(request, 'No es pot obrir una votació sense opcions per escollir')
+        return redirect('voting.edit.election', election_id=election_id)
+    
+    if request.method == 'POST':
+        form = AreYouSureForm(request.POST)
+        if form.is_valid():
+            # AQUI OBRIM
+            election_instance.status=ELECTION_STATUS_OPEN
+            election_instance.save()
+            messages.info(request, 'Votació oberta')
+            return redirect('voting.list.elections')
+        else:
+            messages.error(request, 'Error obrint votació')
+    else:
+        form = AreYouSureForm(request.GET)
+    return render(request, 'voting/elections/open.html', { 'election_instance': election_instance })
+
+@login_required
+def close_election(request, election_id):
+    if request.user.is_staff:
+        election_instance = Election.objects.filter(id=election_id, status=ELECTION_STATUS_OPEN)[0]
+    else:
+        election_instance = Election.objects.filter(id=election_id, owner=request.user, status=ELECTION_STATUS_OPEN)[0]
+
+    if request.method == 'POST':
+        form = AreYouSureForm(request.POST)
+        if form.is_valid():
+            # AQUI TANQUEM
+            election_instance.status=ELECTION_STATUS_CLOSED
+            election_instance.save()
+            messages.info(request, 'Votació tancada')
+            return redirect('voting.list.elections')
+        else:
+            messages.error(request, 'Error tancant votació')
+    else:
+        form = AreYouSureForm(request.GET)
+    return render(request, 'voting/elections/close.html', { 'election_instance': election_instance })
+
+def vote_election(request, election_id, token):
+    try:
+        election_instance = Election.objects.filter(id=election_id, open_id=token, status=ELECTION_STATUS_OPEN)[0]
+
+        return render(request, 'voting/elections/vote.html', { 'election_instance': election_instance })
+    except:
+        return redirect('home')
+
 
 @login_required
 def edit_option(request, election_id, option_id=None):
     try:
         if request.user.is_staff:
-            election_instance = Election.objects.filter(id=election_id)[0]
+            election_instance = Election.objects.filter(id=election_id, status=ELECTION_STATUS_DRAFT)[0]
         else:
             election_instance = Election.objects.filter(id=election_id, owner=request.user)[0]
 
@@ -109,9 +161,9 @@ def edit_option(request, election_id, option_id=None):
 def delete_option(request, election_id, option_id):
     try:
         if request.user.is_staff:
-            election_instance = Election.objects.filter(id=election_id)[0]
+            election_instance = Election.objects.filter(id=election_id, status=ELECTION_STATUS_DRAFT)[0]
         else:
-            election_instance = Election.objects.filter(id=election_id, owner=request.user)[0]
+            election_instance = Election.objects.filter(id=election_id, owner=request.user, status=ELECTION_STATUS_DRAFT)[0]
 
         if option_id:
             option_instance = Option.objects.filter(election=election_instance, id=option_id)[0]
