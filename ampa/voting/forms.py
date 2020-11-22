@@ -6,11 +6,12 @@ from voting.models import *
 class ElectionForm(forms.ModelForm):
     class Meta:
         model = Election
-        fields = (['titol', 'html_message', 'multianswer'])
+        fields = (['titol', 'html_message', 'multianswer', 'anonymous'])
         labels = {
             'titol': 'Titol', 
             'html_message': 'Missatge', 
-            'multianswer': 'Multiresposta'
+            'multianswer': 'Multiresposta',
+            'anonymous': 'Enquesta anònima'
         }
 
 class OptionForm(forms.ModelForm):
@@ -21,5 +22,5 @@ class OptionForm(forms.ModelForm):
         fields = (['text', 'order'])
         labels = {
             'text': 'Text de l\'opció', 
-            'order': 'Ordre', 
+            'order': 'Ordre en la llista de opcions', 
         }

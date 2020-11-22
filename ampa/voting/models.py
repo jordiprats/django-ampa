@@ -18,6 +18,7 @@ class Election(models.Model):
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='elections', default=None, blank=True, null=True)
 
     multianswer = models.BooleanField(default=False)
+    anonymous = models.BooleanField(default=False)
 
     titol = models.CharField(max_length=256)
     html_message = models.TextField(max_length=10000, default=None, blank=True, null=True)
@@ -35,8 +36,8 @@ class Election(models.Model):
 
     def get_vote_count(self):
         total = 0
-        for option in self.options.all():
-            total += option.votes.count()
+        for option in Vote.objects.filter(valid=True, election=self):
+            total += 1
         return total
 
     def save(self, *args, **kwargs):
@@ -59,8 +60,8 @@ class Option(models.Model):
 class ElectionLog(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
-    election = models.ForeignKey(Election, on_delete=models.CASCADE, related_name='logs')
-    option = models.ForeignKey(Option, on_delete=models.CASCADE, related_name='logs')
+    election = models.ForeignKey(Election, on_delete=models.CASCADE, related_name='logs', blank=False, null=False)
+    option = models.ForeignKey(Option, on_delete=models.CASCADE, related_name='logs', blank=True, null=True)
     log = models.CharField(max_length=1000)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -71,27 +72,47 @@ class ElectionLog(models.Model):
 class Vote(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
-    option = models.ForeignKey(Option, on_delete=models.CASCADE, related_name='votes')
+    election = models.ForeignKey(Election, on_delete=models.CASCADE, related_name='votes', blank=False, null=False)
+    option = models.ForeignKey(Option, on_delete=models.CASCADE, related_name='votes', blank=True, null=True)
 
-    voter_id = models.CharField(max_length=256, default='')
-    voter_verification = models.CharField(max_length=256, default='')
+    voter_id = models.CharField(max_length=256, default='', blank=True, null=True)
+    voter_verification = models.CharField(max_length=256, default='', blank=True, null=True)
+
+    valid = models.BooleanField(default=True)
+    invalidation_reason = models.CharField(max_length=256, default='', blank=True, null=True)
+
+    election_log = models.ForeignKey(ElectionLog, on_delete=models.CASCADE, related_name='votes', blank=True, null=True, default=None)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        if self.option.election.status!=ELECTION_STATUS_OPEN:
+        if self.election.status!=ELECTION_STATUS_OPEN:
             raise Exception('Vot no comptabilitzat')
-        super().save(*args, **kwargs)
-        #log = ElectionLog(option=self.option, log=str(self.id)+'@'+self.voter_id+'#'+self.voter_verification+'~'+str(self.question.id)+'!'+str(self.option.id))
-        log = ElectionLog(
-                            option=self.option, 
-                            log=json.dumps( {
-                                                'id': self.id,
-                                                'voter_id': self.voter_id,
-                                                'voter_verification': self.voter_verification,
-                                                'election_id': self.option.election.id,
-                                                'option_id': self.option.id
-                                            })
-                        )
+        if self.option:
+            log = ElectionLog(
+                                election=self.election,
+                                option=self.option, 
+                                log=json.dumps( {
+                                                    'id': str(self.id),
+                                                    'voter_id': str(self.voter_id),
+                                                    'voter_verification': str(self.voter_verification),
+                                                    'election_id': str(self.election.id),
+                                                    'option_id': str(self.option.id)
+                                                })
+                            )
+        else:
+            log = ElectionLog(
+                                election=self.election,
+                                option=None, 
+                                log=json.dumps( {
+                                                    'id': str(self.id),
+                                                    'voter_id': str(self.voter_id),
+                                                    'voter_verification': str(self.voter_verification),
+                                                    'election_id': str(self.election.id),
+                                                    'option_id': 'blanc'
+                                                })
+                            )
         log.save()
+        self.election_log = log
+        super().save(*args, **kwargs)

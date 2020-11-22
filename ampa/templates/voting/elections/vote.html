@@ -1,9 +1,73 @@
-{% extends 'base.html' %}
+{% extends 'voting/base.html' %}
 
 {% load static %}
 
 {% block content %}
 
-<h1>VOTAREM</h1>
+<!-- VOTAREM -->
+
+<br>
+
+<div class="card text-center">
+  <div class="card-header">
+    <h1>{{ election_instance.titol }}</h1>
+  </div>
+  <div class="card-body"></div>
+
+  {{ election_instance.html_message | safe }}
+
+  <form style="display: inline" method="POST">
+    {% csrf_token %}
+
+    <div style="display: inline-block; text-align: left;">
+
+      {% if not election_instance.anonymous %}
+      <p>
+        <label for="id_votantid">ID:</label> 
+        <input type="text" name="votant_id" maxlength="256" required id="id_votantid">
+      </p>
+
+      <p>
+        <label for="id_validacio">Validació:</label> 
+        <input type="text" name="votant_validacio" maxlength="256" required id="id_validacio">
+      </p>
+      {% endif %}
+
+      {% for opcio in election_instance.options.all %}
+        {% if election_instance.multianswer %}
+        <div>
+          <input type="checkbox" id="{{ opcio.id }}" name="{{ opcio.id }}">
+          <label for="{{ opcio.id }}">{{ opcio.text }}</label>
+        </div>
+        {% else %}
+        <div>
+          <input type="radio" id="{{ opcio.id }}" name="{{ election_instance.id }}" value="{{ opcio.id }}">
+          <label for="{{ opcio.id }}">{{ opcio.text }}</label>
+        </div>
+        {% endif %}
+      {% endfor %}
+
+      {% if election_instance.multianswer %}
+      <div>
+        <input type="checkbox" id="blanc" name="blanc">
+        <label for="blanc">Vot en blanc</label>
+      </div>
+      {% else %}
+      <div>
+        <input type="radio" id="blanc" name="{{ election_instance.id }}" value="blanc">
+        <label for="blanc">Vot en blanc</label>
+      </div>
+      {% endif %}
+    </div>
+
+    <br><br>
+    <button class="btn btn-success" type="submit" name="hem_votat_hem_guanyat">Votar</button>
+
+
+
+  </form>
+
+  </div>
+</div>
 
 {% endblock %}

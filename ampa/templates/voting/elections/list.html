@@ -20,6 +20,7 @@
       <tr>
         <th>Titol</th>
         <th>Estat de la votació</th>
+        <th>Enquesta anònima</th>
         <th>Multiresposta</th>
         <th>Número d'opcions</th>
         <th>Número de vots</th>
@@ -36,6 +37,7 @@
               <button class="btn btn-danger" type="submit">tancar votació</button>
             </form>
           </td>
+          <td>{{ election.anonymous|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
           <td>{{ election.multianswer|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
           <td>{{ election.options.count }}</td>
           <td>{{ election.get_vote_count }}</td>
@@ -45,6 +47,7 @@
         <tr>
           <td>{{ election.titol }}</td>
           <td>{{ election.get_status_display }}</td>
+          <td>{{ election.anonymous|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
           <td>{{ election.multianswer|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
           <td>{{ election.options.count }}</td>
           <td>{{ election.get_vote_count }}</td>
@@ -58,6 +61,7 @@
               <button class="btn btn-danger" type="submit">obrir votació</button>
             </form>
           </td>
+          <td>{{ election.anonymous|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
           <td>{{ election.multianswer|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
           <td>{{ election.options.count }}</td>
           <td>No disponible</td>

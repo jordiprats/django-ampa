@@ -6,6 +6,9 @@ from cole.forms import User
 from cole.forms import AreYouSureForm
 from voting.forms import *
 
+import sys
+import os
+
 def home(request):
     return render(request, 'voting/home.html')
 
@@ -111,8 +114,111 @@ def vote_election(request, election_id, token):
     try:
         election_instance = Election.objects.filter(id=election_id, open_id=token, status=ELECTION_STATUS_OPEN)[0]
 
+        if request.method == 'POST':
+            print('POST')
+            # load dummy form for CSRF checking
+            form = AreYouSureForm(request.POST)
+            if form.is_valid():
+                # registrar vot
+                vot_en_blanc = False
+                options = []
+                voter_id = ''
+                voter_verification = ''
+                try:
+                    for element in request.POST:
+                        print(element)
+                        if element == 'hem_votat_hem_guanyat' or element == 'csrfmiddlewaretoken':
+                            continue
+                        if not election_instance.anonymous:
+                            if element == 'votant_id':
+                                voter_id = request.POST.get('votant_id', '')
+                                continue
+                            if element == 'votant_validacio':
+                                voter_verification = request.POST.get('votant_validacio', '')
+                                continue
+                        if element == 'blanc':
+                            vot_en_blanc = True
+                            continue
+                        if election_instance.multianswer:
+                            options.append(Option.objects.filter(id=element, election=election_instance)[0])
+                        else:
+                            vot_id = request.POST.get(element, '')
+                            if vot_id == 'blanc':
+                                vot_en_blanc = True
+                                continue
+                            else:
+                                options.append(Option.objects.filter(id=vot_id, election=election_instance)[0])
+                        
+                    
+                    # validem dades
+                    if not election_instance.multianswer:
+                        if len(options) > 1:
+                            if request.user.is_superuser:
+                                messages.error(request, 'Més de una opció en una votació no multianswer')
+                            messages.error(request, 'Error registrant el vot')
+                            return redirect('home')
+                        if vot_en_blanc and len(options) == 1:
+                            if request.user.is_superuser:
+                                messages.error(request, 'Vot en blanc més una opció en una votació no multianswer')
+                            messages.error(request, 'Error registrant el vot')
+                            return redirect('home')
+                    else:
+                        if vot_en_blanc and len(options) > 0:
+                            if request.user.is_superuser:
+                                messages.error(request, 'No es pot votar en blanc i alhora votar una altre opció')
+                            messages.error(request, 'Error registrant el vot')
+                            return redirect('home')
+                    
+                    try:
+                        value = request.COOKIES[str(election_instance.id)]
+                        if request.user.is_superuser:
+                            messages.error(request, 'Vot ja contabilitzat')
+                        messages.error(request, 'Error registrant el vot')
+                        return redirect('home')
+                    except KeyError:
+                        pass
+
+                    votes = []
+                    if vot_en_blanc:
+                        votes = [ Vote(election=election_instance, option=None, voter_id=voter_id, voter_verification=voter_verification) ]
+                    else:
+                        for option in options:
+                            print(option.id)
+                            print(election_instance.id)
+                            print(voter_id)
+                            print(voter_verification)
+                            votes.append(Vote(election=election_instance, option=option, voter_id=voter_id, voter_verification=voter_verification))
+
+                    for vote in votes:
+                        vote.save()
+
+                    response = render(request, 'voting/elections/vote_registered.html', { 
+                                                                                            'election_instance': election_instance,
+                                                                                            'votes': votes
+                                                                                        })
+                    response.set_cookie(key=str(election_instance.id), value="hem votat, hem guanyat")
+                    return response
+
+                except Exception as e:
+                    if request.user.is_superuser:
+                        exc_type, exc_obj, exc_tb = sys.exc_info()
+                        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                        messages.error(request, str(e))
+                        messages.error(request, str(exc_type) + ' ' + str(fname) + ' ' + str(exc_tb.tb_lineno))
+                    messages.error(request, 'Error registrant el vot')
+                    return redirect('home')
+            else:
+                messages.error(request, 'Error registrant el vot')
+                return redirect('home')
+
         return render(request, 'voting/elections/vote.html', { 'election_instance': election_instance })
-    except:
+    except Exception as e:
+        if request.user.is_superuser:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            messages.error(request, str(e))
+            messages.error(request, str(exc_type) + ' ' + str(fname) + ' ' + str(exc_tb.tb_lineno))
+        messages.error(request, 'Error registrant el vot')
         return redirect('home')
 
 
