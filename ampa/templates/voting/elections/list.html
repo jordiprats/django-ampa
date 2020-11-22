@@ -40,7 +40,7 @@
           <td>{{ election.anonymous|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
           <td>{{ election.multianswer|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
           <td>{{ election.options.count }}</td>
-          <td>{{ election.get_vote_count }}</td>
+          <td>{{ election.get_vote_count }} - <a href="{% url 'voting.show.election.results' election_id=election.id %}" target="_blank">Veure resultats</a></td>
           <td>{{ election.updated_at | naturaltime }}</td>
         </tr>
         {% elif election.status == '2' %}
@@ -50,7 +50,7 @@
           <td>{{ election.anonymous|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
           <td>{{ election.multianswer|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
           <td>{{ election.options.count }}</td>
-          <td>{{ election.get_vote_count }}</td>
+          <td>{{ election.get_vote_count }} - <a href="{% url 'voting.show.election.results' election_id=election.id %}" target="_blank">Veure resultats</a></td>
           <td>{{ election.updated_at | naturaltime }}</td>
         </tr>
         {% else %}
@@ -78,8 +78,8 @@
 
   <script>
     setTimeout(function() {
-  location.reload();
-}, 10000);
-</script>
+      location.reload();
+    }, 10000);
+  </script>
 
 {% endblock %}

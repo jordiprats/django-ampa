@@ -1,0 +1,66 @@
+{% extends 'voting/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<!-- HEM VOTAT HEM GUANYAT -->
+
+<br>
+
+<div class="card text-center">
+  <div class="card-header">
+    <h1>{{ election_instance.titol }}</h1>
+  </div>
+  <div class="card-body"></div>
+
+  {{ election_instance.html_message | safe }}
+
+  {% if election_instance.status == '2' %}
+  <div class="alert alert-success" role="alert">
+    Votació tancada
+  </div>
+  {% else %}
+  <div class="alert alert-danger" role="alert">
+    Votació en progres
+  </div>
+  <script>
+    setTimeout(function() {
+      location.reload();
+    }, 60000);
+  </script>
+  {% endif %}
+
+  <table class="table table-borded table-striped">
+    <thead>
+      <tr>
+        <th>Opció</th>
+        <th>Vots</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for option in election_instance.options.all %}
+      <tr>
+        <td>{{ option.text }}</td>
+        <td>{{ option.votes.count }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div style="display: inline-block; text-align: left;">
+    <ul>
+    {% for vote in election_instance.votes.all %}
+      {% if vote.option %}
+      <li>vid: {{ vote.id}} oid: {{ vote.option.id }} lid: {{ vote.election_log.id }}</li>
+      {% else %}
+      <li>vid: {{ vote.id}} oid: BLANC lid: {{ vote.election_log.id }}</li>
+      {% endif %}
+    {% endfor %}
+    </ul>  
+  </div>
+
+  </div>
+</div>
+
+{% endblock %}

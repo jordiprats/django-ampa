@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.db.models import Q
 
 from cole.forms import User
 from cole.forms import AreYouSureForm
@@ -221,6 +222,20 @@ def vote_election(request, election_id, token):
         messages.error(request, 'Error registrant el vot')
         return redirect('home')
 
+@login_required
+def show_election_results(request, election_id):
+    try:
+        status_not_draft = ~Q(status=ELECTION_STATUS_DRAFT)
+        if request.user.is_staff:
+            election_instance = Election.objects.filter(id=election_id).filter(status_not_draft)[0]
+        else:
+            election_instance = Election.objects.filter(id=election_id, owner=request.user).filter(status_not_draft)[0] 
+
+        return render(request, 'voting/elections/results.html', { 'election_instance': election_instance })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('home')
 
 @login_required
 def edit_option(request, election_id, option_id=None):
