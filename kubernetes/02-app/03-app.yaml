@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ampa-3.0
+  name: ampa-3.1
   namespace: kube-system
   labels:
-    app: ampa-3.0
+    app: ampa-3.1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ampa-3.0
+      app: ampa-3.1
   template:
     metadata:
       labels:
-        app: ampa-3.0
+        app: ampa-3.1
     spec:
       volumes:
         - name: xls-data-ampa
@@ -24,7 +24,7 @@ spec:
             claimName: nfs-static-pvc
       containers:
       - name: ampa
-        image: 172.18.1.46:5000/ampa:3.0
+        image: 172.18.1.46:5000/ampa:3.1
         resources:
           requests:
             memory: "50Mi"

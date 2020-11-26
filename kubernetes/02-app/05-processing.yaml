@@ -24,7 +24,7 @@ spec:
             claimName: nfs-static-pvc
       containers:
       - name: ampa-processing
-        image: 172.18.1.46:5000/ampa:3.0
+        image: 172.18.1.46:5000/ampa:3.1
         resources:
           requests:
             memory: "50Mi"
