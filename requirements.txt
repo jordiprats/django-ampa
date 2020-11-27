@@ -9,3 +9,4 @@ XlsxWriter
 Markdown
 html2text
 python-magic
+django-prometheus

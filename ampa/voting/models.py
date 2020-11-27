@@ -45,6 +45,9 @@ class Election(models.Model):
             self.open_id = uuid.uuid4()
         super().save(*args, **kwargs)
 
+    class Meta:
+        ordering = ['-updated_at']
+
 class Option(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     election = models.ForeignKey(Election, on_delete=models.CASCADE, related_name='options')
