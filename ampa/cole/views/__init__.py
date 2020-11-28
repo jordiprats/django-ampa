@@ -11,6 +11,7 @@ from django.conf import settings
 from django.db.models import Q
 from pathlib import Path
 
+from cole.views.staff_views import *
 from cole.views.user_views import *
 from cole.models import *
 from cole.forms import *
@@ -358,13 +359,20 @@ def edit_alumne(request, classe_id, alumne_id=None):
         print(str(e))
         return redirect('list.classes')
 
-def list_classes(request):
+def list_classes(request, curs_id=None):
     if request.user.is_authenticated:
+        # TODO: refactor
         if request.user.is_superuser and request.GET.get('admin', ''):
-            list_classes = Classe.objects.all()
+            if curs_id:
+                list_classes = Classe.objects.filter(curs__id=curs_id)
+            else:
+                list_classes = Classe.objects.all()
             return render(request, 'list_classes.html', {'list_classes': list_classes, 'admin_view': True, 'user_admin': request.user.is_staff })
         else:
-            list_classes = Classe.objects.filter(Q(delegat=request.user) | Q(subdelegat=request.user))
+            if curs_id:
+                list_classes = Classe.objects.filter(curs__id=curs_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))
+            else:
+                list_classes = Classe.objects.filter(Q(delegat=request.user) | Q(subdelegat=request.user))
             return render(request, 'list_classes.html', {'list_classes': list_classes, 'admin_view': False, 'user_admin': request.user.is_staff })
     else:
         return redirect('home')

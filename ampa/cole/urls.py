@@ -15,6 +15,12 @@ urlpatterns = [
     # path('user/password/reset/status', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     # path('user/password/reset/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     # path('user/password/reset/status', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    # staff settings
+    path('staff/settings', views.staff_settings, name='staff.settings'),
+    path('staff/cursos/', views.list_cursos, name='list.cursos'),
+    path('staff/cursos/add', views.edit_curs, name='add.curs'),
+    path('staff/cursos/<curs_id>', views.list_classes, name='show.curs'),
+    path('staff/cursos/<curs_id>/edit', views.edit_curs, name='edit.curs'),
     # app
     path('upload/', views.upload_xls, name='upload.classe.xls'),
     path('classes/', views.list_classes, name='list.classes'),

@@ -108,7 +108,7 @@ class Command(BaseCommand):
                                 telf_tutor2 = row['telf2'],
                                 tutor2_cessio = False,
 
-                                emails = row['email'],
+                                email_tutor1 = row['email'],
 
                                 validat = False,
                             )

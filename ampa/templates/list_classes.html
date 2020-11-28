@@ -17,15 +17,27 @@
 <table class="table table-bordred table-striped">
     <thead>
       <tr>
-        <th>classe</th>
-        <th>curs</th>
+        <th>Classe</th>
+        <th>Nom classe</th>
+        <th>Curs</th>
+        {% if admin_view %}
+        <th>Delegat</th>
+        {% endif %}
       </tr>
     </thead>
     <tbody>
       {% for classe in list_classes.all %}
         <tr>
           <td><a href="{% url 'show.classe' classe_id=classe.id %}">{{ classe.nom }}</a></td>
+          <td>{{ classe.alias }}</td>
           <td>{{ classe.curs }}</td>
+          {% if admin_view %}
+          {% if classe.delegat %}
+          <td>{{ classe.delegat }}</td>
+          {% else %}
+          -
+          {% endif %}
+          {% endif %}
         </tr>
       {% endfor %}
     </tbody>

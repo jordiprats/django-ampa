@@ -49,7 +49,7 @@ class Command(BaseCommand):
         if to:
             emails = re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", to.lower())
         else:
-            emails = re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", alumne.emails.lower())
+            emails = alumne.emails
         
         headers = { 'Reply-To': alumne.classe.delegat.email }
 

@@ -39,11 +39,29 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
+class Curs(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    curs = models.CharField(max_length=256, default='')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.curs
+
+    class Meta:
+        ordering = ['curs']
+        indexes = [
+            models.Index(fields=['curs']),
+        ]
+
 class Classe(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     nom = models.CharField(max_length=256, default='')
-    curs = models.CharField(max_length=256, default='')
+    alias = models.CharField(max_length=256, default='')
+
+    curs = models.ForeignKey(Curs, on_delete=models.CASCADE, related_name='classes', blank=True, null=True, default=None)
 
     delegat = models.ForeignKey(User, on_delete=models.CASCADE, related_name='delegatsclasses')
     subdelegat = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subdelegatsclasses', blank=True, null=True)
@@ -102,25 +120,30 @@ class Alumne(models.Model):
 
     tutor1 = models.CharField(max_length=256, default='', blank=True, null=True)
     telf_tutor1 = models.CharField(max_length=256, default='', blank=True, null=True)
+    email_tutor1 = models.TextField(max_length=256, default=None, blank=True, null=True)
     tutor1_cessio = models.BooleanField(default=False, help_text="Accepto que les meves dades es facilitin al delegat i al grup classe per finalitats de comunicacions: enviament de mails, creació grup whatsapp, etc. acceptant fer un ús responsable i no facilitar a tercers les dades del grup classe que proporcionarà el delegat")
 
     tutor2 = models.CharField(max_length=256, default='', blank=True, null=True)
     telf_tutor2 = models.CharField(max_length=256, default='', blank=True, null=True)
+    email_tutor2 = models.TextField(max_length=256, default=None, blank=True, null=True)
     tutor2_cessio = models.BooleanField(default=False, help_text="Accepto que les meves dades es facilitin al delegat i al grup classe per finalitats de comunicacions: enviament de mails, creació grup whatsapp, etc. acceptant fer un ús responsable i no facilitar a tercers les dades del grup classe que proporcionarà el delegat")
-    
-    emails = models.TextField(max_length=256, default=None, blank=True, null=True)
-    
+     
     validat = models.BooleanField(default=False, help_text='He comprovat totes les dades i són correctes')
 
     updated_at = models.DateTimeField(auto_now=True)
     classe = models.ForeignKey(Classe, on_delete=models.CASCADE, related_name='alumnes')
 
     def _get_mailing_emails(self):
-        if self.tutor1_cessio and self.tutor2_cessio and self.validat:
-            return re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", self.emails.lower())
-        else:
-            return []
+        emails = []
+        if self.tutor1_cessio and self.validat:
+            emails += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", self.email_tutor1.lower())
+        
+        if self.tutor2_cessio and self.validat:
+            emails += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", self.email_tutor2.lower())
+
+        return emails
     
+    emails = property(_get_mailing_emails)
     mailing_emails = property(_get_mailing_emails)
 
     def _get_print_name(self):

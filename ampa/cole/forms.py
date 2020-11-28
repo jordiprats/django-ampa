@@ -5,6 +5,14 @@ from django import forms
 
 from cole.models import *
 
+class CursForm(forms.ModelForm):
+    class Meta:
+        model = Curs
+        fields = (['curs'])
+        labels = {
+            'curs': 'Anys del curs', 
+        }
+
 class ClasseMailingForm(forms.ModelForm):
     class Meta:
         model = Mailing
@@ -17,9 +25,10 @@ class ClasseMailingForm(forms.ModelForm):
 class ClasseForm(forms.ModelForm):
     class Meta:
         model = Classe
-        fields = (['nom', 'curs', 'tutor', 'nom_delegat', 'telefon_delegat', 'email_delegat', 'nom_subdelegat', 'telefon_subdelegat', 'email_subdelegat'])
+        fields = (['nom', 'alias', 'curs', 'tutor', 'nom_delegat', 'telefon_delegat', 'email_delegat', 'nom_subdelegat', 'telefon_subdelegat', 'email_subdelegat'])
         labels = {
-            'nom': 'Nom de la classe', 
+            'nom': 'Curs', 
+            'alias': 'Nom de la classe', 
             'curs': 'Curs escolar', 
             'tutor:': 'Nom tutor de la classe', 
             'nom_delegat': 'Nom del delegat', 
@@ -35,7 +44,7 @@ class ClasseForm(forms.ModelForm):
 class EditAlumneForm(ModelForm):
     class Meta:
         model = Alumne
-        fields = ([ 'num_llista', 'nom', 'cognom1', 'cognom2', 'naixement', 'tutor1', 'telf_tutor1', 'tutor2', 'telf_tutor2', 'emails' ])
+        fields = ([ 'num_llista', 'nom', 'cognom1', 'cognom2', 'naixement', 'tutor1', 'telf_tutor1', 'email_tutor1', 'tutor2', 'telf_tutor2', 'email_tutor2' ])
         widgets = {
             'naixement': forms.DateInput(format=('%Y-%m-%d'), attrs={"type": 'date'}),
         }
@@ -47,15 +56,16 @@ class EditAlumneForm(ModelForm):
             'naixement': 'Data de naixement', 
             'tutor1': 'Primer tutor', 
             'telf_tutor1': 'Telèfon del primer tutor', 
+            'email_tutor1': 'eMail tutor 1',
             'tutor2': 'Segon tutor', 
             'telf_tutor2': 'Telèfon del segon tutor', 
-            'emails': 'emails', 
+            'email_tutor2': 'eMail tutor 2',
         }
 
 class EditAlumneParesForm(ModelForm):
     class Meta:
         model = Alumne
-        fields = (['nom', 'cognom1', 'cognom2', 'naixement', 'tutor1', 'telf_tutor1', 'tutor1_cessio', 'tutor2', 'telf_tutor2', 'tutor2_cessio', 'emails', 'validat' ])
+        fields = (['nom', 'cognom1', 'cognom2', 'naixement', 'tutor1', 'telf_tutor1', 'email_tutor1', 'tutor1_cessio', 'tutor2', 'telf_tutor2', 'email_tutor2', 'tutor2_cessio', 'validat' ])
         widgets = {
             'naixement': forms.DateInput(format=('%Y-%m-%d'), attrs={"type": 'date'}),
         }
@@ -66,9 +76,11 @@ class EditAlumneParesForm(ModelForm):
             'naixement': 'Data de naixement', 
             'tutor1': 'Primer tutor', 
             'telf_tutor1': 'Telèfon del primer tutor', 
+            'email_tutor1': 'eMail tutor 1',
             'tutor1_cessio': 'Cessió de dades del primer tutor', 
             'tutor2': 'Segon tutor', 
             'telf_tutor2': 'Telèfon del segon tutor', 
+            'email_tutor2': 'eMail tutor 2',
             'tutor2_cessio': 'Cessió de dades del segon tutor', 
             'emails': 'emails', 
             'validat': 'Firma de conformitat amb les dades'

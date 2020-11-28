@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<table class="table table-bordred table-striped">
+    <thead>
+      <tr>
+        <th>Curs</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for curs in cursos %}
+        <tr>
+            <td><a href="{% url 'show.curs' curs_id=curs.id %}">{{ curs.curs }}</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+  <form style="display: inline;" action="{% url 'add.curs' %}" method="GET">
+    <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> curs</button>
+  </form>
+
+{% endblock %}

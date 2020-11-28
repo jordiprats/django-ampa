@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<h1>Accions disponibles</h1>
+
+<h2>Cursos</h2>
+<ul>
+    <li><a href="{% url 'list.cursos' %}">Llistat de cursos</a></li>
+</ul>
+
+{% endblock %}
