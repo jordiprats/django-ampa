@@ -28,18 +28,12 @@
   {% endfor %}
   </ul>
 
-  Sistema de registre:
-    <ul>
-    {% for vote in votes %}
-      <li>vid: {{ vote.id }}</li>
-      {% if vote.option %}
-      <li>oid: {{ vote.option.id }}</li>
-      {% else %}
-      <li>Vot en blanc</li>
-      {% endif %}
-      <li>lid: {{ vote.election_log.id }}</li>
-    {% endfor %}
-    </ul>
+  <div style="display: inline-block; text-align: left;">
+    <b>Sistema de registre:</b>
+      {% for vote in votes %}
+        <p>vid: {{ vote.id }} {% if vote.option %}oid: {{ vote.option.id }}{% else %}Vot en blanc{% endif %} lid: {{ vote.election_log.id }}</p>
+      {% endfor %}
+  </div>
 
   </div>
 </div>
