@@ -229,9 +229,11 @@ def show_election_results(request, election_id):
         if request.user.is_staff:
             election_instance = Election.objects.filter(id=election_id).filter(status_not_draft)[0]
         else:
-            election_instance = Election.objects.filter(id=election_id, owner=request.user).filter(status_not_draft)[0] 
+            election_instance = Election.objects.filter(id=election_id, owner=request.user).filter(status_not_draft)[0]
 
-        return render(request, 'voting/elections/results.html', { 'election_instance': election_instance })
+        vots_blanc_count = Vote.objects.filter(election=election_instance, option=None).count()
+
+        return render(request, 'voting/elections/results.html', { 'election_instance': election_instance, 'vots_blanc_count': vots_blanc_count })
     except Exception as e:
         if request.user.is_superuser:
             messages.error(request, str(e))

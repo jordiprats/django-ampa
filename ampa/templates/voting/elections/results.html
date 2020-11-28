@@ -45,6 +45,12 @@
         <td>{{ option.votes.count }}</td>
       </tr>
       {% endfor %}
+      {% if vots_blanc_count > 0 %}
+      <tr>
+        <td>Vots en blanc</td>
+        <td>{{ vots_blanc_count }}</td>
+      </tr>
+      {% endif %}
     </tbody>
   </table>
 
