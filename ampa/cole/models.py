@@ -120,18 +120,18 @@ class Alumne(models.Model):
 
     tutor1 = models.CharField(max_length=256, default='', blank=True, null=True)
     telf_tutor1 = models.CharField(max_length=256, default='', blank=True, null=True)
-    email_tutor1 = models.TextField(max_length=256, default=None, blank=True, null=True)
+    email_tutor1 = models.TextField(max_length=600, default=None, blank=True, null=True)
     tutor1_cessio = models.BooleanField(default=False, help_text="Accepto que les meves dades es facilitin al delegat i al grup classe per finalitats de comunicacions: enviament de mails, creació grup whatsapp, etc. acceptant fer un ús responsable i no facilitar a tercers les dades del grup classe que proporcionarà el delegat")
 
     tutor2 = models.CharField(max_length=256, default='', blank=True, null=True)
     telf_tutor2 = models.CharField(max_length=256, default='', blank=True, null=True)
-    email_tutor2 = models.TextField(max_length=256, default=None, blank=True, null=True)
+    email_tutor2 = models.TextField(max_length=600, default=None, blank=True, null=True)
     tutor2_cessio = models.BooleanField(default=False, help_text="Accepto que les meves dades es facilitin al delegat i al grup classe per finalitats de comunicacions: enviament de mails, creació grup whatsapp, etc. acceptant fer un ús responsable i no facilitar a tercers les dades del grup classe que proporcionarà el delegat")
      
     validat = models.BooleanField(default=False, help_text='He comprovat totes les dades i són correctes')
 
     updated_at = models.DateTimeField(auto_now=True)
-    classe = models.ForeignKey(Classe, on_delete=models.CASCADE, related_name='alumnes')
+    classes = models.ManyToManyField(Classe, related_name='alumnes')
 
     def _get_mailing_emails(self):
         emails = []
@@ -160,11 +160,7 @@ class Alumne(models.Model):
         return self._get_print_name()
 
     class Meta:
-        unique_together = ('num_llista', 'nom', 'cognom1', 'classe')
-        ordering = ['num_llista', 'classe']
-        indexes = [
-            models.Index(fields=['num_llista','classe']),
-        ]
+        ordering = ['num_llista', 'cognom1', 'cognom2' ]
 
 class FileAttachment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

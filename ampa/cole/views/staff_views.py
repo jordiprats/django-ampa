@@ -46,7 +46,7 @@ def edit_curs(request, curs_id=None):
                 messages.info(request, 'Dades guardades correctament')
             else:
                 return render(request, 'cursos/edit.html', { 'form': form, 'curs_instance': curs_instance })
-            return redirect('show.classe', classe_id=curs_instance.id)
+            return redirect('show.curs', curs_id=curs_instance.id)
         else:
             form = CursForm(instance=curs_instance)
         return render(request, 'cursos/edit.html', { 'form': form, 'curs_instance': curs_instance })

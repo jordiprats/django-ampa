@@ -17,10 +17,12 @@ urlpatterns = [
     # path('user/password/reset/status', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     # staff settings
     path('staff/settings', views.staff_settings, name='staff.settings'),
-    path('staff/cursos/', views.list_cursos, name='list.cursos'),
-    path('staff/cursos/add', views.edit_curs, name='add.curs'),
-    path('staff/cursos/<curs_id>', views.list_classes, name='show.curs'),
-    path('staff/cursos/<curs_id>/edit', views.edit_curs, name='edit.curs'),
+    path('cursos/', views.list_cursos, name='list.cursos'),
+    path('cursos/add', views.edit_curs, name='add.curs'),
+    path('cursos/<curs_id>', views.list_classes, name='show.curs'),
+    path('cursos/<curs_id>/edit', views.edit_curs, name='edit.curs'),
+    
+    path('cursos/<curs_id>/addclasse', views.add_curs_classe, name='add.classe'),
     # app
     path('upload/', views.upload_xls, name='upload.classe.xls'),
     path('classes/', views.list_classes, name='list.classes'),

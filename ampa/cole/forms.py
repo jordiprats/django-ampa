@@ -27,7 +27,7 @@ class ClasseForm(forms.ModelForm):
         model = Classe
         fields = (['nom', 'alias', 'curs', 'tutor', 'nom_delegat', 'telefon_delegat', 'email_delegat', 'nom_subdelegat', 'telefon_subdelegat', 'email_subdelegat'])
         labels = {
-            'nom': 'Curs', 
+            'nom': 'Classe', 
             'alias': 'Nom de la classe', 
             'curs': 'Curs escolar', 
             'tutor:': 'Nom tutor de la classe', 
