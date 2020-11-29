@@ -4,20 +4,31 @@
 
 {% block content %}
 
+<h1><a href="{% url 'search.edit.alumne' alumne_id=alumne_instance.id %}">{{ alumne_instance.print_name }}</a></h1>
+
+<br><br>
+
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
 
     {{ form.as_p }}
 
+    {% if fileattachment %}
+      {% if fileattachment.is_image %}
+      <img src="{{ fileattachment.static_url }}">
+      {% else %}
+      <a href="{{ fileattachment.static_url }}" target="_blank">{{ fileattachment.filename }}</a>
+      {% endif %}
+    {% else %}
     <ul>
     <li>
         <label for="file">Fitxer a afegir</label>
         <input type="file" name="attachment">
     </li>
     </ul>
+    {% endif %}
 
     <hr>
-
     <button class="btn btn-info" type="submit" name="guardar" >Afegir</button>
   </form>
 

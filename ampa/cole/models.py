@@ -222,6 +222,16 @@ class ExtraInfoAlumne(models.Model):
     dades = models.TextField(max_length=600, default='', blank=True, null=True)
     attachment = models.ForeignKey(FileAttachment, on_delete=models.CASCADE, related_name='files', blank=True, null=True)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-updated_at']
+        indexes = [
+            models.Index(fields=['updated_at',]),
+            models.Index(fields=['-updated_at',]),
+        ]
+
 MAILING_STATUS_DRAFT = '0'
 MAILING_STATUS_PROGRAMAT = '1'
 MAILING_STATUS_ENVIANT = '2'

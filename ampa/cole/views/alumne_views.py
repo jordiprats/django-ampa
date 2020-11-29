@@ -22,10 +22,11 @@ def search_edit_alumne(request, alumne_id):
 @user_passes_test(lambda u: u.is_staff)
 def edit_extrainfo_alumne(request, alumne_id, extrainfo_id=None):
     try:
+        alumne_instance = Alumne.objects.filter(id=alumne_id).first()
+
         if extrainfo_id:
             extrainfo_instance = ExtraInfoAlumne.objects.filter(id=extrainfo_id, alumne__id=alumne_id)[0]
         else:
-            alumne_instance = Alumne.objects.filter(id=alumne_id).first()
             extrainfo_instance = ExtraInfoAlumne(alumne=alumne_instance)
         if request.method == 'POST':
             form = InfoAlumneForm(request.POST, instance=extrainfo_instance)
@@ -49,12 +50,21 @@ def edit_extrainfo_alumne(request, alumne_id, extrainfo_id=None):
                 form.save()
                 messages.info(request, 'Dades guardades correctament')
             else:
-                return render(request, 'alumnes/extra/upload.html', { 'form': form, 'extrainfo_instance': extrainfo_instance })
+                return render(request, 'alumnes/extra/upload.html', { 
+                                                                        'form': form, 
+                                                                        'extrainfo_instance': extrainfo_instance,
+                                                                        'fileattachment': extrainfo_instance.attachment,
+                                                                        'alumne_instance': alumne_instance
+                                                                    })
             return redirect('search.edit.alumne', alumne_id=alumne_id)
         else:
             form = InfoAlumneForm(instance=extrainfo_instance)
-        print('upload')
-        return render(request, 'alumnes/extra/upload.html', { 'form': form, 'extrainfo_instance': extrainfo_instance })
+        return render(request, 'alumnes/extra/upload.html', { 
+                                                                'form': form, 
+                                                                'extrainfo_instance': extrainfo_instance,
+                                                                'fileattachment': extrainfo_instance.attachment,
+                                                                'alumne_instance': alumne_instance
+                                                            })
     except Exception as e:
         if request.user.is_staff:
             messages.error(request, str(e))

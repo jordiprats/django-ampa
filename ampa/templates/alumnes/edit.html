@@ -29,9 +29,9 @@ Aquesta opció es per afegir manualment un alumne a la classe
               </tr>
             </thead>
             <tbody>
-                {% for name, content in extrainfo_hash.items %}
+                {% for name, id in extrainfo_hash.items %}
                 <tr>
-                    <td><a href="">{{ name }}</a></td>
+                    <td><a href="{% url 'edit.extrainfo.alumne' alumne_id=alumne_id extrainfo_id=id %}">{{ name }}</a></td>
                     <td>
                         <form style="display: inline;" action="" method="GET">
                             <button style="margin-left: 30px;" class="btn btn-danger" type="submit">eliminar</button>

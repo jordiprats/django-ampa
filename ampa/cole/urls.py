@@ -42,6 +42,7 @@ urlpatterns = [
     path('alumnes/<alumne_id>', views.edit_alumne_form_pares, name='form.pares.edit.alumne'),
     path('alumnes/<alumne_id>/edit', views.search_edit_alumne, name='search.edit.alumne'),
     path('alumnes/<alumne_id>/extra/add', views.edit_extrainfo_alumne, name='add.extrainfo.alumne'),
+    path('alumnes/<alumne_id>/extra/<extrainfo_id>/edit', views.edit_extrainfo_alumne, name='edit.extrainfo.alumne'),
     path('mailing/cessiodades/<classe_id>', views.are_you_sure_email, name='send.cessio.dades.email'),
     path('mailing/<mailing_id>/attachment', views.afegir_attachment_mailing_classe, name='add.attachment.mailing'),
     path('mailing/<mailing_id>/attachment/<attachment_id>/remove', views.remove_attachment_mailing, name='remove.attachment.mailing'),
