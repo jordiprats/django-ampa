@@ -36,8 +36,10 @@ def show_curs(request, curs_id):
 def edit_curs(request, curs_id=None):
     try:
         if curs_id:
+            new_curs = False
             curs_instance = Curs.objects.filter(id=curs_id)[0]
         else:
+            new_curs = True
             curs_instance = Curs()
         if request.method == 'POST':
             form = CursForm(request.POST, instance=curs_instance)
@@ -45,11 +47,11 @@ def edit_curs(request, curs_id=None):
                 form.save()
                 messages.info(request, 'Dades guardades correctament')
             else:
-                return render(request, 'cursos/edit.html', { 'form': form, 'curs_instance': curs_instance })
+                return render(request, 'cursos/edit.html', { 'form': form, 'curs_instance': curs_instance, 'new_curs': new_curs })
             return redirect('show.curs', curs_id=curs_instance.id)
         else:
             form = CursForm(instance=curs_instance)
-        return render(request, 'cursos/edit.html', { 'form': form, 'curs_instance': curs_instance })
+        return render(request, 'cursos/edit.html', { 'form': form, 'curs_instance': curs_instance, 'new_curs': new_curs })
     except Exception as e:
         if request.user.is_staff:
             if settings.debug:

@@ -11,6 +11,7 @@ from django.conf import settings
 from django.db.models import Q
 from pathlib import Path
 
+from cole.views.alumne_views import *
 from cole.views.staff_views import *
 from cole.views.user_views import *
 from cole.models import *
@@ -28,12 +29,14 @@ def robots_txt(request):
     ]
     return HttpResponse("\n".join(lines), content_type="text/plain")
 
+@login_required
 def show_classe(request, classe_id):
     if request.user.is_authenticated:
         try:
             instance_classe = Classe.objects.filter(id=classe_id)[0]
             return render(request, 'show_classe.html', { 'instance_classe': instance_classe, 'content': 'overview' })
         except:
+            print(str(e))
             return redirect('home')
     else:
         return redirect('home')
@@ -341,20 +344,39 @@ def edit_alumne(request, classe_id, alumne_id=None):
         classe_instance = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
 
         if alumne_id:
-            alumne_instance = Alumne.objects.filter(classe=classe_instance, id=alumne_id)[0]
+            alumne_instance = Alumne.objects.filter(classes=classe_instance, id=alumne_id)[0]
         else:
-            alumne_instance = Alumne(classe=classe_instance)
+            alumne_instance = Alumne(classes=classe_instance)
         if request.method == 'POST':
-            form = EditAlumneForm(request.POST, instance=alumne_instance)
+            form = EditAlumneForm(request.POST, staff_view=request.user.is_staff, instance=alumne_instance)
             if form.is_valid():
                 form.save()
                 messages.info(request, 'Dades guardades correctament')
+                try:
+                    afegir_altres_dades = form.data['altres']
+                    return redirect('add.extrainfo.alumne', alumne_id=alumne_instance.id)
+                except Exception as e:
+                    pass
             else:
-                return render(request, 'edit_alumne.html', { 'form': form, 'alumne_id': alumne_id, 'classe_id': classe_id, 'alumne_instance': alumne_instance})
+                return render(request, 'alumnes/edit.html', { 
+                                                                'form': form, 
+                                                                'alumne_id': alumne_id, 
+                                                                'classe_id': classe_id, 
+                                                                'alumne_instance': alumne_instance,
+                                                                'staff_view': request.user.is_staff,
+                                                                'extrainfo_hash': alumne_instance.extrainfo_hash
+                                                            })
             return redirect('show.classe', classe_id=classe_id)
         else:
-            form = EditAlumneForm(instance=alumne_instance)
-        return render(request, 'edit_alumne.html', { 'form': form, 'alumne_id': alumne_id, 'classe_id': classe_id, 'alumne_instance': alumne_instance})
+            form = EditAlumneForm(staff_view=request.user.is_staff, instance=alumne_instance)
+        return render(request, 'alumnes/edit.html', { 
+                                                        'form': form, 
+                                                        'alumne_id': alumne_id, 
+                                                        'classe_id': classe_id, 
+                                                        'alumne_instance': alumne_instance,
+                                                        'staff_view': request.user.is_staff,
+                                                        'extrainfo_hash': alumne_instance.extrainfo_hash
+                                                    })
     except Exception as e:
         print(str(e))
         return redirect('list.classes')

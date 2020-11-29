@@ -8,19 +8,6 @@ from django.db import models
 import uuid
 import re
 
-MAILING_STATUS_DRAFT = '0'
-MAILING_STATUS_PROGRAMAT = '1'
-MAILING_STATUS_ENVIANT = '2'
-MAILING_STATUS_ENVIAT = '3'
-MAILING_STATUS_ERROR_GENERAL = 'E'
-MAILING_STATUS = [
-    (MAILING_STATUS_DRAFT, 'borrador'),
-    (MAILING_STATUS_PROGRAMAT, 'enviament programat'),
-    (MAILING_STATUS_ENVIANT, 'enviant...'),
-    (MAILING_STATUS_ENVIAT, 'enviament completat'),
-    (MAILING_STATUS_ERROR_GENERAL, 'error general d\'enviament')
-]
-
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     slug = models.SlugField(
@@ -110,6 +97,7 @@ class Classe(models.Model):
 class Alumne(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     #id_nen         nom        cognom1     cognom2            naixement         pare      telf1       mare      telf2                                              email     cessio signatura
+    # TODO: petar num_llista
     num_llista = models.IntegerField()
     
     nom = models.CharField(max_length=256)
@@ -127,7 +115,10 @@ class Alumne(models.Model):
     telf_tutor2 = models.CharField(max_length=256, default='', blank=True, null=True)
     email_tutor2 = models.TextField(max_length=600, default=None, blank=True, null=True)
     tutor2_cessio = models.BooleanField(default=False, help_text="Accepto que les meves dades es facilitin al delegat i al grup classe per finalitats de comunicacions: enviament de mails, creació grup whatsapp, etc. acceptant fer un ús responsable i no facilitar a tercers les dades del grup classe que proporcionarà el delegat")
-     
+    
+    alta = models.DateTimeField(blank=True, null=True)
+    baixa = models.DateTimeField(blank=True, null=True)
+
     validat = models.BooleanField(default=False, help_text='He comprovat totes les dades i són correctes')
 
     updated_at = models.DateTimeField(auto_now=True)
@@ -155,6 +146,29 @@ class Alumne(models.Model):
         return composite_name
 
     print_name = property(_get_print_name)
+
+    def _get_classe_actual(self):
+        return self.classes.order_by('curs')[0]
+
+    classe = property(_get_classe_actual)
+
+    def _get_extrainfo_hash(self):
+        attachments_dict = {}
+        for extrainfo in self.extrainfo.all():
+            if extrainfo.attachment:
+                if extrainfo.descripcio:
+                    attachments_dict[extrainfo.descripcio] = extrainfo.id
+                else:
+                    attachments_dict[extrainfo.attachment.filename] = extrainfo.id
+            else:
+                if extrainfo.descripcio:
+                    attachments_dict[extrainfo.descripcio] = extrainfo.id
+                else:
+                    attachments_dict[str(extrainfo.id)] = extrainfo.id
+                    
+        return attachments_dict
+
+    extrainfo_hash = property(_get_extrainfo_hash)
 
     def __str__(self):
         return self._get_print_name()
@@ -197,6 +211,29 @@ class FileAttachment(models.Model):
         indexes = [
             models.Index(fields=['-created_at',]),
         ]
+
+class ExtraInfoAlumne(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    alumne = models.ForeignKey(Alumne, on_delete=models.CASCADE, related_name='extrainfo')
+
+    descripcio = models.CharField(max_length=256, default='', blank=True, null=True)
+
+    dades = models.TextField(max_length=600, default='', blank=True, null=True)
+    attachment = models.ForeignKey(FileAttachment, on_delete=models.CASCADE, related_name='files', blank=True, null=True)
+
+MAILING_STATUS_DRAFT = '0'
+MAILING_STATUS_PROGRAMAT = '1'
+MAILING_STATUS_ENVIANT = '2'
+MAILING_STATUS_ENVIAT = '3'
+MAILING_STATUS_ERROR_GENERAL = 'E'
+MAILING_STATUS = [
+    (MAILING_STATUS_DRAFT, 'borrador'),
+    (MAILING_STATUS_PROGRAMAT, 'enviament programat'),
+    (MAILING_STATUS_ENVIANT, 'enviant...'),
+    (MAILING_STATUS_ENVIAT, 'enviament completat'),
+    (MAILING_STATUS_ERROR_GENERAL, 'error general d\'enviament')
+]
 
 class Mailing(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

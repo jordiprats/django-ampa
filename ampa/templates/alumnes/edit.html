@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+{% if alumne_id %}
+<h1><a href="{% url 'show.classe' classe_id=classe_id %}">{{ alumne_instance.classe.nom }}</a> / {{ alumne_instance.print_name }}</h1>
+
+<form style="display: inline;" action="{% url 'delete.alumne' classe_id=classe_id alumne_id=alumne_id %}" method="GET">
+    <button class="float-right btn btn-danger" type="submit">eliminar alumne</button>
+</form>
+{% else %}
+<h1><a href="{% url 'show.classe' classe_id=classe_id %}">{{ alumne_instance.classe.nom }}</a> / afegir alumne</h1>
+Aquesta opció es per afegir manualment un alumne a la classe
+{% endif %}
+
+<div class="py-4 px-4 px-md-3 px-lg-4">
+    <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        {% if staff_view and extrainfo_hash %}
+        <table class="table table-bordred table-striped">
+            <thead>
+              <tr>
+                <th>Altres dades:</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for name, content in extrainfo_hash.items %}
+                <tr>
+                    <td><a href="">{{ name }}</a></td>
+                    <td>
+                        <form style="display: inline;" action="" method="GET">
+                            <button style="margin-left: 30px;" class="btn btn-danger" type="submit">eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+        {% endif %}
+
+
+        <button class="btn btn-primary" type="submit" name="guardar">guardar</button>
+        <button class="btn btn-secondary" type="submit" name="altres">afegir altres dades</button>
+    </form>
+</div>
+
+{% endblock %}

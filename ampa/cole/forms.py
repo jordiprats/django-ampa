@@ -5,6 +5,15 @@ from django import forms
 
 from cole.models import *
 
+class InfoAlumneForm(forms.ModelForm):
+    class Meta:
+        model = ExtraInfoAlumne
+        fields = (['descripcio', 'dades'])
+        labels = {
+            'descripcio': 'Descripció', 
+            'dades': 'Dades (opcional)', 
+        }
+
 class CursForm(forms.ModelForm):
     class Meta:
         model = Curs
@@ -42,18 +51,29 @@ class ClasseForm(forms.ModelForm):
         }
 
 class EditAlumneForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        staff_view = kwargs.pop('staff_view',None)
+        super(EditAlumneForm, self).__init__(*args, **kwargs)
+        if not staff_view:
+            self.fields['alta'].disabled = True
+            self.fields['baixa'].disabled = True
+
     class Meta:
         model = Alumne
-        fields = ([ 'num_llista', 'nom', 'cognom1', 'cognom2', 'naixement', 'tutor1', 'telf_tutor1', 'email_tutor1', 'tutor2', 'telf_tutor2', 'email_tutor2' ])
+        fields = ([ 'num_llista', 'nom', 'cognom1', 'cognom2', 'naixement', 'alta', 'baixa', 'tutor1', 'telf_tutor1', 'email_tutor1', 'tutor2', 'telf_tutor2', 'email_tutor2' ])
         widgets = {
             'naixement': forms.DateInput(format=('%Y-%m-%d'), attrs={"type": 'date'}),
+            'alta': forms.DateInput(format=('%Y-%m-%d'), attrs={"type": 'date'}),
+            'baixa': forms.DateInput(format=('%Y-%m-%d'), attrs={"type": 'date'}),
         }
         labels = {
             'num_llista': 'Numero de la llista',
             "nom": "Nom",
             "cognom1": "Primer cognom",
             "cognom2": "Segon cognom",
-            'naixement': 'Data de naixement', 
+            'naixement': 'Data de naixement',
+            'alta': 'Data d\'alta',
+            'baixa': 'Data de baixa',
             'tutor1': 'Primer tutor', 
             'telf_tutor1': 'Telèfon del primer tutor', 
             'email_tutor1': 'eMail tutor 1',

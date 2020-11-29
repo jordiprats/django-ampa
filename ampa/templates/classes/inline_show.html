@@ -1,7 +1,6 @@
 <table class="table table-bordred table-striped">
     <thead>
       <tr>
-        <th>número llista</th>
         <th>nom</th>
         <th>Tutor 1</th>
         <th>Tutor 2</th>
@@ -11,8 +10,12 @@
     <tbody>
       {% for alumne in instance_classe.alumnes.all %}
         <tr>
-          <td><a href="{% url 'edit.alumne' classe_id=instance_classe.id alumne_id=alumne.id %}">{{ alumne.num_llista }}</a></td>
-          <td><a href="{% url 'form.pares.edit.alumne' alumne_id=alumne.id %}">{{ alumne.print_name }}</a></td>
+          <td>
+            <form action="{% url 'edit.alumne' classe_id=instance_classe.id alumne_id=alumne.id %}" method="GET">
+              <button style="margin-right: 10px;" class="float-left btn btn-info" type="submit"><i class="fas fa-edit"></i></button>
+            </form>   
+            <a href="{% url 'form.pares.edit.alumne' alumne_id=alumne.id %}">{{ alumne.print_name }}</a>
+          </td>
           <td>{{ alumne.tutor1_cessio|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
           <td>{{ alumne.tutor2_cessio|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
           <td>{{ alumne.validat|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
