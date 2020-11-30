@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<br>
+<form method="GET">
+    <div class="form-group has-search">
+        <input name="q" type="text" value="" class="form-control" placeholder="Search">
+    </div>
+    <button class="btn btn-primary" type="submit">buscar</button>
+</form>
+<br>
+
+{% if llistat_alumnes %}
+
+<table class="table table-bordred table-striped">
+    <thead>
+      <tr>
+        <th>Alumne</th>
+        <th>Classe actual</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for alumne in llistat_alumnes %}
+        <tr>
+          <td>{{ alumne.print_name }}</td>
+          <td>{{ alumne.classe.nom }}</td>
+          <td>
+            <form action="{% url 'add.alumne.classe' classe_id=classe_id alumne_id=alumne.id %}" method="GET">
+              <button style="margin-right: 10px;" class="float-left btn btn-info" type="submit"><i class="fas fa-plus"></i> {{ classe_full_nom }}</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% endif %}
+
+{% endblock %}

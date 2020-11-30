@@ -4,12 +4,66 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.conf import settings
+from django.db.models import Q
 
 from cole.forms import *
 
 import time
 import sys
 import os
+
+@login_required
+def edit_alumne(request, classe_id, alumne_id=None):
+    try:
+        if request.user.is_staff:
+            classe_instance = Classe.objects.filter(id=classe_id).first()
+        else:
+            classe_instance = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user)).first()
+
+        if alumne_id:
+            alumne_instance = Alumne.objects.filter(classes=classe_instance, id=alumne_id).first()
+            new_alumne = False
+        else:
+            alumne_instance = Alumne()
+            new_alumne = True
+
+        view_hash = {
+                        'alumne_id': alumne_id, 
+                        'classe_id': classe_id,
+                        'classe_nom': classe_instance.nom,
+                        'alumne_instance': alumne_instance,
+                        'staff_view': request.user.is_staff,
+                        'new_alumne': new_alumne
+                    }
+        if not alumne_id:
+            view_hash['extrainfo_hash'] = alumne_instance.extrainfo_hash
+
+        if request.method == 'POST':
+            form = EditAlumneForm(request.POST, staff_view=request.user.is_staff, instance=alumne_instance)
+            view_hash['form'] = form
+            if form.is_valid():
+                form.save()
+                classe_instance.alumnes.add(alumne_instance)
+                messages.info(request, 'Dades guardades correctament')
+                try:
+                    afegir_altres_dades = form.data['altres']
+                    return redirect('add.extrainfo.alumne', alumne_id=alumne_instance.id)
+                except Exception as e:
+                    pass
+            else:
+                return render(request, 'alumnes/edit.html', view_hash)
+            return redirect('show.classe', classe_id=classe_id)
+        else:
+            form = EditAlumneForm(staff_view=request.user.is_staff, instance=alumne_instance)
+            view_hash['form'] = form
+            print(str(view_hash))
+        return render(request, 'alumnes/edit.html', view_hash)
+    except Exception as e:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+        print(str(e))
+        return redirect('list.classes')
 
 @login_required
 def search_edit_alumne(request, alumne_id):
@@ -25,7 +79,7 @@ def edit_extrainfo_alumne(request, alumne_id, extrainfo_id=None):
         alumne_instance = Alumne.objects.filter(id=alumne_id).first()
 
         if extrainfo_id:
-            extrainfo_instance = ExtraInfoAlumne.objects.filter(id=extrainfo_id, alumne__id=alumne_id)[0]
+            extrainfo_instance = ExtraInfoAlumne.objects.filter(id=extrainfo_id, alumne__id=alumne_id).first()
         else:
             extrainfo_instance = ExtraInfoAlumne(alumne=alumne_instance)
         if request.method == 'POST':

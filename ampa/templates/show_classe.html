@@ -62,6 +62,10 @@
   <form style="display: inline" action="{% url 'add.alumne' classe_id=instance_classe.id %}" method="GET">
     <button class="float-left btn btn-info" type="submit"><i class="fas fa-plus"></i> alumne</button>
   </form>
+
+  <form style="display: inline" action="{% url 'add.classe.search.alumne' classe_id=instance_classe.id %}" method="GET">
+    <button style="margin-left: 6px;" class="float-left btn btn-info" type="submit"><i class="fas fa-search"></i> alumne</button>
+  </form>
 {% elif content == 'mailing' %}
   {% include 'mailing/classes/inline_list.html' %}
 

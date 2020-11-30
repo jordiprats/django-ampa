@@ -55,13 +55,12 @@ class EditAlumneForm(ModelForm):
         staff_view = kwargs.pop('staff_view',None)
         super(EditAlumneForm, self).__init__(*args, **kwargs)
         if not staff_view:
-            self.fields['classes'].disabled = True
             self.fields['alta'].disabled = True
             self.fields['baixa'].disabled = True
 
     class Meta:
         model = Alumne
-        fields = ([ 'num_llista', 'nom', 'cognom1', 'cognom2', 'naixement', 'classes', 'alta', 'baixa', 'tutor1', 'telf_tutor1', 'email_tutor1', 'tutor2', 'telf_tutor2', 'email_tutor2' ])
+        fields = ([ 'num_llista', 'nom', 'cognom1', 'cognom2', 'naixement', 'alta', 'baixa', 'tutor1', 'telf_tutor1', 'email_tutor1', 'tutor2', 'telf_tutor2', 'email_tutor2' ])
         widgets = {
             'naixement': forms.DateInput(format=('%Y-%m-%d'), attrs={"type": 'date'}),
             'alta': forms.DateInput(format=('%Y-%m-%d'), attrs={"type": 'date'}),
@@ -73,7 +72,6 @@ class EditAlumneForm(ModelForm):
             "cognom1": "Primer cognom",
             "cognom2": "Segon cognom",
             'naixement': 'Data de naixement',
-            'classes': 'Llistat de classes a les que pertany',
             'alta': 'Data d\'alta',
             'baixa': 'Data de baixa',
             'tutor1': 'Primer tutor', 

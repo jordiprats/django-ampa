@@ -88,8 +88,22 @@ class Classe(models.Model):
 
     is_upload_error = property(_is_upload_error)
 
+    def _get_full_nom(self):
+        str_nom = ''
+        if self.alias:
+            str_nom = self.nom+'('+self.alias+')'
+        else:
+            str_nom =  self.nom
+
+        if self.curs:
+            str_nom += '/'+self.curs
+
+        return str_nom
+
+    full_nom = property(_get_full_nom)
+
     def __str__(self):
-        return self.nom+'/'+self.curs
+        self.full_nom
 
     class Meta:
         unique_together = ('nom', 'curs', 'delegat')
@@ -154,18 +168,18 @@ class Alumne(models.Model):
 
     def _get_extrainfo_hash(self):
         attachments_dict = {}
-        for extrainfo in self.extrainfo.all():
-            if extrainfo.attachment:
-                if extrainfo.descripcio:
-                    attachments_dict[extrainfo.descripcio] = extrainfo.id
+        if self.extrainfo:
+            for extrainfo in self.extrainfo.all():
+                if extrainfo.attachment:
+                    if extrainfo.descripcio:
+                        attachments_dict[extrainfo.descripcio] = extrainfo.id
+                    else:
+                        attachments_dict[extrainfo.attachment.filename] = extrainfo.id
                 else:
-                    attachments_dict[extrainfo.attachment.filename] = extrainfo.id
-            else:
-                if extrainfo.descripcio:
-                    attachments_dict[extrainfo.descripcio] = extrainfo.id
-                else:
-                    attachments_dict[str(extrainfo.id)] = extrainfo.id
-                    
+                    if extrainfo.descripcio:
+                        attachments_dict[extrainfo.descripcio] = extrainfo.id
+                    else:
+                        attachments_dict[str(extrainfo.id)] = extrainfo.id        
         return attachments_dict
 
     extrainfo_hash = property(_get_extrainfo_hash)

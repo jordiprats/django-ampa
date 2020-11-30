@@ -35,7 +35,7 @@ def show_classe(request, classe_id):
         try:
             instance_classe = Classe.objects.filter(id=classe_id)[0]
             return render(request, 'show_classe.html', { 'instance_classe': instance_classe, 'content': 'overview' })
-        except:
+        except Exception as e:
             print(str(e))
             return redirect('home')
     else:
@@ -280,37 +280,14 @@ def edit_classe(request, classe_id=None):
             form = ClasseForm(instance=classe_instance)
         return render(request, 'edit_classe.html', { 'form': form, 'classe_id': classe_id, 'classe_instance': classe_instance })
     except Exception as e:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
         print(str(e))
         if classe_id:
             return redirect('show.classe', classe_id=classe_id)
         else:
             return redirect('list.classes')
-
-@login_required
-def delete_alumne(request, classe_id, alumne_id):
-    try:
-        if request.user.is_authenticated:
-            if request.user.is_superuser:
-                instance_alumne = Alumne.objects.filter(id=alumne_id, classe__id=classe_id)[0]
-            else:
-                instance_alumne = Alumne.objects.filter(id=alumne_id, classe__id=classe_id).filter(Q(classe__delegat=request.user) | Q(classe__subdelegat=request.user))[0]
-            if request.method == 'POST':
-                form = AreYouSureForm(request.POST)
-                if form.is_valid():
-                    instance_alumne.delete()
-                    messages.info(request, 'Alumne eliminat')
-
-                    return redirect('show.classe', classe_id=classe_id)
-                else:
-                    messages.error(request, 'Error eliminant l\'alumne')
-            else:
-                form = AreYouSureForm(request.GET)
-            return render(request, 'delete_alumne.html', {'instance_alumne': instance_alumne})
-        else:
-            return redirect('show.classe', classe_id=classe_id)
-    except Exception as e:
-        print(str(e))
-        return redirect('show.classe', classe_id=classe_id)
 
 @login_required
 def delete_classe(request, classe_id):
@@ -337,49 +314,6 @@ def delete_classe(request, classe_id):
     except Exception as e:
         print(str(e))
         return redirect('show.classe', classe_id=classe_id)
-
-@login_required
-def edit_alumne(request, classe_id, alumne_id=None):
-    try:
-        classe_instance = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
-
-        if alumne_id:
-            alumne_instance = Alumne.objects.filter(classes=classe_instance, id=alumne_id)[0]
-        else:
-            alumne_instance = Alumne(classes=classe_instance)
-        if request.method == 'POST':
-            form = EditAlumneForm(request.POST, staff_view=request.user.is_staff, instance=alumne_instance)
-            if form.is_valid():
-                form.save()
-                messages.info(request, 'Dades guardades correctament')
-                try:
-                    afegir_altres_dades = form.data['altres']
-                    return redirect('add.extrainfo.alumne', alumne_id=alumne_instance.id)
-                except Exception as e:
-                    pass
-            else:
-                return render(request, 'alumnes/edit.html', { 
-                                                                'form': form, 
-                                                                'alumne_id': alumne_id, 
-                                                                'classe_id': classe_id, 
-                                                                'alumne_instance': alumne_instance,
-                                                                'staff_view': request.user.is_staff,
-                                                                'extrainfo_hash': alumne_instance.extrainfo_hash
-                                                            })
-            return redirect('show.classe', classe_id=classe_id)
-        else:
-            form = EditAlumneForm(staff_view=request.user.is_staff, instance=alumne_instance)
-        return render(request, 'alumnes/edit.html', { 
-                                                        'form': form, 
-                                                        'alumne_id': alumne_id, 
-                                                        'classe_id': classe_id, 
-                                                        'alumne_instance': alumne_instance,
-                                                        'staff_view': request.user.is_staff,
-                                                        'extrainfo_hash': alumne_instance.extrainfo_hash
-                                                    })
-    except Exception as e:
-        print(str(e))
-        return redirect('list.classes')
 
 def list_classes(request, curs_id=None):
     if request.user.is_authenticated:

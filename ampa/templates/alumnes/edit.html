@@ -4,14 +4,16 @@
 
 {% block content %}
 
-{% if alumne_id %}
-<h1><a href="{% url 'show.classe' classe_id=classe_id %}">{{ alumne_instance.classe.nom }}</a> / {{ alumne_instance.print_name }}</h1>
+{% if not new_alumne %}
+<h1><a href="{% url 'show.classe' classe_id=classe_id %}">{{ classe_nom }}</a> / {{ alumne_instance.print_name }}</h1>
 
+{% if staff_view %}
 <form style="display: inline;" action="{% url 'delete.alumne' classe_id=classe_id alumne_id=alumne_id %}" method="GET">
     <button class="float-right btn btn-danger" type="submit">eliminar alumne</button>
 </form>
+{% endif %}
 {% else %}
-<h1><a href="{% url 'show.classe' classe_id=classe_id %}">{{ alumne_instance.classe.nom }}</a> / afegir alumne</h1>
+<h1><a href="{% url 'show.classe' classe_id=classe_id %}">{{ classe_nom }}</a> / afegir alumne</h1>
 Aquesta opció es per afegir manualment un alumne a la classe
 {% endif %}
 
