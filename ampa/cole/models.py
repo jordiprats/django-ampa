@@ -96,7 +96,7 @@ class Classe(models.Model):
             str_nom =  self.nom
 
         if self.curs:
-            str_nom += '/'+self.curs
+            str_nom += '/'+self.curs.curs
 
         return str_nom
 

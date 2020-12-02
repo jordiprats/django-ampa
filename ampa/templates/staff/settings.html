@@ -9,5 +9,7 @@
 <ul>
     <li><a href="{% url 'list.cursos' %}">Llistat de cursos</a></li>
 </ul>
-
+<form style="display: inline;" action="{% url 'add.curs' %}" method="GET">
+    <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> curs</button>
+</form>
 {% endblock %}
