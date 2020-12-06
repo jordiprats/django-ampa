@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: ingress
+  name: ingress-http
   namespace: kube-system
 spec:
   rules:
@@ -10,11 +10,32 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: ampa-31-svc
-          servicePort: 8000
+          serviceName: httpsredirector-svc-10
+          servicePort: 9000
   - host: static.ampa.systemadmin.es
     http:
       paths:
       - backend:
-          serviceName: ampa-static-10-svc
+          serviceName: httpsredirector-svc-10
           servicePort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-https
+  namespace: kube-system
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  tls:
+    - secretName: k3s-systemadmin
+      hosts:
+        - ampa.systemadmin.es
+  rules:
+  - host: ampa.systemadmin.es
+    http:
+      paths:
+      - backend:
+          serviceName: ampa-31-svc
+          servicePort: 8000

@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: httpsredirector-svc-10
+  namespace: kube-system
+spec:
+  selector:
+    app: httpsredirector-1.0
+  ports:
+  - name: http
+    port: 9000
+    targetPort: 9000
