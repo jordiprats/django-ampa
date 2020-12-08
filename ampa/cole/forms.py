@@ -22,6 +22,14 @@ class CursForm(forms.ModelForm):
             'curs': 'Anys del curs', 
         }
 
+class EtapaForm(forms.ModelForm):
+    class Meta:
+        model = Etapa
+        fields = (['nom'])
+        labels = {
+            'nom': 'Nom de la etapa', 
+        }
+
 class ClasseMailingForm(forms.ModelForm):
     class Meta:
         model = Mailing
@@ -34,11 +42,12 @@ class ClasseMailingForm(forms.ModelForm):
 class ClasseForm(forms.ModelForm):
     class Meta:
         model = Classe
-        fields = (['nom', 'alias', 'curs', 'tutor', 'nom_delegat', 'telefon_delegat', 'email_delegat', 'nom_subdelegat', 'telefon_subdelegat', 'email_subdelegat'])
+        fields = (['nom', 'alias', 'curs', 'etapa', 'tutor', 'nom_delegat', 'telefon_delegat', 'email_delegat', 'nom_subdelegat', 'telefon_subdelegat', 'email_subdelegat'])
         labels = {
             'nom': 'Classe', 
             'alias': 'Nom de la classe', 
-            'curs': 'Curs escolar', 
+            'curs': 'Curs escolar',
+            'etapa': 'Etapa',
             'tutor:': 'Nom tutor de la classe', 
             'nom_delegat': 'Nom del delegat', 
             'telefon_delegat': 'Telèfon del delegat', 

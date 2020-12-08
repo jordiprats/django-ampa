@@ -12,6 +12,8 @@ from django.db.models import Q
 from pathlib import Path
 
 from cole.views.alumne_views import *
+from cole.views.cursos_views import *
+from cole.views.etapes_views import *
 from cole.views.staff_views import *
 from cole.views.user_views import *
 from cole.models import *
@@ -323,13 +325,13 @@ def list_classes(request, curs_id=None):
                 list_classes = Classe.objects.filter(curs__id=curs_id)
             else:
                 list_classes = Classe.objects.all()
-            return render(request, 'list_classes.html', {'list_classes': list_classes, 'admin_view': True, 'user_admin': request.user.is_staff })
+            return render(request, 'classes/list.html', { 'list_classes': list_classes, 'admin_view': True, 'user_admin': request.user.is_staff })
         else:
             if curs_id:
                 list_classes = Classe.objects.filter(curs__id=curs_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))
             else:
                 list_classes = Classe.objects.filter(Q(delegat=request.user) | Q(subdelegat=request.user))
-            return render(request, 'list_classes.html', {'list_classes': list_classes, 'admin_view': False, 'user_admin': request.user.is_staff })
+            return render(request, 'classes/list.html', { 'list_classes': list_classes, 'admin_view': False, 'user_admin': request.user.is_staff })
     else:
         return redirect('home')
 

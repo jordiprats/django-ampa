@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ampa-3.1
+  name: ampa-3.2
   namespace: kube-system
   labels:
-    app: ampa-3.1
+    app: ampa-3.2
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ampa-3.1
+      app: ampa-3.2
   template:
     metadata:
       labels:
-        app: ampa-3.1
+        app: ampa-3.2
     spec:
       volumes:
         - name: xls-data-ampa
@@ -40,3 +40,15 @@ spec:
             name: xls-data-ampa
           - mountPath: /code/static
             name: static-ampa
+      livenessProbe:
+        httpGet:
+          path: /health/liveness
+          port: 8000
+        initialDelaySeconds: 3
+        periodSeconds: 3
+      readinessProbe:
+        httpGet:
+          path: /health/readiness
+          port: 8000
+        initialDelaySeconds: 3
+        periodSeconds: 3

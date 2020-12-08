@@ -42,6 +42,22 @@ class Curs(models.Model):
             models.Index(fields=['curs']),
         ]
 
+class Etapa(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    nom = models.CharField(max_length=256, default='')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.nom
+
+    class Meta:
+        ordering = ['nom']
+        indexes = [
+            models.Index(fields=['nom']),
+        ]
+
 class Classe(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
@@ -49,6 +65,7 @@ class Classe(models.Model):
     alias = models.CharField(max_length=256, default='')
 
     curs = models.ForeignKey(Curs, on_delete=models.CASCADE, related_name='classes', blank=True, null=True, default=None)
+    etapa = models.ForeignKey(Etapa, on_delete=models.CASCADE, related_name='classes', blank=True, null=True, default=None)
 
     delegat = models.ForeignKey(User, on_delete=models.CASCADE, related_name='delegatsclasses')
     subdelegat = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subdelegatsclasses', blank=True, null=True)
@@ -91,12 +108,15 @@ class Classe(models.Model):
     def _get_full_nom(self):
         str_nom = ''
         if self.alias:
-            str_nom = self.nom+'('+self.alias+')'
+            str_nom = self.nom+' ('+self.alias+')'
         else:
             str_nom =  self.nom
 
-        if self.curs:
-            str_nom += '/'+self.curs.curs
+        # if self.curs:
+        #     str_nom += '/'+self.curs.curs
+
+        # if self.etapa:
+        #     str_nom = self.etapa.nom + ' ' + str_nom
 
         return str_nom
 
@@ -269,6 +289,10 @@ class Mailing(models.Model):
     email_reply_to = models.CharField(max_length=256, default=None, blank=True, null=True)
 
     classes = models.ManyToManyField(Classe, related_name='mailings')
+    
+    etapa = models.ForeignKey(Etapa, on_delete=models.CASCADE, related_name='mailings', blank=True, null=True, default=None)
+    curs = models.ForeignKey(Curs, on_delete=models.CASCADE, related_name='mailings', blank=True, null=True, default=None)
+
     attachments = models.ManyToManyField(FileAttachment, related_name='mailings')
     nomes_delegats = models.BooleanField(default=False)
 

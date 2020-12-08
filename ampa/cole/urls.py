@@ -19,8 +19,12 @@ urlpatterns = [
     path('staff/settings', views.staff_settings, name='staff.settings'),
     path('cursos/', views.list_cursos, name='list.cursos'),
     path('cursos/add', views.edit_curs, name='add.curs'),
-    path('cursos/<curs_id>', views.list_classes, name='show.curs'),
+    path('cursos/<curs_id>', views.show_curs, name='show.curs'),
     path('cursos/<curs_id>/edit', views.edit_curs, name='edit.curs'),
+    path('etapes/', views.list_etapes, name='list.etapes'),
+    path('etapes/add', views.edit_etapa, name='add.etapa'),
+    path('etapes/<etapa_id>', views.show_etapa, name='show.etapa'),
+    path('etapes/<etapa_id>/edit', views.edit_etapa, name='edit.etapa'),
     # app
     path('upload/', views.upload_xls, name='upload.classe.xls'),
     path('classes/', views.list_classes, name='list.classes'),

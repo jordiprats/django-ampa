@@ -10,13 +10,13 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: httpsredirector-svc-10
-          servicePort: 9000
+          serviceName: ampa-32-svc
+          servicePort: 8000
   - host: static.ampa.systemadmin.es
     http:
       paths:
       - backend:
-          serviceName: httpsredirector-svc-10
+          serviceName: ampa-static-10-svc
           servicePort: 80
 ---
 apiVersion: extensions/v1beta1
@@ -37,5 +37,5 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: ampa-31-svc
+          serviceName: ampa-32-svc
           servicePort: 8000

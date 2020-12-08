@@ -4,7 +4,7 @@
 
 {% block content %}
 <h1>Accions disponibles</h1>
-
+<br>
 <h2>Cursos</h2>
 <ul>
     <li><a href="{% url 'list.cursos' %}">Llistat de cursos</a></li>
@@ -12,4 +12,12 @@
 <form style="display: inline;" action="{% url 'add.curs' %}" method="GET">
     <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> curs</button>
 </form>
+
+<br><br><br>
+
+
+<h2>Etapes</h2>
+
+{% include 'etapes/inline_list.html' %}
+
 {% endblock %}

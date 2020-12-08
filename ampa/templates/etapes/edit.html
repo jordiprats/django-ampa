@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+{% if new_etapa %}
+<h1>afegir etapa</h1>
+{% else %}
+<h1>editar etapa</h1>
+{% endif %}
+
+<!-- <form style="display: inline;" action="" method="GET">
+    <button class="float-right btn btn-danger" type="submit">eliminar etapa</button>
+</form> -->
+
+<div class="py-4 px-4 px-md-3 px-lg-4">
+    <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-primary" type="submit">guardar</button>
+    </form>
+</div>
+
+{% endblock %}

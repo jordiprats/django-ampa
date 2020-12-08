@@ -1,0 +1,25 @@
+<table class="table table-bordred table-striped">
+    <thead>
+      <tr>
+        <th>Etapa</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for etapa in etapes %}
+        <tr>
+            <td><a href="{% url 'show.etapa' etapa_id=etapa.id %}">{{ etapa.nom }}</a>
+            </td>
+            <td>
+              <form style="display: inline;" action="{% url 'edit.etapa' etapa_id=etapa.id %}" method="GET">
+                <button style="margin: 3px;" class="float-left btn btn-info" type="submit"><i class="fas fa-edit"></i></button>
+              </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<form style="display: inline;" action="{% url 'add.etapa' %}" method="GET">
+  <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> etapa</button>
+</form>
