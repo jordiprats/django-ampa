@@ -40,7 +40,7 @@ class Command(BaseCommand):
             for i in range(0, 6):
                 random_id += random.choice(characters)
 
-            output_file_name = random_id+'_'+classe_instance.nom+'.xlsx'
+            output_file_name = random_id+'_'+classe_instance.nom.replace('/', '_')+'.xlsx'
             output_file = os.path.join(settings.XLS_ROOT, 'export/', output_file_name)
             print(output_file)
             pathlib.Path(os.path.join(settings.XLS_ROOT, 'export/')).mkdir(parents=True, exist_ok=True)

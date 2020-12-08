@@ -62,7 +62,7 @@ class Classe(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     nom = models.CharField(max_length=256, default='')
-    alias = models.CharField(max_length=256, default='')
+    alias = models.CharField(max_length=256, default='', blank=True, null=True,)
 
     curs = models.ForeignKey(Curs, on_delete=models.CASCADE, related_name='classes', blank=True, null=True, default=None)
     etapa = models.ForeignKey(Etapa, on_delete=models.CASCADE, related_name='classes', blank=True, null=True, default=None)

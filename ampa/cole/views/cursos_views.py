@@ -19,7 +19,7 @@ def show_curs(request, curs_id):
     try:
         curs_instance = Curs.objects.filter(id=curs_id)[0]
 
-        return render(request, 'cursos/show.html', { 'curs_instance': curs_instance, 'list_classes': curs_instance.classes.all() })
+        return render(request, 'cursos/show.html', { 'content': 'overview', 'curs_instance': curs_instance, 'list_classes': curs_instance.classes.all() })
     except Exception as e:
         if request.user.is_staff:
             print(str(e))
@@ -57,3 +57,20 @@ def edit_curs(request, curs_id=None):
             return redirect('show.curs', curs_id=curs_id)
         else:
             return redirect('staff.settings')
+
+@user_passes_test(lambda u: u.is_staff)
+def list_curs_mailings(request, curs_id):
+    try:
+        curs_instance = Curs.objects.filter(id=curs_id).first()
+
+        list_mailings = Mailing.objects.filter(curs__id=curs_id)
+
+        return render(request, 'mailing/cursos/list.html', { 'curs_instance': curs_instance, 'list_mailings': list_mailings, 'content': 'mailing' })
+    except Exception as e:
+        if request.user.is_staff:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            print(str(e))
+            messages.error(request, str(e))
+        return redirect('show.curs', curs_id=curs_id)

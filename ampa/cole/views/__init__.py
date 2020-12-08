@@ -36,7 +36,7 @@ def show_classe(request, classe_id):
     if request.user.is_authenticated:
         try:
             instance_classe = Classe.objects.filter(id=classe_id)[0]
-            return render(request, 'show_classe.html', { 'instance_classe': instance_classe, 'content': 'overview' })
+            return render(request, 'classes/show.html', { 'instance_classe': instance_classe, 'content': 'overview' })
         except Exception as e:
             print(str(e))
             return redirect('home')
@@ -126,7 +126,7 @@ def list_classe_mailings(request, classe_id):
     
     list_mailings = Mailing.objects.filter(classes__id=instance_classe.id)
 
-    return render(request, 'show_classe.html', { 'instance_classe': instance_classe, 'list_mailings': list_mailings, 'content': 'mailing' })
+    return render(request, 'classes/show.html', { 'instance_classe': instance_classe, 'list_mailings': list_mailings, 'content': 'mailing' })
 
 @login_required
 def enviar_mailing_classe(request, classe_id, mailing_id):
@@ -276,11 +276,11 @@ def edit_classe(request, classe_id=None):
                 form.save()
                 messages.info(request, 'Dades guardades correctament')
             else:
-                return render(request, 'edit_classe.html', { 'form': form, 'classe_id': classe_id, 'classe_instance': classe_instance })
+                return render(request, 'classes/edit.html', { 'form': form, 'classe_id': classe_id, 'classe_instance': classe_instance })
             return redirect('show.classe', classe_id=classe_instance.id)
         else:
             form = ClasseForm(instance=classe_instance)
-        return render(request, 'edit_classe.html', { 'form': form, 'classe_id': classe_id, 'classe_instance': classe_instance })
+        return render(request, 'classes/edit.html', { 'form': form, 'classe_id': classe_id, 'classe_instance': classe_instance })
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]

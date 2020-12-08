@@ -24,7 +24,7 @@ spec:
             claimName: nfs-static-pvc
       containers:
       - name: ampa
-        image: 172.18.1.46:5000/ampa:3.1
+        image: 172.18.1.46:5000/ampa:3.2
         resources:
           requests:
             memory: "50Mi"
@@ -40,15 +40,15 @@ spec:
             name: xls-data-ampa
           - mountPath: /code/static
             name: static-ampa
-      livenessProbe:
-        httpGet:
-          path: /health/liveness
-          port: 8000
-        initialDelaySeconds: 3
-        periodSeconds: 3
-      readinessProbe:
-        httpGet:
-          path: /health/readiness
-          port: 8000
-        initialDelaySeconds: 3
-        periodSeconds: 3
+        # livenessProbe:
+        #   httpGet:
+        #     path: /health/liveness
+        #     port: 8000
+        #   initialDelaySeconds: 3
+        #   periodSeconds: 3
+        # readinessProbe:
+        #   httpGet:
+        #     path: /health/readiness
+        #     port: 8000
+        #   initialDelaySeconds: 3
+        #   periodSeconds: 3

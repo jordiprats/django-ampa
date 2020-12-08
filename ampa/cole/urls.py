@@ -21,6 +21,7 @@ urlpatterns = [
     path('cursos/add', views.edit_curs, name='add.curs'),
     path('cursos/<curs_id>', views.show_curs, name='show.curs'),
     path('cursos/<curs_id>/edit', views.edit_curs, name='edit.curs'),
+    path('cursos/<curs_id>/mailing', views.list_curs_mailings, name='list.curs.mailings'),
     path('etapes/', views.list_etapes, name='list.etapes'),
     path('etapes/add', views.edit_etapa, name='add.etapa'),
     path('etapes/<etapa_id>', views.show_etapa, name='show.etapa'),
