@@ -100,6 +100,14 @@ class Command(BaseCommand):
                         footer_html += '<a href="'+settings.PUBLIC_DOMAIN+manual_unsubscribe_link+'">'+settings.PUBLIC_DOMAIN+manual_unsubscribe_link+'</a><br>'
 
                     try:
+                        # si el email ja l'haviem provat, skip
+                        if EmailSent.objects.filter(mailing=mailing, email=email)[0]:
+                            continue
+                    except:
+                        pass
+
+                    email = EmailSent(mailing=mailing, email=email)
+                    try:
                         self.send_html_email(
                                                 subject=mailing.subject, 
                                                 html_message=mailing.html_message+footer_html,
@@ -108,12 +116,15 @@ class Command(BaseCommand):
                                                 recipient_list= [ email ],
                                                 attachments=mailing_attachments
                                             )
+                        email.sent = True
                     except Exception as e:
+                        email.error = True
                         if settings.DEBUG:
                             exc_type, exc_obj, exc_tb = sys.exc_info()
                             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
                             print(exc_type, fname, exc_tb.tb_lineno)
                             print(str(e))
+                    email.save()
 
                 mailing.status = MAILING_STATUS_ENVIAT
                 mailing.save()

@@ -1,0 +1,20 @@
+<table class="table table-bordred table-striped">
+    <thead>
+      <tr>
+        <th>Curs</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for curs in cursos %}
+        <tr>
+            <td><a href="{% url 'show.curs' curs_id=curs.id %}">{{ curs.curs }}</a></td>
+            <td style="text-align: right;">
+                <form action="{% url 'edit.curs' curs_id=curs.id %}" method="GET">
+                    <button class="float-left btn btn-info" type="submit"><i class="fas fa-edit"></i></button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

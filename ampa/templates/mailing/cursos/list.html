@@ -8,6 +8,10 @@
 
 {% include 'cursos/inline_nav.html' %}
 
-MAILING LIST
+{% include 'mailing/cursos/inline_list.html' %}
+
+<form style="display: inline" action="{% url 'new.curs.mailing' curs_id=curs_instance.id %}" method="GET">
+  <button class="float-left btn btn-info" type="submit"><i class="fas fa-plus"></i> nova comunicació</button>
+</form>
 
 {% endblock %}

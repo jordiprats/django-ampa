@@ -15,18 +15,32 @@ urlpatterns = [
     # path('user/password/reset/status', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     # path('user/password/reset/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     # path('user/password/reset/status', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+
     # staff settings
     path('staff/settings', views.staff_settings, name='staff.settings'),
+
+    # cursos
     path('cursos/', views.list_cursos, name='list.cursos'),
     path('cursos/add', views.edit_curs, name='add.curs'),
     path('cursos/<curs_id>', views.show_curs, name='show.curs'),
     path('cursos/<curs_id>/edit', views.edit_curs, name='edit.curs'),
     path('cursos/<curs_id>/mailing', views.list_curs_mailings, name='list.curs.mailings'),
+    path('cursos/<curs_id>/mailing/new', views.edit_mailing_curs, name='new.curs.mailing'),
+    path('cursos/<curs_id>/mailing/<mailing_id>', views.edit_mailing_curs, name='edit.curs.mailing'),
+    path('cursos/<curs_id>/mailing/<mailing_id>/show', views.show_mailing_curs, name='show.curs.mailing'),
+    path('cursos/<curs_id>/mailing/<mailing_id>/send', views.enviar_mailing_curs, name='enviar.curs.mailing'),
+    # etapes
     path('etapes/', views.list_etapes, name='list.etapes'),
     path('etapes/add', views.edit_etapa, name='add.etapa'),
     path('etapes/<etapa_id>', views.show_etapa, name='show.etapa'),
     path('etapes/<etapa_id>/edit', views.edit_etapa, name='edit.etapa'),
-    # app
+    path('etapes/<etapa_id>/mailing', views.list_etapa_mailings, name='list.etapa.mailings'),
+    path('etapes/<etapa_id>/mailing/new', views.edit_mailing_etapa, name='new.etapa.mailing'),
+    path('etapes/<etapa_id>/mailing/<mailing_id>', views.edit_mailing_etapa, name='edit.etapa.mailing'),
+    path('etapes/<etapa_id>/mailing/<mailing_id>/show', views.show_mailing_etapa, name='show.etapa.mailing'),
+    path('etapes/<etapa_id>/mailing/<mailing_id>/send', views.enviar_mailing_etapa, name='enviar.etapa.mailing'),
+
+    # classes
     path('upload/', views.upload_xls, name='upload.classe.xls'),
     path('classes/', views.list_classes, name='list.classes'),
     path('classes/add', views.edit_classe, name='add.classe'),
@@ -46,13 +60,18 @@ urlpatterns = [
     path('classes/<classe_id>/addalumne/search', views.add_classe_search_alumne, name='add.classe.search.alumne'),
     path('classes/<classe_id>/<alumne_id>/edit', views.edit_alumne, name='edit.alumne'),
     path('classes/<classe_id>/<alumne_id>/delete', views.delete_alumne, name='delete.alumne'),
+    # alumnes
     path('alumnes/<alumne_id>', views.edit_alumne_form_pares, name='form.pares.edit.alumne'),
     path('alumnes/<alumne_id>/edit', views.search_edit_alumne, name='search.edit.alumne'),
     path('alumnes/<alumne_id>/extra/add', views.edit_extrainfo_alumne, name='add.extrainfo.alumne'),
     path('alumnes/<alumne_id>/extra/<extrainfo_id>/edit', views.edit_extrainfo_alumne, name='edit.extrainfo.alumne'),
+
+    # general mailing
     path('mailing/cessiodades/<classe_id>', views.are_you_sure_email, name='send.cessio.dades.email'),
     path('mailing/<mailing_id>/attachment', views.afegir_attachment_mailing_classe, name='add.attachment.mailing'),
     path('mailing/<mailing_id>/attachment/<attachment_id>/remove', views.remove_attachment_mailing, name='remove.attachment.mailing'),
+
+    # ajuda inline
     path('help', views.show_help, name='show.help'),
     path('help/<topic>/index.html', views.show_help, name='show.topic'),
     path('help/<topic>/<file>.<ext>', views.help_media_redirect_to_static, name='help.media.redirect.static'),

@@ -11,6 +11,7 @@ from django.conf import settings
 from django.db.models import Q
 from pathlib import Path
 
+from cole.views.attachments_views import *
 from cole.views.alumne_views import *
 from cole.views.cursos_views import *
 from cole.views.etapes_views import *
@@ -42,80 +43,6 @@ def show_classe(request, classe_id):
             return redirect('home')
     else:
         return redirect('home')
-
-@login_required
-def remove_attachment_mailing(request, mailing_id, attachment_id):
-    try:
-        instance_mailing = Mailing.objects.filter(id=mailing_id)[0]
-
-        instance_attachment = FileAttachment.objects.filter(id=attachment_id)[0]
-        
-        if request.method == 'POST':
-            form = AreYouSureForm(request.POST)
-            if form.is_valid():
-                instance_mailing.attachments.remove(instance_attachment)
-                instance_mailing.save()
-                if instance_attachment.mailings.count() == 0:
-                    instance_attachment.delete()
-                messages.info(request, 'Fitxer adjunt eliminat')
-
-                if instance_mailing.classes.count() == 1:
-                    return redirect('list.classe.mailings', classe_id=instance_mailing.classes.all()[0].id)
-                else:
-                    # TODO
-                    return redirect('home')
-            else:
-                messages.error(request, 'Error eliminant l\'alumne')
-        else:
-            form = AreYouSureForm(request.GET)
-        return render(request, 'mailing/attachments/delete.html', { 'instance_mailing': instance_mailing, 'instance_attachment': instance_attachment })
-
-    except Exception as e:
-        if settings.DEBUG:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-            print(str(e))
-        if instance_mailing.classes.count() == 1:
-            return redirect('list.classe.mailings', classe_id=instance_mailing.classes.all()[0].id)
-        else:
-            # TODO
-            return redirect('home')
-
-
-@login_required
-def afegir_attachment_mailing_classe(request, mailing_id):
-    try:
-        instance_mailing = Mailing.objects.filter(id=mailing_id)[0]
-        if request.method == 'POST' and request.FILES['attachment']:
-            myfile = request.FILES['attachment']
-            upload_subdir = str(int(time.time()))
-            fs = FileSystemStorage(location=settings.UPLOADS_ROOT+'/'+upload_subdir)
-            filename = fs.save(myfile.name, myfile)
-
-            upload = FileAttachment(filename=myfile.name, filepath=fs.location+'/'+filename, upload_path=upload_subdir)
-            upload.save()
-
-            instance_mailing.attachments.add(upload)
-            instance_mailing.save()
-
-            messages.info(request, 'Fitxer pujat correctament')
-            if request.user.is_superuser:
-                messages.info(request, upload.filepath)
-                messages.info(request, upload.static_url)
-            if instance_mailing.classes.count() == 1:
-                return redirect('edit.classe.mailing', classe_id=instance_mailing.classes.all()[0].id, mailing_id=instance_mailing.id)
-                # return redirect('list.classe.mailings', classe_id=instance_mailing.classes.all()[0].id)
-            else:
-                # TODO
-                return redirect('home')
-        else:
-            return render(request, 'mailing/attachments/upload.html', { 'instance_mailing': instance_mailing })
-    except Exception as e:
-        messages.error(request, 'Error pujant arxiu')
-        if request.user.is_superuser:
-            messages.error(request, str(e))
-    return redirect('home')
             
 @login_required
 def list_classe_mailings(request, classe_id):

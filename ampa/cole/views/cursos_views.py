@@ -58,6 +58,10 @@ def edit_curs(request, curs_id=None):
         else:
             return redirect('staff.settings')
 
+#
+# mailing
+#
+
 @user_passes_test(lambda u: u.is_staff)
 def list_curs_mailings(request, curs_id):
     try:
@@ -74,3 +78,101 @@ def list_curs_mailings(request, curs_id):
             print(str(e))
             messages.error(request, str(e))
         return redirect('show.curs', curs_id=curs_id)
+
+@user_passes_test(lambda u: u.is_staff)
+def edit_mailing_curs(request, curs_id, mailing_id=None):
+    try:
+        instance_curs = Curs.objects.filter(id=curs_id)[0]
+        
+        if mailing_id:
+            instance_mailing = Mailing.objects.filter(curs__id=instance_curs.id, id=mailing_id)[0]
+        else:
+            instance_mailing = Mailing(curs=instance_curs, email_from='', email_reply_to=request.user.email)
+
+        if request.method == 'POST':
+            form = ClasseMailingForm(request.POST, instance=instance_mailing)
+            if form.is_valid():
+                form.save()
+                messages.info(request, 'Guardat mailing')
+
+                try:
+                    boto_apretat = str(form.data['guardar'])
+                    return redirect('list.curs.mailings', curs_id=curs_id)
+                except:
+                    return redirect('add.attachment.mailing', mailing_id=instance_mailing.id)
+                
+            else:
+                return render(request, 'mailing/cursos/edit.html', { 
+                                                                        'form': form, 
+                                                                        'instance_mailing': instance_mailing, 
+                                                                        'image_hash': instance_mailing.images_hash,
+                                                                        'attachment_hash': instance_mailing.attachment_hash
+                                                                    })
+            return redirect('list.curs.mailings', curs_id=curs_id)
+        else:
+            form = ClasseMailingForm(instance=instance_mailing)
+        return render(request, 'mailing/classes/edit.html', { 
+                                                                'form': form, 
+                                                                'instance_mailing': instance_mailing, 
+                                                                'image_hash': instance_mailing.images_hash,
+                                                                'attachment_hash': instance_mailing.attachment_hash
+                                                            })
+
+    except Exception as e:
+        if settings.DEBUG:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            print(str(e))
+        return redirect('list.curs.mailings', curs_id=curs_id)
+
+@user_passes_test(lambda u: u.is_staff)
+def show_mailing_curs(request, curs_id, mailing_id):
+    try:
+        instance_curs = Curs.objects.filter(id=curs_id)[0]
+        
+        instance_mailing = Mailing.objects.filter(curs__id=curs_id)[0]
+        
+        return render(request, 'mailing/classes/show.html', { 
+                                                                'instance_mailing': instance_mailing, 
+                                                                'instance_curs': instance_curs,
+                                                                'image_hash': instance_mailing.images_hash,
+                                                                'attachment_hash': instance_mailing.attachment_hash
+                                                            })
+
+    except Exception as e:
+        if settings.DEBUG:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            print(str(e))
+        return redirect('list.curs.mailings', curs_id=curs_id)
+
+# TODO:
+@user_passes_test(lambda u: u.is_staff)
+def enviar_mailing_curs(request, classe_id, mailing_id):
+    try:
+        if request.user.is_superuser:
+            instance_classe = Classe.objects.filter(id=classe_id)[0]
+        else:
+            instance_classe = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
+        
+        instance_mailing = Mailing.objects.filter(classes__id=instance_classe.id)[0]
+        
+        if request.method == 'POST':
+            form = AreYouSureForm(request.POST)
+            if form.is_valid():
+                instance_mailing.status = MAILING_STATUS_PROGRAMAT
+                instance_mailing.save()
+                messages.info(request, 'e-Mail programat per enviar-se')
+
+                return redirect('list.classe.mailings', classe_id=instance_classe.id)
+            else:
+                messages.error(request, 'Error eliminant l\'alumne')
+        else:
+            form = AreYouSureForm(request.GET)
+        return render(request, 'mailing/classes/enviar.html', { 'instance_mailing': instance_mailing, 'instance_classe': instance_classe })
+
+    except Exception as e:
+        print(str(e))
+        return redirect('show.classe', classe_id=classe_id)

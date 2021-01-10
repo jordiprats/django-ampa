@@ -14,21 +14,22 @@
       {% for mailing in list_mailings.all %}
         <tr>
             {% if mailing.status == '0' %}
-            <td><a href="{% url 'edit.classe.mailing' classe_id=instance_classe.id mailing_id=mailing.id %}">{{ mailing.subject }}</a></td>
+            <td><a href="{% url 'edit.curs.mailing' curs_id=curs_instance.id mailing_id=mailing.id %}">{{ mailing.subject }}</a></td>
             <td>
-              <form style="display: inline" action="{% url 'show.classe.mailing' classe_id=instance_classe.id mailing_id=mailing.id %}" method="GET">
+              <form style="display: inline" action="{% url 'show.curs.mailing' curs_id=curs_instance.id mailing_id=mailing.id %}" method="GET">
                 <button class="btn btn-warning" type="submit"><i class="fas fa-envelope-open-text"></i> preview</button>
               </form>
             </td>
-            <td>{{ mailing.get_status_display }}
-              <form style="display: inline" action="{% url 'enviar.classe.mailing' classe_id=instance_classe.id mailing_id=mailing.id %}" method="GET">
+            <td>
+              {{ mailing.get_status_display }}
+              <form style="display: inline" action="{% url 'enviar.curs.mailing' curs_id=curs_instance.id mailing_id=mailing.id %}" method="GET">
                 <button class="btn btn-success" type="submit"><i class="fas fa-paper-plane"></i> enviar</button>
               </form>
             </td>
             {% else %}
             <td>{{ mailing.subject }}</td>
             <td>
-              <form style="display: inline" action="{% url 'show.classe.mailing' classe_id=instance_classe.id mailing_id=mailing.id %}" method="GET">
+              <form style="display: inline" action="{% url 'show.curs.mailing' curs_id=curs_instance.id mailing_id=mailing.id %}" method="GET">
                 <button class="btn btn-warning" type="submit"><i class="fas fa-envelope-open-text"></i> preview</button>
               </form>
             </td>

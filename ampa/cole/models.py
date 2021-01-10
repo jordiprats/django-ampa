@@ -289,7 +289,6 @@ class Mailing(models.Model):
     email_reply_to = models.CharField(max_length=256, default=None, blank=True, null=True)
 
     classes = models.ManyToManyField(Classe, related_name='mailings')
-    
     etapa = models.ForeignKey(Etapa, on_delete=models.CASCADE, related_name='mailings', blank=True, null=True, default=None)
     curs = models.ForeignKey(Curs, on_delete=models.CASCADE, related_name='mailings', blank=True, null=True, default=None)
 
@@ -310,7 +309,13 @@ class Mailing(models.Model):
 
     def _get_recipient_emails(self):
         mailing_emails = set()
-        for classe in self.classes.all():
+        if not self.curs:
+            classes = self.curs.classes.all()
+        elif not self.etapa:
+            classes = self.etapa.classes.all()
+        else:
+            classes = self.classes.all()
+        for classe in classes:
             for alumne in classe.alumnes.all():
                 for email in alumne.mailing_emails:
                     mailing_emails.add(email)
@@ -384,3 +389,15 @@ class FileUpload(models.Model):
             models.Index(fields=['updated_at',]),
             models.Index(fields=['-updated_at',]),
         ]
+
+class EmailSent(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    mailing = models.ForeignKey(Mailing, on_delete=models.CASCADE, related_name='sent', blank=True, null=True, default=None)
+    email = models.EmailField(max_length=256)
+
+    sent = models.BooleanField(default=False)
+    error = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

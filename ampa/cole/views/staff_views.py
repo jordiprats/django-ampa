@@ -91,5 +91,6 @@ def add_classe_search_alumne(request, classe_id):
 @user_passes_test(lambda u: u.is_staff)
 def staff_settings(request):
     etapes = Etapa.objects.all()
+    cursos = Curs.objects.all()[:3]
 
-    return render(request, 'staff/settings.html', { 'user': request.user, 'etapes': etapes })
+    return render(request, 'staff/settings.html', { 'user': request.user, 'etapes': etapes, 'cursos': cursos })

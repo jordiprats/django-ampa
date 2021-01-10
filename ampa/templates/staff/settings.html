@@ -6,9 +6,10 @@
 <h1>Accions disponibles</h1>
 <br>
 <h2>Cursos</h2>
-<ul>
-    <li><a href="{% url 'list.cursos' %}">Llistat de cursos</a></li>
-</ul>
+<a href="{% url 'list.cursos' %}">Llistat complet de cursos</a>
+
+{% include 'cursos/inline_list.html' %}
+
 <form style="display: inline;" action="{% url 'add.curs' %}" method="GET">
     <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> curs</button>
 </form>

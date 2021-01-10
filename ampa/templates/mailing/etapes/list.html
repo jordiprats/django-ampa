@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<h1>Etapa {{ etapa_instance.curs }}</h1>
+
+{% include 'etapes/inline_nav.html' %}
+
+{% include 'mailing/etapes/inline_list.html' %}
+
+<form style="display: inline" action="{% url 'new.etapa.mailing' etapa_id=etapa_instance.id %}" method="GET">
+  <button class="float-left btn btn-info" type="submit"><i class="fas fa-plus"></i> nova comunicació</button>
+</form>
+
+{% endblock %}
