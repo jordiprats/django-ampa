@@ -12,9 +12,9 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt && apk del make cmake gcc g++ gfortran
 
 COPY ampa .
+COPY run.sh .
 
 EXPOSE 8000
 
-#CMD [ "python", "/code/manage.py", "runserver", "0.0.0.0:8000" ]
-CMD [ "/usr/local/bin/gunicorn", "ampa.wsgi:application", "--bind", "0.0.0.0:8000", "--keep-alive", "1" ]
+CMD [ "/bin/sh", "/code/run.sh" ]
 

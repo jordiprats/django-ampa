@@ -6,6 +6,7 @@
         <th>subject</th>
         <th></th>
         <th>Estat</th>
+        <th>Destinataris</th>
         <th>Fitxers adjunts</th>
         <th>Última actualització</th>
       </tr>
@@ -35,6 +36,7 @@
             </td>
             <td>{{ mailing.get_status_display }}</td>
             {% endif %}
+            <td>Curs: <a href="{% url 'show.curs' curs_id=curs_instance.id %}">{{ curs_instance.curs }}</a></td>
             <td>{{ mailing.attachments.count }}
               <form style="display: inline" action="{% url 'add.attachment.mailing' mailing_id=mailing.id %}" method="GET">
                 <button class="btn btn-success" type="submit">gestionar adjunts</button>

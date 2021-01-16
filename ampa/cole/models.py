@@ -313,6 +313,8 @@ class Mailing(models.Model):
             classes = self.curs.classes.all()
         elif not self.etapa:
             classes = self.etapa.classes.all()
+        elif not self.curs:
+            classes = self.curs.classes.all()
         else:
             classes = self.classes.all()
         for classe in classes:
