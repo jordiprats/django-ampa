@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+<table class="table table-bordred table-striped">
+    <thead>
+      <tr>
+        <th>Titol</th>
+        <th>Estat de la petició</th>
+        <th>Última modificació</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for issue in list_issues %}
+        <tr>
+          <td><b>{{ election.titol }}</b></td>
+          <td>{{ election.get_status_display }}</td>
+          <td>{{ election.updated_at | naturaltime }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+
+  {% if not public %}
+  <form style="display: inline;" action="% url 'peticions.add.issue' %" method="GET">
+    <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> issue</button>
+  </form>
+  {% endif %}
+
+{% endblock %}

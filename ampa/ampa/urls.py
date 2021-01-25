@@ -6,5 +6,6 @@ urlpatterns = [
     path('health/', include('health.urls')),
     path('site-admin/', admin.site.urls),
     path('', include('cole.urls')),
-    path('votacions/', include('voting.urls'))
+    path('votacions/', include('voting.urls')),
+    path('peticions/', include('peticions.urls'))
 ]

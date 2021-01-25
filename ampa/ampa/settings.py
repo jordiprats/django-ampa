@@ -83,7 +83,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django_prometheus',
     'cole',
-    'voting'
+    'voting',
+    'peticions'
 ]
 
 MIDDLEWARE = [
