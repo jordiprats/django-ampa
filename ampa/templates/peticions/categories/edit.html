@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<style>
+#id_text {
+    width: 100%;
+    
+}
+</style>
+
+<form style="display: inline;" action="% url 'voting.delete.option' election_id=election_instance.id  %" method="GET">
+    <button class="float-right btn btn-danger" type="submit">eliminar opció</button>
+</form>
+
+<div class="py-4 px-4 px-md-3 px-lg-4">
+    <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button class="btn btn-primary" type="submit">guardar</button>
+    </form>
+</div>
+
+{% endblock %}
