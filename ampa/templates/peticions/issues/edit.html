@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load static %}
+{% load humanize %}
 
 {% block content %}
 
@@ -17,7 +18,6 @@ tinymce.init({
     toolbar: 'styleselect | forecolor | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | link | undo redo | code',
     height: '300'
 });
-
 </script>
 
 <div class="py-4 px-4 px-md-3 px-lg-4">
@@ -40,5 +40,32 @@ tinymce.init({
     <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> comentari</button>
 </form>
 {% endif %}
+
+
+<br><br><hr>
+
+<ul class="timeline">
+{% for comment in issue_instance.comments.all %}
+    {% if not comment.internal or comment.user == user %}
+    <li>
+        <p class="float-right">{{ comment.updated_at | naturaltime }}</p>
+        <p>{{ comment.user }} </p>
+        <p>{{ comment.html_message | safe }}</p>
+        <hr>
+    </li>
+    {% else %}
+        {% if owner_view %}
+        <li class="text-muted">
+            <p class="float-right">{{ comment.updated_at | naturaltime }}</p>
+            <p>{{ comment.user }} </p>
+            <p>{{ comment.html_message | safe }}</p>
+            <hr>
+        </li>        
+        {% endif %}
+    {% endif %}
+    
+{% endfor %}
+</ul>
+
 
 {% endblock %}

@@ -12,7 +12,6 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt && apk del make cmake gcc g++ gfortran
 
 COPY ampa .
-COPY run.sh .
 
 EXPOSE 8000
 

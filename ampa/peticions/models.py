@@ -28,7 +28,7 @@ class Issue(models.Model):
     titol = models.CharField(max_length=256)
     html_message = models.TextField(max_length=10000, default=None, blank=True, null=True)
 
-    public = models.BooleanField(default=False)
+    public = models.BooleanField(default=True)
 
     status = models.CharField(
         max_length=1,

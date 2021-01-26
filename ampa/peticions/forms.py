@@ -6,18 +6,20 @@ from peticions.models import *
 class IssueForm(forms.ModelForm):
     class Meta:
         model = Issue
-        fields = (['titol', 'categories', 'html_message'])
+        fields = (['titol', 'categories', 'public', 'html_message'])
         labels = {
             'titol': 'Titol petició',
             'categories': 'Categories',
+            'public': 'publicat',
             'html_message': 'Descripció',
         }
 
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = (['html_message'])
+        fields = (['internal', 'html_message'])
         labels = {
+            'internal': 'restringir',
             'html_message': 'Comentari',
         }
 

@@ -43,7 +43,11 @@ def edit_category(request, category_id=None):
 @user_passes_test(lambda u: u.is_staff)
 def list_categories(request):
     list_categories = Category.objects.all()
-    return render(request, 'peticions/categories/list.html', {'list_categories': list_categories, 'public': False, 'user_admin': request.user.is_staff })
+    return render(request, 'peticions/categories/list.html', {
+                                                                'list_categories': list_categories, 
+                                                                'public': False, 
+                                                                'user_admin': request.user.is_staff
+                                                            })
 
 
 # 
@@ -65,25 +69,41 @@ def edit_comment(request, issue_id, comment_id=None):
             if form.is_valid():
                 form.save()
                 messages.info(request, 'Comentari guardat correctament')
-                return redirect('peticions.list.issues')
+                return redirect('peticions.edit.issue', issue_id=issue_id)
             else:
                 messages.error(request, 'Formulari incorrecte')
                 return render(request, 'peticions/issues/edit.html', { 
                                                         'form': form, 
                                                         'comment_instance': comment_instance, 
-                                                        'is_new': is_new
+                                                        'is_new': is_new,
+                                                        'issue_id': issue_id
                                                     })
         else:
             form = CommentForm(instance=comment_instance)
             return render(request, 'peticions/comments/edit.html', { 
                                                                     'form': form, 
                                                                     'comment_instance': comment_instance, 
-                                                                    'is_new': is_new
+                                                                    'is_new': is_new,
+                                                                    'issue_id': issue_id
                                                                 })
     except Exception as e:
         if request.user.is_superuser:
             messages.error(request, str(e))
         return redirect('peticions.edit.issue', issue_id=issue_id)
+
+@login_required
+def show_issue(request, issue_id):
+    try:
+        issue_instance = Issue.objects.filter(id=issue_id)[0]
+        return render(request, 'peticions/issues/show.html', { 
+                                                'issue_instance': issue_instance,
+                                                'user_admin': request.user.is_staff
+                                            })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.list.issues')
+
 
 @login_required
 def edit_issue(request, issue_id=None):
@@ -94,6 +114,14 @@ def edit_issue(request, issue_id=None):
         else:
             issue_instance = Issue(owner=request.user)
             is_new = True
+
+        if request.user==issue_instance.owner or request.user.is_staff:
+            owner_view = True
+        else:
+            owner_view = False
+
+        if issue_instance.owner!=request.user and not request.user.is_staff:
+            return redirect('peticions.show.issue', issue_id=issue_id)
 
         if request.method == 'POST':
             form = IssueForm(request.POST, instance=issue_instance)
@@ -106,14 +134,18 @@ def edit_issue(request, issue_id=None):
                 return render(request, 'peticions/issues/edit.html', { 
                                                         'form': form, 
                                                         'issue_instance': issue_instance, 
-                                                        'is_new': is_new
+                                                        'is_new': is_new,
+                                                        'owner_view': owner_view,
+                                                        'user': request.user
                                                     })
         else:
             form = IssueForm(instance=issue_instance)
             return render(request, 'peticions/issues/edit.html', { 
                                                                     'form': form, 
                                                                     'issue_instance': issue_instance, 
-                                                                    'is_new': is_new
+                                                                    'is_new': is_new,
+                                                                    'owner_view': owner_view,
+                                                                    'user': request.user
                                                                 })
     except Exception as e:
         if request.user.is_superuser:
@@ -126,7 +158,11 @@ def list_issues(request):
         list_issues = Issue.objects.all()        
     else:
         list_issues = Issue.objects.filter(public=True)
-    return render(request, 'peticions/issues/list.html', {'list_issues': list_issues, 'public': False, 'user_admin': request.user.is_staff })
+    return render(request, 'peticions/issues/list.html', {
+                                                            'list_issues': list_issues, 
+                                                            'public': False, 
+                                                            'user_admin': request.user.is_staff
+                                                        })
 
 
 #

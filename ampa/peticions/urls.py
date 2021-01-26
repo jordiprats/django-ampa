@@ -9,6 +9,7 @@ urlpatterns = [
     path('', views.list_issues, name='peticions.list.issues'),
     path('add', views.edit_issue, name='peticions.add.issue'),
     path('<issue_id>/edit', views.edit_issue, name='peticions.edit.issue'),
+    path('<issue_id>/show', views.show_issue, name='peticions.show.issue'),
     # comments
     path('<issue_id>/comments/add', views.edit_comment, name='peticions.add.comment'),
 ]
