@@ -4,7 +4,20 @@
 
 {% block content %}
 <h1>Perfil {{ user.email }}</h1>
-<ul>
-    <li><a href="{% url 'user.password.change' %}">Canviar contrasenya</a></li>
-</ul>
+
+<div class="py-4 px-4 px-md-3 px-lg-4">
+    <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <ul>
+            <li><a href="{% url 'user.password.change' %}">Canviar contrasenya</a></li>
+        </ul>
+
+
+        <button class="btn btn-primary" type="submit">guardar</button>
+    </form>
+</div>
+
+
 {% endblock %}

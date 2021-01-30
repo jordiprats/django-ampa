@@ -138,6 +138,22 @@ class WIUserCreationForm(UserCreationForm):
 class AreYouSureForm(forms.Form):
     pass
 
+class AMPAUserName(forms.Form):
+    name = forms.CharField(label='Nom d\'usuari')
+
+    def __init__(self, data, **kwargs):
+        initial = kwargs.get('initial', {})
+        data = {**initial, **data}
+        super().__init__(data, **kwargs)
+
+    def clean(self):
+        try:
+            name = self.data['name'][0]
+        except:
+            return
+    class Meta:
+        fields = (['name'])
+
 class PasswordChangeForm(forms.Form):
     password_actual = forms.CharField(label='Contrasenya actual', required=False, widget=forms.PasswordInput)
     password1 = forms.CharField(label='Contrasenya', required=False, widget=forms.PasswordInput)
@@ -174,6 +190,5 @@ class PasswordChangeForm(forms.Form):
                 code='change_password_password_too_short'
             )
         
-
     class Meta:
         fields = (['password1', 'password2'])

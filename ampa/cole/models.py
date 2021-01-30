@@ -19,12 +19,17 @@ class User(AbstractUser):
     email = models.EmailField(max_length=256, unique=True)
     invite = models.CharField(max_length=256)
 
+    name = models.CharField(max_length=256, blank=True, null=True, default='')
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.username, allow_unicode=False)
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.email
+        if self.name:
+            return self.name
+        else:
+            return self.email
 
 class Curs(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

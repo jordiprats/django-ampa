@@ -10,7 +10,17 @@ import os
 
 @login_required
 def user_settings(request):
-    return render(request, 'users/settings.html', { 'user': request.user })    
+    if request.method == 'POST':
+        form = AMPAUserName(request.POST)
+        if form.is_valid():
+            request.user.name = form.data['name'][0]
+            request.user.save()
+            return redirect('user.settings')
+        else:
+            messages.error(request, 'Error guardant dades')
+    else:
+        form = AMPAUserName(request.GET, initial={'name': request.user.name})
+    return render(request, 'users/settings.html', { 'user': request.user, 'form': form })    
 
 @login_required
 def change_password(request):
