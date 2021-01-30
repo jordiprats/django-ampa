@@ -49,6 +49,9 @@ def list_categories(request):
                                                                 'user_admin': request.user.is_staff
                                                             })
 
+@user_passes_test(lambda u: u.is_staff)
+def edit_junta(request):
+    pass
 
 # 
 # registered
