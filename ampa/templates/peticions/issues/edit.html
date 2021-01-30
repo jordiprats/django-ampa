@@ -36,9 +36,11 @@ tinymce.init({
 </div>
 
 {% if not is_new %}
+{% if issue_instance.status != 'z' %}
 <form style="display: inline;" action="{% url 'peticions.add.comment' issue_id=issue_instance.id %}" method="GET">
     <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> comentari</button>
 </form>
+{% endif %}
 {% endif %}
 
 

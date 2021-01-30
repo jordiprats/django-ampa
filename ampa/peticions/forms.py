@@ -14,6 +14,18 @@ class IssueForm(forms.ModelForm):
             'html_message': 'Descripció',
         }
 
+class IssueAdminForm(forms.ModelForm):
+    class Meta:
+        model = Issue
+        fields = (['titol', 'categories', 'public', 'status', 'html_message'])
+        labels = {
+            'titol': 'Titol petició',
+            'categories': 'Categories',
+            'public': 'publicat',
+            'status': 'Estat',
+            'html_message': 'Descripció',
+        }
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
@@ -28,7 +40,8 @@ class CategoryForm(forms.ModelForm):
     
     class Meta:
         model = Category
-        fields = (['name'])
+        fields = (['name', 'ordre'])
         labels = {
             'name': 'Nom de la categoria', 
+            'ordre': 'Ordre'
         }

@@ -17,9 +17,16 @@ ISSUE_STATUS = [
 class Category(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=256)
+    ordre = models.IntegerField(default=1)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ['ordre']
+        indexes = [
+            models.Index(fields=['ordre']),
+        ]
 
 class Issue(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -64,4 +71,24 @@ class Comment(models.Model):
         ordering = ['created_at']
         indexes = [
             models.Index(fields=['created_at']),
+        ]
+
+class Junta(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=256)
+    html_message = models.TextField(max_length=10000, default='', blank=True, null=True)
+
+    issues = models.ManyToManyField(Issue, related_name='juntes')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['-updated_at']
+        indexes = [
+            models.Index(fields=['-updated_at']),
         ]

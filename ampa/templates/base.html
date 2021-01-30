@@ -85,10 +85,12 @@ ul.timeline > li:before {
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="{% url 'peticions.list.issues' %}">Peticions</a>
                 <a class="dropdown-item" href="{% url 'voting.list.elections' %}">Votacions</a>
+                <a class="dropdown-item" href="{% url 'peticions.list.juntes' %}">Juntes</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="{% url 'user.settings' %}">Configuració</a>
                 {% if user.is_staff %}
                 <a class="dropdown-item" href="{% url 'staff.settings' %}">Gestió entitat</a>
+                <div class="dropdown-divider"></div>
                 <p class="dropdown-item text-muted">{{ user | ampa_version }}</p>
                 {% endif %}
                 <div class="dropdown-divider"></div>

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+<table class="table table-bordred table-striped">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Última modificació</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for junta in list_juntes %}
+        <tr>
+          <td><a href="{% url 'peticions.edit.category' category_id=category.id %}">{{ junta.name }}</a></td>
+          <td>{{ issue.updated_at | naturaltime }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if user_admin %}
+  <form style="display: inline;" action="{% url 'peticions.add.category' %}" method="GET">
+    <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> junta</button>
+  </form>
+  {% endif %}
+
+{% endblock %}

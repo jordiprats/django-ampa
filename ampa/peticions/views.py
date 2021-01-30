@@ -57,6 +57,9 @@ def list_categories(request):
 @login_required
 def edit_comment(request, issue_id, comment_id=None):
     try:
+        issue_instance = Issue.objects.filter(id=issue_id)[0]
+        if issue_instance.status==ISSUE_STATUS_CLOSED:
+            return redirect('peticions.edit.issue', issue_id=issue_id)
         if comment_id:
             comment_instance = Comment.objects.filter(issue__id=issue_id, id=comment_id)[0]
             is_new = False
@@ -76,7 +79,8 @@ def edit_comment(request, issue_id, comment_id=None):
                                                         'form': form, 
                                                         'comment_instance': comment_instance, 
                                                         'is_new': is_new,
-                                                        'issue_id': issue_id
+                                                        'issue_id': issue_id,
+                                                        'issue_instance': issue_instance,
                                                     })
         else:
             form = CommentForm(instance=comment_instance)
@@ -84,7 +88,8 @@ def edit_comment(request, issue_id, comment_id=None):
                                                                     'form': form, 
                                                                     'comment_instance': comment_instance, 
                                                                     'is_new': is_new,
-                                                                    'issue_id': issue_id
+                                                                    'issue_id': issue_id,
+                                                                    'issue_instance': issue_instance,
                                                                 })
     except Exception as e:
         if request.user.is_superuser:
@@ -124,7 +129,10 @@ def edit_issue(request, issue_id=None):
             return redirect('peticions.show.issue', issue_id=issue_id)
 
         if request.method == 'POST':
-            form = IssueForm(request.POST, instance=issue_instance)
+            if request.user.is_staff:
+                form = IssueAdminForm(request.POST, instance=issue_instance)
+            else:
+                form = IssueForm(request.POST, instance=issue_instance)
             if form.is_valid():
                 form.save()
                 messages.info(request, 'Petició guardada correctament')
@@ -139,7 +147,10 @@ def edit_issue(request, issue_id=None):
                                                         'user': request.user
                                                     })
         else:
-            form = IssueForm(instance=issue_instance)
+            if request.user.is_staff:
+                form = IssueAdminForm(instance=issue_instance)
+            else:
+                form = IssueForm(instance=issue_instance)
             return render(request, 'peticions/issues/edit.html', { 
                                                                     'form': form, 
                                                                     'issue_instance': issue_instance, 
@@ -164,7 +175,17 @@ def list_issues(request):
                                                             'user_admin': request.user.is_staff
                                                         })
 
-
 #
 # PUBLIC
 #
+
+def list_juntes(request):
+    user_admin = False
+    if request.user.is_authenticated:
+        if request.user.is_staff:
+            user_admin = True
+    list_juntes = Junta.objects.all()
+    return render(request, 'peticions/juntes/list.html', {
+                                                                'list_juntes': list_juntes,
+                                                                'user_admin': user_admin
+                                                            })
