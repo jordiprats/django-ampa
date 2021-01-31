@@ -50,8 +50,35 @@ def list_categories(request):
                                                             })
 
 @user_passes_test(lambda u: u.is_staff)
-def edit_junta(request):
-    pass
+def edit_junta(request, junta_id=None):
+    try:
+        if junta_id:
+            junta_instance = Junta.objects.filter(id=junta_id)[0]
+        else:
+            junta_instance = Junta()
+
+        if request.method == 'POST':
+            form = JuntaForm(request.POST, instance=junta_instance)
+            if form.is_valid():
+                form.save()
+                messages.info(request, 'Junta guardada correctament')
+                return redirect('peticions.list.juntes')
+            else:
+                messages.error(request, 'Formulari incorrecte')
+                return render(request, 'peticions/juntes/edit.html', { 
+                                                        'form': form, 
+                                                        'junta_instance': junta_instance, 
+                                                    })
+        else:
+            form = JuntaForm(instance=junta_instance)
+            return render(request, 'peticions/juntes/edit.html', { 
+                                                                    'form': form, 
+                                                                    'junta_instance': junta_instance, 
+                                                                })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.list.juntes')
 
 # 
 # registered
@@ -187,7 +214,12 @@ def list_juntes(request):
     if request.user.is_authenticated:
         if request.user.is_staff:
             user_admin = True
-    list_juntes = Junta.objects.all()
+
+    if user_admin:
+        list_juntes = Junta.objects.all()
+    else:
+        list_juntes = Junta.objects.filter(public=False)
+
     return render(request, 'peticions/juntes/list.html', {
                                                                 'list_juntes': list_juntes,
                                                                 'user_admin': user_admin

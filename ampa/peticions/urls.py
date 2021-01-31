@@ -4,7 +4,8 @@ from . import views
 urlpatterns = [
     # juntes
     path('', views.list_juntes, name='peticions.list.juntes'),
-    path('/add', views.edit_junta, name='peticions.add.junta'),
+    path('add', views.edit_junta, name='peticions.add.junta'),
+    path('<junta_id>/edit', views.edit_junta, name='peticions.edit.junta'),
     # categories
     path('peticions/categories', views.list_categories, name='peticions.list.categories'),
     path('peticions/categories/add', views.edit_category, name='peticions.add.category'),

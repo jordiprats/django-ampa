@@ -15,15 +15,15 @@
     <tbody>
       {% for junta in list_juntes %}
         <tr>
-          <td><a href="{% url 'peticions.edit.category' category_id=category.id %}">{{ junta.name }}</a></td>
-          <td>{{ issue.updated_at | naturaltime }}</td>
+          <td><a href="{% url 'peticions.edit.junta' junta_id=junta.id %}">{{ junta.name }}</a></td>
+          <td>{{ junta.updated_at | naturaltime }}</td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
 
   {% if user_admin %}
-  <form style="display: inline;" action="{% url 'peticions.add.category' %}" method="GET">
+  <form style="display: inline;" action="{% url 'peticions.add.junta' %}" method="GET">
     <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> junta</button>
   </form>
   {% endif %}

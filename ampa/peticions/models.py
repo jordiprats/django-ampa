@@ -78,6 +78,8 @@ class Junta(models.Model):
     name = models.CharField(max_length=256)
     html_message = models.TextField(max_length=10000, default='', blank=True, null=True)
 
+    public = models.BooleanField(default=False)
+
     issues = models.ManyToManyField(Issue, related_name='juntes')
 
     created_at = models.DateTimeField(auto_now_add=True)

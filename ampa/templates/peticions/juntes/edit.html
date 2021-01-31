@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+
+<script src="http://static.ampa.systemadmin.es/js/tinymce/tinymce.min.js"></script>
+
+
+<script type="text/javascript">
+tinymce.init({
+    selector: '#id_html_message',
+    language: 'ca',
+    menubar: false,
+    plugins: "link image code lists",
+    toolbar: 'styleselect | forecolor | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | link | undo redo | code',
+    height: '600'
+});
+</script>
+
+<div class="py-4 px-4 px-md-3 px-lg-4">
+    <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button class="btn btn-success" type="submit" name="guardar" >guardar</button>
+    </form>
+</div>
+
+{% endblock %}

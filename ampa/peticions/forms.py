@@ -35,6 +35,16 @@ class CommentForm(forms.ModelForm):
             'html_message': 'Comentari',
         }
 
+class JuntaForm(forms.ModelForm):
+    class Meta:
+        model = Junta
+        fields = (['name', 'public', 'html_message'])
+        labels = {
+            'name': 'Junta',
+            'public': 'Publicar',
+            'html_message': 'Text',
+        }
+
 class CategoryForm(forms.ModelForm):
     name = forms.TextInput(attrs={'size': '40'})
     
