@@ -62,7 +62,16 @@ def edit_junta(request, junta_id=None):
             if form.is_valid():
                 form.save()
                 messages.info(request, 'Junta guardada correctament')
+                try:
+                    boto_apretat = str(form.data['votarem'])
+                except:
+                    try:
+                        boto_apretat = str(form.data['queixarem'])
+                        return redirect('peticions.edit.junta.list.peticions', junta_id=junta_instance.id)
+                    except:
+                        pass
                 return redirect('peticions.list.juntes')
+                
             else:
                 messages.error(request, 'Formulari incorrecte')
                 return render(request, 'peticions/juntes/edit.html', { 
@@ -79,6 +88,60 @@ def edit_junta(request, junta_id=None):
         if request.user.is_superuser:
             messages.error(request, str(e))
         return redirect('peticions.list.juntes')
+
+@user_passes_test(lambda u: u.is_staff)
+def list_junta_peticio(request, junta_id):
+    try:
+        junta_instance = Junta.objects.filter(id=junta_id)[0]
+        list_issues_add = Issue.objects.filter(public=True, status=ISSUE_STATUS_OPEN).exclude(id__in=junta_instance.issues.values('id'))
+
+        list_issues_remove = junta_instance.issues.all()
+
+        return render(request, 'peticions/juntes/add_to_junta_list.html', {
+                                                                'list_issues_add': list_issues_add, 
+                                                                'list_issues_remove': list_issues_remove, 
+                                                                'public': False, 
+                                                                'user_admin': request.user.is_staff,
+                                                                'junta_instance': junta_instance
+                                                            })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.list.juntes')
+
+@user_passes_test(lambda u: u.is_staff)
+def add_junta_peticio(request, junta_id, issue_id):
+    try:
+        junta_instance = Junta.objects.filter(id=junta_id)[0]
+        issue_instance = Issue.objects.filter(id=issue_id)[0]
+
+        junta_instance.issues.add(issue_instance)
+
+        junta_instance.save()
+
+    except Exception as e:
+        messages.error(request, "Error afegint petició a l'ordre del dia")
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+
+    return redirect('peticions.edit.junta', junta_id=junta_id)    
+
+@user_passes_test(lambda u: u.is_staff)
+def remove_junta_peticio(request, junta_id, issue_id):
+    try:
+        junta_instance = Junta.objects.filter(id=junta_id)[0]
+        issue_instance = Issue.objects.filter(id=issue_id)[0]
+
+        junta_instance.issues.remove(issue_instance)
+
+        junta_instance.save()
+
+    except Exception as e:
+        messages.error(request, "Error eliminant petició de l'ordre del dia")
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+
+    return redirect('peticions.edit.junta', junta_id=junta_id)    
 
 # 
 # registered

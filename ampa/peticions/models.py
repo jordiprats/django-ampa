@@ -1,5 +1,6 @@
 from django.db import models
 
+from voting.models import *
 from cole.models import *
 
 
@@ -81,10 +82,10 @@ class Junta(models.Model):
     public = models.BooleanField(default=False)
 
     issues = models.ManyToManyField(Issue, related_name='juntes')
+    votacions = models.ManyToManyField(Election, related_name='juntes')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
 
     def __str__(self):
         return self.name

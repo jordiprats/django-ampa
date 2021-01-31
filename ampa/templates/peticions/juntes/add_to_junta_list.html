@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+<h1><a href="{% url 'peticions.edit.junta' junta_id=junta_instance.id %}">{{ junta_instance.name }}</a> / Afegir peticions</h1>
+
+<table class="table table-bordred table-striped">
+    <thead>
+      <tr>
+        <th>Titol</th>
+        <th>Última modificació</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for issue in list_issues_remove %}
+        <tr>
+          <td>
+            <form style="display: inline" action="{% url 'peticions.edit.junta.remove.peticio' junta_id=junta_instance.id issue_id=issue.id %}" method="POST">
+              {% csrf_token %}
+              <button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i></button>
+            </form>
+            {{ issue.titol }}
+          </td>
+          <td>{{ issue.updated_at | naturaltime }}</td>
+        </tr>
+      {% endfor %}
+      {% for issue in list_issues_add %}
+        <tr>
+          <td>
+            <form style="display: inline" action="{% url 'peticions.edit.junta.add.peticio' junta_id=junta_instance.id issue_id=issue.id %}" method="POST">
+              {% csrf_token %}
+              <button class="btn btn-success" type="submit"><i class="fas fa-plus"></i></button>
+            </form>
+            {{ issue.titol }}
+          </td>
+          <td>{{ issue.updated_at | naturaltime }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+
+{% endblock %}

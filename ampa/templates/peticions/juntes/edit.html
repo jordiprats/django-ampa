@@ -26,7 +26,18 @@ tinymce.init({
         {{ form.as_p }}
 
         <button class="btn btn-success" type="submit" name="guardar" >guardar</button>
+        <button class="btn btn-info" type="submit" name="queixarem" >gestionar peticions</button>
+        <button class="btn btn-info" type="submit" name="votarem" >gestionar votacions</button>
     </form>
 </div>
+
+{% if junta_instance.issues.all %}
+<h2>Peticions</h2>
+<ul>
+    {% for issue in junta_instance.issues.all %}
+    <li>{{ issue.titol }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
 
 {% endblock %}
