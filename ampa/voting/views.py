@@ -222,14 +222,16 @@ def vote_election(request, election_id, token):
         messages.error(request, 'Error registrant el vot')
         return redirect('home')
 
-@login_required
 def show_election_results(request, election_id):
     try:
         status_not_draft = ~Q(status=ELECTION_STATUS_DRAFT)
-        if request.user.is_staff:
-            election_instance = Election.objects.filter(id=election_id).filter(status_not_draft)[0]
-        else:
-            election_instance = Election.objects.filter(id=election_id, owner=request.user).filter(status_not_draft)[0]
+        try:
+            if request.user.is_staff:
+                election_instance = Election.objects.filter(id=election_id).filter(status_not_draft)[0]
+            else:
+                election_instance = Election.objects.filter(id=election_id, owner=request.user).filter(status_not_draft)[0]
+        except:
+            election_instance = Election.objects.filter(id=election_id).filter(status=ELECTION_STATUS_CLOSED)[0]
 
         vots_blanc_count = Vote.objects.filter(election=election_instance, option=None).count()
 
