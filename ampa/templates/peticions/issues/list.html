@@ -25,9 +25,14 @@
       {% for issue in list_issues %}
         <tr>
           <td>
-            <a href="{% url 'peticions.edit.issue' issue_id=issue.id%}">{{ issue.titol }}</a>
             {% if user_admin %}
-            - <a href="{% url 'peticions.show.issue' issue_id=issue.id%}">preview</a>
+            <form style="display: inline;" action="{% url 'peticions.delete.issue' issue_id=issue.id %}" method="GET">
+              <button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i></button>
+            </form>
+            {% endif %}
+            <a href="{% url 'peticions.edit.issue' issue_id=issue.id %}">{{ issue.titol }}</a>
+            {% if user_admin %}
+            - <a href="{% url 'peticions.show.issue' issue_id=issue.id %}">preview</a>
             {% endif %}
           </td>
           <td>{{ issue.get_status_display }}</td>

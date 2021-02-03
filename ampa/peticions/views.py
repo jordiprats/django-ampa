@@ -6,9 +6,32 @@ from django.contrib import messages
 from peticions.models import *
 from peticions.forms import *
 
+from cole.forms import *
+
 #
 # staff
 #
+
+@user_passes_test(lambda u: u.is_staff)
+def delete_issue(request, issue_id):
+    try:
+        instance_issue = Issue.objects.filter(id=issue_id)[0]
+       
+        if request.method == 'POST':
+            form = AreYouSureForm(request.POST)
+            if form.is_valid():
+                instance_issue.delete()
+                return redirect('peticions.list.issues')
+            else:
+                messages.error(request, 'Error eliminant la petició')
+        else:
+            form = AreYouSureForm(request.GET)
+        return render(request, 'peticions/issues/delete.html', { 'issue_instance': instance_issue })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.list.issues')
+
 @user_passes_test(lambda u: u.is_staff)
 def edit_category(request, category_id=None):
     try:

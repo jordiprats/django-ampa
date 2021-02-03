@@ -5,37 +5,6 @@
 
 {% block content %}
 
-<ul class="timeline">
-
-
-    <p class="float-right">{{ issue_instance.updated_at | naturaltime }}</p>
-    <h1>{{ issue_instance.titol }}</h1>
-
-    {{ issue_instance.html_message | safe}}
-
-    {% if issue_instance.status != 'z' %}
-    <form style="display: inline;" action="{% url 'peticions.add.comment' issue_id=issue_instance.id %}" method="GET">
-        <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> comentari</button>
-    </form>
-    {% endif %}
-    <br><br><hr>
-
-
-{% for comment in issue_instance.comments.all %}
-    {% if not comment.internal or comment.user == user or user_admin %}
-    {% if comment.internal %}
-    <li class="text-muted">
-    {% else %}
-    <li>
-    {% endif %}
-        <p class="float-right">{{ comment.updated_at | naturaltime }}</p>
-        <p>{{ comment.user }} </p>
-        <p>{{ comment.html_message | safe }}</p>
-        <hr>
-    </li>
-    {% endif %}
-{% endfor %}
-</ul>
-
+{% include 'peticions/issues/inline_show.html' %}
 
 {% endblock %}

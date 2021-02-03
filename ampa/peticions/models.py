@@ -34,7 +34,7 @@ class Issue(models.Model):
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='issues', default=None, blank=True, null=True)
 
     titol = models.CharField(max_length=256)
-    html_message = models.TextField(max_length=10000, default=None, blank=True, null=True)
+    html_message = models.TextField(max_length=50000, default=None, blank=True, null=True)
 
     public = models.BooleanField(default=True)
 
@@ -61,7 +61,7 @@ class Comment(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='comments', default=None, blank=True, null=True)
 
-    html_message = models.TextField(max_length=10000, default=None, blank=True, null=True)
+    html_message = models.TextField(max_length=50000, default=None, blank=True, null=True)
 
     internal = models.BooleanField(default=False)
 
@@ -77,7 +77,7 @@ class Comment(models.Model):
 class Junta(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=256)
-    html_message = models.TextField(max_length=10000, default='', blank=True, null=True)
+    html_message = models.TextField(max_length=50000, default='', blank=True, null=True)
 
     public = models.BooleanField(default=False)
 
