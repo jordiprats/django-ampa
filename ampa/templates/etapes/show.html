@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<h1>{{ etapa_instance.nom }}</h1>
+<h1>{{ etapa_instance.nom }} <a href="{% url 'edit.etapa' etapa_id=etapa_instance.id %}"><i class="far fa-edit"></i></a></h1>
 
 {% include 'etapes/inline_nav.html' %}
 
