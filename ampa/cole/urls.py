@@ -21,6 +21,8 @@ urlpatterns = [
 
     # cursos
     path('cursos/', views.list_cursos, name='list.cursos'),
+    path('cursos/modalitats', views.list_curs_modalitats, name='list.modalitats'),
+    path('cursos/modalitats/add', views.edit_curs_modalitat, name='add.modalitat'),
     path('cursos/add', views.edit_curs, name='add.curs'),
     path('cursos/<curs_id>', views.show_curs, name='show.curs'),
     path('cursos/<curs_id>/edit', views.edit_curs, name='edit.curs'),
@@ -29,6 +31,7 @@ urlpatterns = [
     path('cursos/<curs_id>/mailing/<mailing_id>', views.edit_mailing_curs, name='edit.curs.mailing'),
     path('cursos/<curs_id>/mailing/<mailing_id>/show', views.show_mailing_curs, name='show.curs.mailing'),
     path('cursos/<curs_id>/mailing/<mailing_id>/send', views.enviar_mailing_curs, name='enviar.curs.mailing'),
+
     # etapes
     path('etapes/', views.list_etapes, name='list.etapes'),
     path('etapes/add', views.edit_etapa, name='add.etapa'),

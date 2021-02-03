@@ -31,9 +31,25 @@ class User(AbstractUser):
         else:
             return self.email
 
+class Modalitat(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=256)
+    ordre = models.IntegerField(default=1)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['ordre']
+        indexes = [
+            models.Index(fields=['ordre']),
+        ]
+
 class Curs(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     curs = models.CharField(max_length=256, default='')
+
+    modalitat = models.ForeignKey(Modalitat, on_delete=models.CASCADE, related_name='cursos', blank=True, null=True, default=None)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -42,6 +58,7 @@ class Curs(models.Model):
         return self.curs
 
     class Meta:
+        unique_together = ('curs', 'modalitat')
         ordering = ['curs']
         indexes = [
             models.Index(fields=['curs']),

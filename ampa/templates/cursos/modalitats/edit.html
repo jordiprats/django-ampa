@@ -4,10 +4,10 @@
 
 {% block content %}
 
-{% if new_curs %}
-<h1>afegir curs</h1>
+{% if new %}
+<h1><a href="{% url 'list.modalitats' %}">Modalitats</a> / afegir modalitat</h1>
 {% else %}
-<h1>editar curs </h1>
+<h1><a href="{% url 'list.modalitats' %}">Modalitats</a> / editar modalitat</h1>
 {% endif %}
 
 <!-- <form style="display: inline;" action="" method="GET">

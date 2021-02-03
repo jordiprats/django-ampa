@@ -11,6 +11,45 @@ import sys
 import os
 
 @user_passes_test(lambda u: u.is_staff)
+def edit_curs_modalitat(request, modalitat_id=None):
+    try:
+        if modalitat_id:
+            modalitat_instance = Modalitat.objects.filter(id=modalitat_id).first()
+            new = False
+        else:
+            modalitat_instance = Modalitat()
+            new = True
+
+        if request.method == 'POST':
+            form = ModalitatForm(request.POST, instance=modalitat_instance)
+            if form.is_valid():
+                form.save()
+                return redirect('staff.settings')
+            else:
+                messages.error(request, 'Error de validació')
+        else:
+            form = ModalitatForm(request.POST, instance=modalitat_instance)
+        return render(request, 'cursos/modalitats/edit.html', { 'modalitat_instance': modalitat_instance, 'new': new, 'form': form })
+
+    except Exception as e:
+        if request.user.is_staff:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            print(str(e))
+            messages.error(request, str(e))
+        return redirect('show.classe', classe_id=classe_id)
+
+@user_passes_test(lambda u: u.is_staff)
+def list_curs_modalitats(request):
+    list_modalitats = Modalitat.objects.all()
+    return render(request, 'cursos/modalitats/list.html', {
+                                                            'list_modalitats': list_modalitats, 
+                                                            'public': False, 
+                                                            'user_admin': request.user.is_staff
+                                                        }) 
+
+@user_passes_test(lambda u: u.is_staff)
 def delete_alumne(request, classe_id, alumne_id):
     try:
         if request.user.is_authenticated:

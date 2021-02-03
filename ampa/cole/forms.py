@@ -14,12 +14,21 @@ class InfoAlumneForm(forms.ModelForm):
             'dades': 'Dades (opcional)', 
         }
 
+class ModalitatForm(forms.ModelForm):
+    class Meta:
+        model = Modalitat
+        fields = (['name'])
+        labels = {
+            'name': 'Modalitat', 
+        }
+
 class CursForm(forms.ModelForm):
     class Meta:
         model = Curs
-        fields = (['curs'])
+        fields = (['curs', 'modalitat'])
         labels = {
             'curs': 'Anys del curs', 
+            'modalitat': 'Modalitat'
         }
 
 class EtapaForm(forms.ModelForm):

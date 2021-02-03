@@ -5,6 +5,7 @@
 {% block content %}
 <h1>Accions disponibles</h1>
 <br>
+
 <h2>Cursos</h2>
 <a href="{% url 'list.cursos' %}">Llistat complet de cursos</a>
 
@@ -13,6 +14,10 @@
 <form style="display: inline;" action="{% url 'add.curs' %}" method="GET">
     <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> curs</button>
 </form>
+<form style="display: inline;" action="{% url 'add.modalitat' %}" method="GET">
+    <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> modalitat</button>
+</form>
+
 
 <br><br><br>
 

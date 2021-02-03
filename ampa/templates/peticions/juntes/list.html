@@ -9,6 +9,8 @@
     <thead>
       <tr>
         <th></th>
+        <th>Ordre del dia</th>
+        <th>Publicada</th>
         <th>Última modificació</th>
       </tr>
     </thead>
@@ -16,6 +18,8 @@
       {% for junta in list_juntes %}
         <tr>
           <td><a href="{% url 'peticions.edit.junta' junta_id=junta.id %}">{{ junta.name }}</a></td>
+          <td></td>
+          <td>{{ junta.public|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
           <td>{{ junta.updated_at | naturaltime }}</td>
         </tr>
       {% endfor %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+<a href="{% url 'staff.settings' %}"><i class="fas fa-backward"></i> tornar</a>
+
+<table class="table table-bordred table-striped">
+    <thead>
+      <tr>
+        <th>Modalitat</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for modalitat in list_modalitats %}
+        <tr>
+          <td>
+            <a href="% url 'peticions.edit.category' category_id=category.id %">{{ modalitat.name }}</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <form style="display: inline;" action="% url 'peticions.add.modaluitat' %" method="GET">
+    <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> modalitat</button>
+  </form>
+
+{% endblock %}

@@ -2,6 +2,7 @@
 
 {% load static %}
 {% load humanize %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 
@@ -23,8 +24,9 @@ tinymce.init({
 <div class="py-4 px-4 px-md-3 px-lg-4">
     <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form|crispy }}
 
+        <br>
         <button class="btn btn-success" type="submit" name="guardar" >guardar</button>
         <button class="btn btn-info" type="submit" name="queixarem" >gestionar peticions</button>
         <button class="btn btn-info" type="submit" name="votarem" >gestionar votacions</button>

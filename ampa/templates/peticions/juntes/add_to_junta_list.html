@@ -5,7 +5,9 @@
 
 {% block content %}
 
-<h1><a href="{% url 'peticions.edit.junta' junta_id=junta_instance.id %}">{{ junta_instance.name }}</a> / Afegir peticions</h1>
+<h1><a href="{% url 'peticions.edit.junta' junta_id=junta_instance.id %}">{{ junta_instance.name }}</a> / Gestionar peticions</h1>
+
+Les peticions han d'estar en estat "<b>obert</b>" per poder ser adjuntades a la junta
 
 <table class="table table-bordred table-striped">
     <thead>

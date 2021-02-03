@@ -32,6 +32,7 @@ def edit_curs(request, curs_id=None):
         if curs_id:
             new_curs = False
             curs_instance = Curs.objects.filter(id=curs_id)[0]
+            print("caca "+str(curs_instance.modalitat))
         else:
             new_curs = True
             curs_instance = Curs()

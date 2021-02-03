@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% load crispy_forms_tags %}
+
 {% block content %}
 
 
@@ -20,8 +22,8 @@
     <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
         {% csrf_token %}
 
-        {{ form.as_p }}
-
+        {{ form|crispy }}
+        <br>
         <button class="btn btn-primary" type="submit">guardar</button>
     </form>
 </div>
