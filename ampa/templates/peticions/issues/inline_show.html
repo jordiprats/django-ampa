@@ -2,7 +2,17 @@
 
 <ul class="timeline">
 
-    <p class="float-right">{{ issue_instance.updated_at | naturaltime }}</p>
+    <div class="float-right">
+    <p>{{ issue_instance.updated_at | naturaltime }}</p>
+    ({{ issue_instance.likes.count }}) <form style="display: inline" action="{% url 'peticions.like.issue' issue_id=issue_instance.id %}" method="POST">
+        {% csrf_token %}
+        <button class="btn btn-success" type="submit"><i class="far fa-thumbs-up"></i></button>
+    </form>
+    ({{ issue_instance.dislikes.count }}) <form style="display: inline" action="{% url 'peticions.dislike.issue' issue_id=issue_instance.id %}" method="POST">
+        {% csrf_token %}
+        <button class="btn btn-danger" type="submit"><i class="far fa-thumbs-down"></i></button>
+    </form>
+    </div>
     
     <h1>{{ issue_instance.titol }}</h1>
     <p>{{ issue_instance.owner }}</p>

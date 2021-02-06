@@ -135,12 +135,13 @@ def list_junta_peticio(request, junta_id):
 @user_passes_test(lambda u: u.is_staff)
 def add_junta_peticio(request, junta_id, issue_id):
     try:
-        junta_instance = Junta.objects.filter(id=junta_id)[0]
-        issue_instance = Issue.objects.filter(id=issue_id)[0]
+        if request.method == "POST":
+            junta_instance = Junta.objects.filter(id=junta_id)[0]
+            issue_instance = Issue.objects.filter(id=issue_id)[0]
 
-        junta_instance.issues.add(issue_instance)
+            junta_instance.issues.add(issue_instance)
 
-        junta_instance.save()
+            junta_instance.save()
 
     except Exception as e:
         messages.error(request, "Error afegint petició a l'ordre del dia")
@@ -152,12 +153,13 @@ def add_junta_peticio(request, junta_id, issue_id):
 @user_passes_test(lambda u: u.is_staff)
 def remove_junta_peticio(request, junta_id, issue_id):
     try:
-        junta_instance = Junta.objects.filter(id=junta_id)[0]
-        issue_instance = Issue.objects.filter(id=issue_id)[0]
+        if request.method == "POST":
+            junta_instance = Junta.objects.filter(id=junta_id)[0]
+            issue_instance = Issue.objects.filter(id=issue_id)[0]
 
-        junta_instance.issues.remove(issue_instance)
+            junta_instance.issues.remove(issue_instance)
 
-        junta_instance.save()
+            junta_instance.save()
 
     except Exception as e:
         messages.error(request, "Error eliminant petició de l'ordre del dia")
@@ -169,6 +171,48 @@ def remove_junta_peticio(request, junta_id, issue_id):
 # 
 # registered
 #
+
+@user_passes_test(lambda u: u.is_staff)
+def like_issue(request, issue_id):
+    try:
+        if request.method == "POST":
+            issue_instance = Issue.objects.filter(id=issue_id)[0]
+
+            if not request.user in issue_instance.likes.all():
+                if request.user in issue_instance.dislikes.all():
+                    issue_instance.dislikes.remove(request.user)
+                    issue_instance.likes.add(request.user)
+                else:
+                    issue_instance.likes.add(request.user)
+                issue_instance.save()
+
+    except Exception as e:
+        messages.error(request, "Error fent like")
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+
+    return redirect('peticions.show.issue', issue_id=issue_id)
+
+@user_passes_test(lambda u: u.is_staff)
+def dislike_issue(request, issue_id):
+    try:
+        if request.method == "POST":
+            issue_instance = Issue.objects.filter(id=issue_id)[0]
+
+            if not request.user in issue_instance.dislikes.all():
+                if request.user in issue_instance.likes.all():
+                    issue_instance.likes.remove(request.user)
+                    issue_instance.dislikes.add(request.user)
+                else:
+                    issue_instance.dislikes.add(request.user)
+                issue_instance.save()
+
+    except Exception as e:
+        messages.error(request, "Error fent dislike")
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+
+    return redirect('peticions.show.issue', issue_id=issue_id)
 
 @login_required
 def edit_comment(request, issue_id, comment_id=None):

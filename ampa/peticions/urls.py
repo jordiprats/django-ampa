@@ -18,6 +18,8 @@ urlpatterns = [
     path('peticions/add', views.edit_issue, name='peticions.add.issue'),
     path('peticions/<issue_id>/edit', views.edit_issue, name='peticions.edit.issue'),
     path('peticions/<issue_id>/show', views.show_issue, name='peticions.show.issue'),
+    path('peticions/<issue_id>/like', views.like_issue, name='peticions.like.issue'),
+    path('peticions/<issue_id>/dislike', views.dislike_issue, name='peticions.dislike.issue'),
     path('peticions/<issue_id>/delete', views.delete_issue, name='peticions.delete.issue'),
     # comments
     path('peticions/<issue_id>/comments/add', views.edit_comment, name='peticions.add.comment'),
