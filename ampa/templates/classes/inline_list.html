@@ -2,6 +2,7 @@
     <thead>
       <tr>
         <th>Classe</th>
+        <th>Etapa</th>
         <th>Curs</th>
         {% if admin_view %}
         <th>Delegat</th>
@@ -14,6 +15,7 @@
           <td>
               <a href="{% url 'show.classe' classe_id=classe.id %}">{{ classe.full_nom }}</a>
             </td>
+          <td>{{ classe.etapa }}</td>
           <td>{{ classe.curs }}</td>
           {% if admin_view %}
           {% if classe.delegat %}

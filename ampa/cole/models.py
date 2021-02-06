@@ -148,7 +148,7 @@ class Classe(models.Model):
         self.full_nom
 
     class Meta:
-        ordering = ['nom']
+        ordering = ['etapa','nom']
         unique_together = ('nom', 'curs', 'delegat')
 
 class Alumne(models.Model):
