@@ -17,6 +17,7 @@
     <thead>
       <tr>
         <th>Titol</th>
+        <th></th>
         <th>Estat de la petició</th>
         <th>Categories</th>
         <th>Autor</th>
@@ -37,6 +38,7 @@
             - <a href="{% url 'peticions.show.issue' issue_id=issue.id %}">preview</a>
             {% endif %}
           </td>
+          <td>{{ issue.likes.count }} <i style="color:green;" class="far fa-thumbs-up"></i> / {{ issue.dislikes.count }} <i style="color:red;" class="far fa-thumbs-down"></i></td>
           <td>{{ issue.get_status_display }}</td>
           <td>{{ issue.display_categories }}</td>
           <td>{{ issue.owner }}</td>
