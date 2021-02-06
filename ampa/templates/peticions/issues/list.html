@@ -18,6 +18,7 @@
       <tr>
         <th>Titol</th>
         <th>Estat de la petició</th>
+        <th>Autor</th>
         <th>Última modificació</th>
       </tr>
     </thead>
@@ -36,6 +37,7 @@
             {% endif %}
           </td>
           <td>{{ issue.get_status_display }}</td>
+          <td>{{ issue.owner }}</td>
           <td>{{ issue.updated_at | naturaltime }}</td>
         </tr>
       {% endfor %}
