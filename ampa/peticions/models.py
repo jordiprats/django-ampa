@@ -49,6 +49,9 @@ class Issue(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def display_categories(self):
+        return ','.join(list(self.categories.values_list('name', flat=True)))
+
     class Meta:
         ordering = ['-updated_at']
         indexes = [
