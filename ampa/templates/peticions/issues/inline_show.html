@@ -3,7 +3,9 @@
 <ul class="timeline">
 
     <p class="float-right">{{ issue_instance.updated_at | naturaltime }}</p>
+    
     <h1>{{ issue_instance.titol }}</h1>
+    <p>{{ issue_instance.owner }}</p>
 
     {{ issue_instance.html_message | safe}}
 
