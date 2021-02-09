@@ -37,7 +37,11 @@ def show_classe(request, classe_id):
     if request.user.is_authenticated:
         try:
             instance_classe = Classe.objects.filter(id=classe_id)[0]
-            return render(request, 'classes/show.html', { 'instance_classe': instance_classe, 'content': 'overview' })
+            return render(request, 'classes/show.html', { 
+                                                            'instance_classe': instance_classe, 
+                                                            'content': 'overview', 
+                                                            'is_staff': request.user.is_staff
+                                                        })
         except Exception as e:
             print(str(e))
             return redirect('home')
@@ -310,26 +314,35 @@ def get_export(request, classe_id, export_name):
         print(str(e))
         return redirect('show.classe', classe_id=classe_id)
 
+@login_required
 def upload_xls(request, classe_id):
     if request.user.is_authenticated:
         try:
-            current_classe = Classe.objects.filter(id=classe_id).first()
+            current_classe = Classe.objects.filter(id=classe_id)[0]
             if request.method == 'POST' and request.FILES['xlsfile']:
                 myfile = request.FILES['xlsfile']
                 fs = FileSystemStorage(location=settings.XLS_ROOT+'/'+str(int(time.time())))
                 filename = fs.save(myfile.name, myfile)
 
-                upload = FileUpload(filepath=fs.location+'/'+filename, owner=request.user, classe=current_classe)
+                upload = FileUpload(filepath=fs.location+'/'+filename, owner=request.user)
+                upload.classe = current_classe
                 upload.save()
+
+                print(upload.classe.nom)
 
                 return redirect('show.classe', classe_id=classe_id)
         except Exception as e:
+            print(str(e))
             messages.error(request, 'Error pujant XLS')
-            if request.user.is_superuser:
+            if request.user.is_staff:
                 messages.error(request, str(e))
-            return render(request, 'classes/upload.html')
+            if settings.DEBUG:
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                print(exc_type, fname, exc_tb.tb_lineno)
+                print(str(e))
 
-        return render(request, 'classes/upload.html')
+        return render(request, 'classes/upload.html', {'instance_classe': current_classe})
     else:
         return redirect('home')
 

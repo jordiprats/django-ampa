@@ -83,7 +83,6 @@ class Command(BaseCommand):
                             parsed_naixement = row['naixement']
                         try:
                             nou_alumne = Alumne.objects.filter(
-                                                                classe = fileupload.classe,
                                                                 nom = stripped_nom, 
                                                                 cognom1 = stripped_cognom1, 
                                                                 cognom2 = stripped_cognom2, 
@@ -92,7 +91,6 @@ class Command(BaseCommand):
                         except IndexError:
                             try:
                                 nou_alumne = Alumne(
-                                    classe = fileupload.classe,
 
                                     nom = stripped_nom, 
                                     cognom1 = stripped_cognom1, 
@@ -129,6 +127,8 @@ class Command(BaseCommand):
 
                         if nou_alumne.tutor2:
                             nou_alumne.tutor2 = nou_alumne.tutor2.strip()
+
+                        nou_alumne.classes.add(fileupload.classe)
 
                         nou_alumne.save()
 

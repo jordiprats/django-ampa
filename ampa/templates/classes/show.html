@@ -14,7 +14,17 @@
   {{ instance_classe.curs }}
   <h2>Error procesant fitxer excel</h2>
   Si us plau, avisa del problema
-  </center>
+
+  {% if is_staff %}
+  <br><br>
+  <form style="display: inline-block; text-align: center;" action="{% url 'upload.classe.xls.again' classe_id=instance_classe.id %}" method="POST">
+    {% csrf_token %}
+    <button class="btn btn-danger" style="margin: 3px;" type="submit"><i class="fas fa-sync"></i></button>
+  </form>
+  {% endif %}
+
+
+</center>
   
 
 {% else %}

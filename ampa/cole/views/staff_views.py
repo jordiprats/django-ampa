@@ -133,3 +133,18 @@ def staff_settings(request):
     cursos = Curs.objects.all()[:3]
 
     return render(request, 'staff/settings.html', { 'user': request.user, 'etapes': etapes, 'cursos': cursos })
+
+
+@user_passes_test(lambda u: u.is_staff)
+def reimport(request, classe_id):
+    try:
+        if request.method == 'POST':
+            instance_classe = Classe.objects.filter(id=classe_id).first()
+            fileupload = FileUpload.objects.filter(processed=True, error=True, classe=instance_classe).order_by('-updated_at').first()
+
+            fileupload.error=False
+            fileupload.processed=False
+            fileupload.save()
+    except:
+        pass    
+    return redirect('show.classe', classe_id=classe_id)

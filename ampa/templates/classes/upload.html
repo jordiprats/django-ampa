@@ -3,6 +3,7 @@
 {% load static %}
 
 {% block content %}
+  <h1>{{ instance_classe.nom }}</h1>
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
 
