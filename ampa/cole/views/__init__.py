@@ -310,31 +310,26 @@ def get_export(request, classe_id, export_name):
         print(str(e))
         return redirect('show.classe', classe_id=classe_id)
 
-def upload_xls(request):
+def upload_xls(request, classe_id):
     if request.user.is_authenticated:
         try:
+            current_classe = Classe.objects.filter(id=classe_id).first()
             if request.method == 'POST' and request.FILES['xlsfile']:
                 myfile = request.FILES['xlsfile']
                 fs = FileSystemStorage(location=settings.XLS_ROOT+'/'+str(int(time.time())))
                 filename = fs.save(myfile.name, myfile)
-                try:
-                    current_classe = Classe.objects.filter(nom=request.POST['classe'], curs=request.POST['curs'])[0]
-                except IndexError:
-                    current_classe = Classe(nom=request.POST['classe'], curs=request.POST['curs'], delegat=request.user)
-                    current_classe.save()
 
                 upload = FileUpload(filepath=fs.location+'/'+filename, owner=request.user, classe=current_classe)
                 upload.save()
 
-                #return render(request, 'upload.html', {'uploaded_file_url': upload.filepath})
-                return redirect('show.classe', classe_id=upload.classe.id)
+                return redirect('show.classe', classe_id=classe_id)
         except Exception as e:
             messages.error(request, 'Error pujant XLS')
             if request.user.is_superuser:
                 messages.error(request, str(e))
-            return render(request, 'upload.html')
+            return render(request, 'classes/upload.html')
 
-        return render(request, 'upload.html')
+        return render(request, 'classes/upload.html')
     else:
         return redirect('home')
 

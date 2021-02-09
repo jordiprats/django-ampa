@@ -13,7 +13,17 @@ class Command(BaseCommand):
         for fileupload in FileUpload.objects.filter(processed=False).order_by('updated_at'):
             # excel_data_df = pandas.read_excel(fileupload.filepath, sheet_name='Hoja1', )
 
-            all_sheets_excel = pandas.read_excel(fileupload.filepath, sheet_name=None, )
+            try:
+                all_sheets_excel = pandas.read_excel(fileupload.filepath, sheet_name=None, )
+            except Exception as e:
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                print(exc_type, fname, exc_tb.tb_lineno)
+                print(str(e))
+                fileupload.error = True
+                fileupload.processed = True
+                fileupload.save()
+                continue
 
             for sheet_name in all_sheets_excel.keys():
                 try:

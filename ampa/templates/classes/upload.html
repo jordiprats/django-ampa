@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <ul>
+
+    <li>
+        <label for="xlsfile">Llista de classe</label>
+        <input type="file" name="xlsfile">
+    </li>
+
+    </ul>
+
+    <hr>
+
+    <button class="btn btn-info" type="submit" name="guardar" >Upload</button>
+  </form>
+
+
+{% endblock %}

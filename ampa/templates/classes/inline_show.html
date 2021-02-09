@@ -1,3 +1,6 @@
+
+{% if instance_classe.alumnes.all %}
+
 <table class="table table-bordred table-striped">
     <thead>
       <tr>
@@ -23,3 +26,17 @@
       {% endfor %}
     </tbody>
   </table>
+
+{% else %}
+
+<br><br>
+
+<center>
+  <form style="display: inline-block; text-align: center;" action="{% url 'upload.classe.xls' classe_id=instance_classe.id %}" method="GET">
+    <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-file-import"></i> XLS</button>
+  </form>
+</center>
+
+<br><br><br><br>
+
+{% endif %}

@@ -44,12 +44,12 @@ urlpatterns = [
     path('etapes/<etapa_id>/mailing/<mailing_id>/send', views.enviar_mailing_etapa, name='enviar.etapa.mailing'),
 
     # classes
-    path('upload/', views.upload_xls, name='upload.classe.xls'),
     path('classes/', views.list_classes, name='list.classes'),
     path('classes/add', views.edit_classe, name='add.classe'),
     path('classes/<classe_id>', views.show_classe, name='show.classe'),
     path('classes/<classe_id>/edit', views.edit_classe, name='edit.classe'),
     path('classes/<classe_id>/delete', views.delete_classe, name='delete.classe'),
+    path('classes/<classe_id>/upload/', views.upload_xls, name='upload.classe.xls'),
     path('classes/<classe_id>/export', views.exportar_classe, name='exportar.xls'),
     path('classes/<classe_id>/exporting', views.wait_export, name='wait.export'),
     path('classes/<classe_id>/export/<export_name>', views.get_export, name='get.classe.export'),
