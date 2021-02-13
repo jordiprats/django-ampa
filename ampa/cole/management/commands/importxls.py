@@ -51,7 +51,7 @@ class Command(BaseCommand):
                     excel_data_df = excel_data_df.where(pandas.notnull(excel_data_df), None)
 
                     # print whole sheet data
-                    # print(excel_data_df)
+                    print(excel_data_df)
                     for index, row in excel_data_df.iterrows():
                         if row['nom']:
                             stripped_nom = row['nom'].strip()
@@ -128,8 +128,8 @@ class Command(BaseCommand):
                         if nou_alumne.tutor2:
                             nou_alumne.tutor2 = nou_alumne.tutor2.strip()
 
+                        nou_alumne.save()
                         nou_alumne.classes.add(fileupload.classe)
-
                         nou_alumne.save()
 
                         print(str(nou_alumne))

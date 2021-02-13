@@ -128,24 +128,19 @@ class Classe(models.Model):
     is_upload_error = property(_is_upload_error)
 
     def _get_full_nom(self):
-        str_nom = ''
-        if self.alias:
-            str_nom = self.nom+' ('+self.alias+')'
-        else:
-            str_nom =  self.nom
-
-        # if self.curs:
-        #     str_nom += '/'+self.curs.curs
-
-        # if self.etapa:
-        #     str_nom = self.etapa.nom + ' ' + str_nom
-
-        return str_nom
+        try:
+            if self.alias:
+                str_nom = self.nom+' ('+self.alias+')'
+            else:
+                str_nom =  self.nom
+            return str_nom
+        except:
+            return str(self.id)
 
     full_nom = property(_get_full_nom)
 
     def __str__(self):
-        self.full_nom
+        return self._get_full_nom()
 
     class Meta:
         ordering = ['curs', 'etapa','nom']
