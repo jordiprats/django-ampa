@@ -34,9 +34,10 @@ class CursForm(forms.ModelForm):
 class EtapaForm(forms.ModelForm):
     class Meta:
         model = Etapa
-        fields = (['nom'])
+        fields = (['nom', 'ordre'])
         labels = {
-            'nom': 'Nom de la etapa', 
+            'nom': 'Nom de la etapa',
+            'ordre': 'Ordre de la etapa'
         }
 
 class ClasseMailingForm(forms.ModelForm):

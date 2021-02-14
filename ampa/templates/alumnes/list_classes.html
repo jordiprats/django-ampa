@@ -1,3 +1,11 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<h1>{{ alumne_instance.print_name }}</h1>
+
 <table class="table table-bordred table-striped">
     <thead>
       <tr>
@@ -10,7 +18,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for classe in list_classes.all %}
+      {% for classe in list_classes %}
         <tr>
           <td>
               <a href="{% url 'show.classe' classe_id=classe.id %}">{{ classe.full_nom }}</a>
@@ -28,3 +36,5 @@
       {% endfor %}
     </tbody>
   </table>
+
+{% endblock %}

@@ -123,3 +123,19 @@ def edit_extrainfo_alumne(request, alumne_id, extrainfo_id=None):
         if request.user.is_staff:
             messages.error(request, str(e))
         return redirect('search.edit.alumne', alumne_id=alumne_id)
+
+@login_required
+def edit_alumne_classes(request, alumne_id):
+    try:
+        alumne_instance = Alumne.objects.filter(id=alumne_id)[0]
+        list_classes = alumne_instance.classes.all()
+
+        return render(request, 'alumnes/list_classes.html', {
+                                                                'list_classes': list_classes, 
+                                                                'alumne_instance': alumne_instance, 
+                                                                'user_admin': request.user.is_staff,
+                                                            })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('search.edit.alumne', {'alumne_id': alumne_id})

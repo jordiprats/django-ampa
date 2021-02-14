@@ -67,6 +67,7 @@ class Curs(models.Model):
 class Etapa(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     nom = models.CharField(max_length=256, default='')
+    ordre = models.IntegerField(default=1)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -75,7 +76,7 @@ class Etapa(models.Model):
         return self.nom
 
     class Meta:
-        ordering = ['nom']
+        ordering = ['ordre', 'nom']
         indexes = [
             models.Index(fields=['nom']),
         ]

@@ -12,6 +12,11 @@
     <button class="float-right btn btn-danger" type="submit">eliminar alumne</button>
 </form>
 {% endif %}
+
+<form style="display: inline;" action="{% url 'list.alumne.classes' alumne_id=alumne_id %}" method="GET">
+    <button style="margin-right: 6px;" class="float-right btn btn-success" type="submit"><i class="fas fa-search"></i> classes</button>
+</form>
+
 {% else %}
 <h1><a href="{% url 'show.classe' classe_id=classe_id %}">{{ classe_nom }}</a> / afegir alumne</h1>
 Aquesta opció es per afegir manualment un alumne a la classe
