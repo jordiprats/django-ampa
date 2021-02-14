@@ -201,7 +201,10 @@ class Alumne(models.Model):
     print_name = property(_get_print_name)
 
     def _get_classe_actual(self):
-        return self.classes.order_by('curs')[0]
+        try:
+            return self.classes.order_by('curs')[0]
+        except:
+            return None
 
     classe = property(_get_classe_actual)
 
