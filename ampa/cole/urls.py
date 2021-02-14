@@ -64,10 +64,11 @@ urlpatterns = [
     path('classes/<classe_id>/addalumne/search', views.add_classe_search_alumne, name='add.classe.search.alumne'),
     path('classes/<classe_id>/<alumne_id>/edit', views.edit_alumne, name='edit.alumne'),
     path('classes/<classe_id>/<alumne_id>/delete', views.delete_alumne, name='delete.alumne'),
-    
+
     # alumnes
     path('alumnes/<alumne_id>', views.edit_alumne_form_pares, name='form.pares.edit.alumne'),
     path('alumnes/<alumne_id>/classes', views.edit_alumne_classes, name='list.alumne.classes'),
+    path('alumnes/<alumne_id>/classes/<classe_id>/unlink', views.unlink_alumne_classes, name='unlink.alumne.classes'),
     path('alumnes/<alumne_id>/edit', views.search_edit_alumne, name='search.edit.alumne'),
     path('alumnes/<alumne_id>/extra/add', views.edit_extrainfo_alumne, name='add.extrainfo.alumne'),
     path('alumnes/<alumne_id>/extra/<extrainfo_id>/edit', views.edit_extrainfo_alumne, name='edit.extrainfo.alumne'),

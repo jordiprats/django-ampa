@@ -4,13 +4,12 @@
 
 {% block content %}
 
-<h1>{{ instance_classe.nom }}</h1>
-{{ instance_classe.curs }}
+<h1>Eliminació de {{ alumne_instance.print_name }} de la classe {{ classe_instance.full_nom }}</h1>
 
 <div class="tab-content" id="pills-tabContent">
     <div class="tab-pane fade show active" id="tab-modules" role="tabpanel" aria-labelledby="pills-home-tab">
-        <h2>Eliminació de classe</h2>
-        Estas segur que vols eliminar la classe i tots els seus alumnes?
+        
+        Estas segur que vols eliminar la classe?
         <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
             {% csrf_token %}
             {{ form.as_p }}

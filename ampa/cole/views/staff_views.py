@@ -68,7 +68,7 @@ def delete_alumne(request, classe_id, alumne_id):
                     messages.error(request, 'Error eliminant l\'alumne')
             else:
                 form = AreYouSureForm(request.GET)
-            return render(request, 'delete_alumne.html', {'instance_alumne': instance_alumne})
+            return render(request, 'alumnes/delete.html', {'instance_alumne': instance_alumne})
         else:
             return redirect('show.classe', classe_id=classe_id)
     except Exception as e:

@@ -21,7 +21,11 @@
       {% for classe in list_classes %}
         <tr>
           <td>
-              <a href="{% url 'show.classe' classe_id=classe.id %}">{{ classe.full_nom }}</a>
+            <form style="display: inline;" action="{% url 'unlink.alumne.classes' alumne_id=alumne_instance.id classe_id=classe.id %}" method="GET">
+                {% csrf_token %}
+                <button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i></button>
+              </form>
+             <a href="{% url 'show.classe' classe_id=classe.id %}">{{ classe.full_nom }}</a>
           </td>
           <td>{{ classe.etapa }}</td>
           <td>{{ classe.curs }}</td>

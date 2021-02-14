@@ -241,7 +241,7 @@ def delete_classe(request, classe_id):
                     messages.error(request, 'Error eliminant la classe')
             else:
                 form = AreYouSureForm(request.GET)
-            return render(request, 'delete_classe.html', {'instance_classe': instance_classe})
+            return render(request, 'classes/delete.html', {'instance_classe': instance_classe})
         else:
             return redirect('show.classe', classe_id=classe_id)
     except Exception as e:

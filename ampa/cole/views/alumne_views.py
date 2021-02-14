@@ -139,3 +139,27 @@ def edit_alumne_classes(request, alumne_id):
         if request.user.is_superuser:
             messages.error(request, str(e))
         return redirect('search.edit.alumne', {'alumne_id': alumne_id})
+
+@login_required
+def unlink_alumne_classes(request, alumne_id, classe_id):
+    try:
+        alumne_instance = Alumne.objects.filter(id=alumne_id)[0]
+        classe_instance = Classe.objects.filter(id=classe_id)[0]
+
+        if request.method == 'POST':
+            form = AreYouSureForm(request.POST)
+            if form.is_valid():
+                alumne_instance.classes.remove(classe_instance)
+                alumne_instance.save()
+                messages.info(request, 'Classe eliminada')
+
+                return redirect('list.alumne.classes', { 'alumne_id': alumne_id})
+            else:
+                messages.error(request, 'Error eliminant la classe')
+        else:
+            form = AreYouSureForm(request.GET)
+        return render(request, 'alumnes/unlink_classe.html', {'classe_instance': classe_instance, 'alumne_instance': alumne_instance})
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('search.edit.alumne', {'alumne_id': alumne_id})    
