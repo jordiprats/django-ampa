@@ -287,9 +287,9 @@ def edit_comment(request, issue_id, comment_id=None):
                                                     })
         else:
             if request.user.is_staff:
-                form = AdminCommentForm(request.POST, instance=comment_instance)
+                form = AdminCommentForm(instance=comment_instance)
             else:
-                form = CommentForm(request.POST, instance=comment_instance)
+                form = CommentForm(instance=comment_instance)
             return render(request, 'peticions/comments/edit.html', { 
                                                                     'form': form, 
                                                                     'comment_instance': comment_instance, 
