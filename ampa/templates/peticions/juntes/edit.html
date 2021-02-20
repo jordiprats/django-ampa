@@ -23,6 +23,10 @@ tinymce.init({
 
 <a href="{% url 'peticions.list.juntes' %}"><i class="fas fa-backward"></i> juntes</a>
 
+<form style="display: inline;" action="{% url 'peticions.delete.junta' junta_id=junta_instance.id %}" method="GET">
+    <button class="float-right btn btn-danger" type="submit">eliminar junta</button>
+</form>
+
 <div class="py-4 px-4 px-md-3 px-lg-4">
     <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
         {% csrf_token %}
@@ -40,7 +44,7 @@ tinymce.init({
 <h2>Peticions</h2>
 <ul>
     {% for issue in junta_instance.issues.all %}
-    <li>{{ issue.titol }} 
+    <li><a href="{% url 'peticions.edit.issue' issue_id=issue.id %}">{{ issue.titol }}</a>
         
         {% for label in issue.categories.all %}
             <span class="badge badge-info">{{ label }}</span>

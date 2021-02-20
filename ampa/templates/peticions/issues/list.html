@@ -22,17 +22,13 @@
         <th>Categories</th>
         <th>Autor</th>
         <th>Última modificació</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
       {% for issue in list_issues %}
         <tr>
           <td>
-            {% if user_admin %}
-            <form style="display: inline;" action="{% url 'peticions.delete.issue' issue_id=issue.id %}" method="GET">
-              <button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i></button>
-            </form>
-            {% endif %}
             <a href="{% url 'peticions.edit.issue' issue_id=issue.id %}">{{ issue.titol }}</a>
             {% if user_admin %}
             - <a href="{% url 'peticions.show.issue' issue_id=issue.id %}">preview</a>
@@ -43,6 +39,13 @@
           <td>{{ issue.display_categories }}</td>
           <td>{{ issue.owner }}</td>
           <td>{{ issue.updated_at | naturaltime }}</td>
+          <td>
+            {% if user_admin %}
+            <form style="display: inline;" action="{% url 'peticions.delete.issue' issue_id=issue.id %}" method="GET">
+              <button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i></button>
+            </form>
+            {% endif %}
+          </td>
         </tr>
       {% endfor %}
     </tbody>

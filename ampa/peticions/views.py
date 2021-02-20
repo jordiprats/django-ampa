@@ -35,22 +35,22 @@ def delete_comment(request, issue_id, comment_id):
 @user_passes_test(lambda u: u.is_staff)
 def delete_junta(request, junta_id):
     try:
-        junta_instance = Category.objects.filter(id=category_id)[0]
+        junta_instance = Junta.objects.filter(id=junta_id)[0]
        
         if request.method == 'POST':
             form = AreYouSureForm(request.POST)
             if form.is_valid():
                 junta_instance.delete()
-                return redirect('peticions.list.categories')
+                return redirect('peticions.list.juntes')
             else:
-                messages.error(request, 'Error eliminant la categoria')
+                messages.error(request, 'Error eliminant la junta')
         else:
             form = AreYouSureForm(request.GET)
         return render(request, 'peticions/juntes/delete.html', { 'junta_instance': junta_instance })
     except Exception as e:
         if request.user.is_superuser:
             messages.error(request, str(e))
-        return redirect('peticions.list.categories')
+        return redirect('peticions.list.juntes')
 
 @user_passes_test(lambda u: u.is_staff)
 def delete_category(request, category_id):
