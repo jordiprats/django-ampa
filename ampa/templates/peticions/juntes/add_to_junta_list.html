@@ -13,6 +13,7 @@ Les peticions han d'estar en estat "<b>obert</b>" per poder ser adjuntades a la 
     <thead>
       <tr>
         <th>Titol</th>
+        <th>Categories</th>
         <th>Última modificació</th>
       </tr>
     </thead>
@@ -26,6 +27,7 @@ Les peticions han d'estar en estat "<b>obert</b>" per poder ser adjuntades a la 
             </form>
             {{ issue.titol }}
           </td>
+          <td>{{ issue.display_categories }}</td>
           <td>{{ issue.updated_at | naturaltime }}</td>
         </tr>
       {% endfor %}
@@ -38,6 +40,7 @@ Les peticions han d'estar en estat "<b>obert</b>" per poder ser adjuntades a la 
             </form>
             {{ issue.titol }}
           </td>
+          <td>{{ issue.display_categories }}</td>
           <td>{{ issue.updated_at | naturaltime }}</td>
         </tr>
       {% endfor %}

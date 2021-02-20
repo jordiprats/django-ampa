@@ -40,7 +40,13 @@ tinymce.init({
 <h2>Peticions</h2>
 <ul>
     {% for issue in junta_instance.issues.all %}
-    <li>{{ issue.titol }}</li>
+    <li>{{ issue.titol }} 
+        
+        {% for label in issue.categories.all %}
+            <span class="badge badge-info">{{ label }}</span>
+        {% endfor %}
+        
+    </li>
     {% endfor %}
 </ul>
 {% endif %}
