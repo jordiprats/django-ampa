@@ -3,7 +3,7 @@
 <ul class="timeline">
 
     <div class="float-right">
-    <p>{{ issue_instance.updated_at | naturaltime }}</p>
+    <p>Creada: {{ issue_instance.created_at | naturaltime }} - Actualitzada: {{ issue_instance.updated_at | naturaltime }}</p>
     ({{ issue_instance.likes.count }}) <form style="display: inline" action="{% url 'peticions.like.issue' issue_id=issue_instance.id %}" method="POST">
         {% csrf_token %}
         <button class="btn btn-success" type="submit"><i class="far fa-thumbs-up"></i></button>

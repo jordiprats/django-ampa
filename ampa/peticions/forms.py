@@ -35,6 +35,16 @@ class CommentForm(forms.ModelForm):
             'html_message': 'Comentari',
         }
 
+class AdminCommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = (['ampa', 'internal', 'html_message'])
+        labels = {
+            'ampa': 'Mostrar comentari com AMPA',
+            'internal': 'restringir',
+            'html_message': 'Comentari',
+        }
+
 class JuntaForm(forms.ModelForm):
     class Meta:
         model = Junta

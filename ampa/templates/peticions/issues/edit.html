@@ -21,6 +21,8 @@ tinymce.init({
 });
 </script>
 
+<a href="{% url 'peticions.list.issues' %}"><i class="fas fa-backward"></i> peticions</a>
+
 <div class="py-4 px-4 px-md-3 px-lg-4">
     <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
         {% csrf_token %}
@@ -52,8 +54,13 @@ tinymce.init({
 {% for comment in issue_instance.comments.all %}
     {% if not comment.internal or comment.user == user %}
     <li>
-        <p class="float-right">{{ comment.updated_at | naturaltime }}</p>
-        <p>{{ comment.user }} </p>
+        <p class="float-right">{{ comment.updated_at | naturaltime }}
+        </p>
+        <p>{{ comment.user }} 
+            {% if user_admin %}
+            <a href="{% url 'peticions.edit.comment' issue_id=issue_instance.id comment_id=comment.id %}"><i class="fas fa-edit"></i></a>
+            {% endif %}
+        </p>
         <p>{{ comment.html_message | safe }}</p>
         <hr>
     </li>

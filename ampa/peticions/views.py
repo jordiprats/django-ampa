@@ -13,6 +13,46 @@ from cole.forms import *
 #
 
 @user_passes_test(lambda u: u.is_staff)
+def delete_junta(request, junta_id):
+    try:
+        junta_instance = Category.objects.filter(id=category_id)[0]
+       
+        if request.method == 'POST':
+            form = AreYouSureForm(request.POST)
+            if form.is_valid():
+                junta_instance.delete()
+                return redirect('peticions.list.categories')
+            else:
+                messages.error(request, 'Error eliminant la categoria')
+        else:
+            form = AreYouSureForm(request.GET)
+        return render(request, 'peticions/juntes/delete.html', { 'junta_instance': junta_instance })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.list.categories')
+
+@user_passes_test(lambda u: u.is_staff)
+def delete_category(request, category_id):
+    try:
+        instance_category = Category.objects.filter(id=category_id)[0]
+       
+        if request.method == 'POST':
+            form = AreYouSureForm(request.POST)
+            if form.is_valid():
+                instance_category.delete()
+                return redirect('peticions.list.categories')
+            else:
+                messages.error(request, 'Error eliminant la categoria')
+        else:
+            form = AreYouSureForm(request.GET)
+        return render(request, 'peticions/categories/delete.html', { 'instance_category': instance_category })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.list.categories')
+
+@user_passes_test(lambda u: u.is_staff)
 def delete_issue(request, issue_id):
     try:
         instance_issue = Issue.objects.filter(id=issue_id)[0]
@@ -228,7 +268,10 @@ def edit_comment(request, issue_id, comment_id=None):
             is_new = True
 
         if request.method == 'POST':
-            form = CommentForm(request.POST, instance=comment_instance)
+            if request.user.is_staff:
+                form = AdminCommentForm(request.POST, instance=comment_instance)
+            else:
+                form = CommentForm(request.POST, instance=comment_instance)
             if form.is_valid():
                 form.save()
                 messages.info(request, 'Comentari guardat correctament')
@@ -243,7 +286,10 @@ def edit_comment(request, issue_id, comment_id=None):
                                                         'issue_instance': issue_instance,
                                                     })
         else:
-            form = CommentForm(instance=comment_instance)
+            if request.user.is_staff:
+                form = AdminCommentForm(request.POST, instance=comment_instance)
+            else:
+                form = CommentForm(request.POST, instance=comment_instance)
             return render(request, 'peticions/comments/edit.html', { 
                                                                     'form': form, 
                                                                     'comment_instance': comment_instance, 
@@ -304,7 +350,8 @@ def edit_issue(request, issue_id=None):
                                                         'issue_instance': issue_instance, 
                                                         'is_new': is_new,
                                                         'owner_view': owner_view,
-                                                        'user': request.user
+                                                        'user': request.user,
+                                                        'user_admin': request.user.is_staff
                                                     })
         else:
             if request.user.is_staff:
@@ -316,7 +363,8 @@ def edit_issue(request, issue_id=None):
                                                                     'issue_instance': issue_instance, 
                                                                     'is_new': is_new,
                                                                     'owner_view': owner_view,
-                                                                    'user': request.user
+                                                                    'user': request.user,
+                                                                    'user_admin': request.user.is_staff
                                                                 })
     except Exception as e:
         if request.user.is_superuser:
