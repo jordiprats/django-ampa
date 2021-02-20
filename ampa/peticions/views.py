@@ -13,6 +13,26 @@ from cole.forms import *
 #
 
 @user_passes_test(lambda u: u.is_staff)
+def delete_comment(request, issue_id, comment_id):
+    try:
+        comment_instance = Comment.objects.filter(id=comment_id, issue__id=issue_id)[0]
+       
+        if request.method == 'POST':
+            form = AreYouSureForm(request.POST)
+            if form.is_valid():
+                comment_instance.delete()
+                return redirect('peticions.edit.issue', {'issue_id': issue_id})
+            else:
+                messages.error(request, 'Error eliminant la categoria')
+        else:
+            form = AreYouSureForm(request.GET)
+        return render(request, 'peticions/comments/delete.html', { 'comment': comment_instance })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.edit.issue', {'issue_id': issue_id})
+
+@user_passes_test(lambda u: u.is_staff)
 def delete_junta(request, junta_id):
     try:
         junta_instance = Category.objects.filter(id=category_id)[0]

@@ -26,4 +26,5 @@ urlpatterns = [
     # comments
     path('peticions/<issue_id>/comments/add', views.edit_comment, name='peticions.add.comment'),
     path('peticions/<issue_id>/comments/<comment_id>/edit', views.edit_comment, name='peticions.edit.comment'),
+    path('peticions/<issue_id>/comments/<comment_id>/delete', views.delete_comment, name='peticions.delete.comment'),
 ]

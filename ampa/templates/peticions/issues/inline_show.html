@@ -34,8 +34,12 @@
     {% else %}
     <li>
     {% endif %}
-        <p class="float-right">{{ comment.updated_at | naturaltime }}</p>
-        <p>{{ comment.user }} </p>
+        <p class="float-right">{{ comment.created_at | naturaltime }}</p>
+        {% if comment.ampa %}
+        <p>AMPA</p>
+        {% else %}
+        <p>{{ comment.user }}</p>
+        {% endif %}
         <p>{{ comment.html_message | safe }}</p>
         <hr>
     </li>

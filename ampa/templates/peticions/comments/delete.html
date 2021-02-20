@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<a href="{% url 'peticions.edit.issue' issue_id=comment.issue.id %}"><i class="fas fa-backward"></i> petició</a>
+
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="tab-modules" role="tabpanel" aria-labelledby="pills-home-tab">
+        <h2>Eliminació de comentari</h2>
+
+        {% if comment.ampa %}
+        <p>AMPA</p>
+        {% else %}
+        <p>{{ comment.user }}</p>
+        {% endif %}
+        <p>{{ comment.html_message | safe }}</p>
+        <hr>
+
+        Estas segur que vols eliminar aquest comentari?
+        <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <hr>
+            <button class="btn btn-danger" type="submit">ELIMINAR</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

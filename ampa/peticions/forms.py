@@ -38,11 +38,15 @@ class CommentForm(forms.ModelForm):
 class AdminCommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = (['ampa', 'internal', 'html_message'])
+        fields = (['user', 'ampa', 'internal', 'html_message'])
         labels = {
             'ampa': 'Mostrar comentari com AMPA',
             'internal': 'restringir',
+            'user': 'Autor',
             'html_message': 'Comentari',
+        }
+        widgets = {
+            'user': forms.Select(attrs={'disabled':'disabled'})
         }
 
 class JuntaForm(forms.ModelForm):

@@ -22,6 +22,10 @@ tinymce.init({
 
 <a href="{% url 'peticions.edit.issue' issue_id=issue_id %}"><i class="fas fa-backward"></i> Tornar a petició</a>
 
+<form style="display: inline;" action="{% url 'peticions.delete.comment' issue_id=comment_instance.issue.id comment_id=comment_instance.id %}" method="GET">
+    <button class="float-right btn btn-danger" type="submit">eliminar comentari</button>
+</form>
+
 <div class="py-4 px-4 px-md-3 px-lg-4">
     <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
         {% csrf_token %}
