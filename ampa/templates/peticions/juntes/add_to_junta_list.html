@@ -7,11 +7,19 @@
 
 <h1><a href="{% url 'peticions.edit.junta' junta_id=junta_instance.id %}">{{ junta_instance.name }}</a> / Gestionar peticions</h1>
 
+<form style="display: inline;" action="{% url 'peticions.junta.add.all.peticions' junta_id=junta_instance.id %}" method="GET">
+  <button class="float-right btn btn-info" type="submit">afegir TOTES</button>
+</form>
+
+<br><br>
+
 Les peticions han d'estar en estat "<b>obert</b>" per poder ser adjuntades a la junta
+<br><br>
 
 <table class="table table-bordred table-striped">
     <thead>
       <tr>
+        <th></th>
         <th>Titol</th>
         <th>Categories</th>
         <th>Última modificació</th>
@@ -25,6 +33,8 @@ Les peticions han d'estar en estat "<b>obert</b>" per poder ser adjuntades a la 
               {% csrf_token %}
               <button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i></button>
             </form>
+          </td>
+          <td>
             {{ issue.titol }}
           </td>
           <td>{{ issue.display_categories }}</td>
@@ -38,6 +48,8 @@ Les peticions han d'estar en estat "<b>obert</b>" per poder ser adjuntades a la 
               {% csrf_token %}
               <button class="btn btn-success" type="submit"><i class="fas fa-plus"></i></button>
             </form>
+          </td>
+          <td>
             {{ issue.titol }}
           </td>
           <td>{{ issue.display_categories }}</td>

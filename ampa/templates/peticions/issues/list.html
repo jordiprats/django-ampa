@@ -21,6 +21,7 @@
         <th>Estat de la petició</th>
         <th>Categories</th>
         <th>Autor</th>
+        <th>Comentaris</th>
         <th>Última modificació</th>
         <th></th>
       </tr>
@@ -38,6 +39,7 @@
           <td>{{ issue.get_status_display }}</td>
           <td>{{ issue.display_categories }}</td>
           <td>{{ issue.owner }}</td>
+          <td>{{ issue.comments.count }}</td>
           <td>{{ issue.updated_at | naturaltime }}</td>
           <td>
             {% if user_admin %}

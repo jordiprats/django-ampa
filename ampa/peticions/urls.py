@@ -8,6 +8,7 @@ urlpatterns = [
     path('<junta_id>/edit', views.edit_junta, name='peticions.edit.junta'),
     path('<junta_id>/delete', views.delete_junta, name='peticions.delete.junta'),
     path('<junta_id>/edit/peticions', views.list_junta_peticio, name='peticions.edit.junta.list.peticions'),
+    path('<junta_id>/edit/peticions/add/all', views.add_all_junta_peticio, name='peticions.junta.add.all.peticions'),
     path('<junta_id>/edit/peticions/<issue_id>/add', views.add_junta_peticio, name='peticions.edit.junta.add.peticio'),
     path('<junta_id>/edit/peticions/<issue_id>/remove', views.remove_junta_peticio, name='peticions.edit.junta.remove.peticio'),
     # categories

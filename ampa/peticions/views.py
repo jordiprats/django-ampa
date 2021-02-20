@@ -193,6 +193,28 @@ def list_junta_peticio(request, junta_id):
         return redirect('peticions.list.juntes')
 
 @user_passes_test(lambda u: u.is_staff)
+def add_all_junta_peticio(request, junta_id):
+    try:
+        junta_instance = Junta.objects.filter(id=junta_id)[0]
+       
+        if request.method == 'POST':
+            form = AreYouSureForm(request.POST)
+            if form.is_valid():
+                for issue in Issue.objects.filter(public=True, status=ISSUE_STATUS_OPEN):
+                    junta_instance.issues.add(issue)
+                junta_instance.save()
+                return redirect('peticions.edit.junta', junta_id=junta_id)
+            else:
+                messages.error(request, 'Error afegit peticions a la junta')
+        else:
+            form = AreYouSureForm(request.GET)
+        return render(request, 'peticions/juntes/addallissues.html', { 'junta_instance': junta_instance })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.list.juntes')    
+
+@user_passes_test(lambda u: u.is_staff)
 def add_junta_peticio(request, junta_id, issue_id):
     try:
         if request.method == "POST":
