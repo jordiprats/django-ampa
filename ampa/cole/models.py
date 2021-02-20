@@ -157,7 +157,7 @@ class Alumne(models.Model):
     cognom1 = models.CharField(max_length=256)
     cognom2 = models.CharField(max_length=256, default=None, blank=True, null=True)
     
-    naixement = models.DateTimeField(blank=True, null=True)
+    naixement = models.DateTimeField(default=None, blank=True, null=True)
 
     tutor1 = models.CharField(max_length=256, default='', blank=True, null=True)
     telf_tutor1 = models.CharField(max_length=256, default='', blank=True, null=True)

@@ -89,6 +89,8 @@ class Junta(models.Model):
 
     public = models.BooleanField(default=False)
 
+    celebracio = models.DateTimeField(default=None, blank=True, null=True)
+
     issues = models.ManyToManyField(Issue, related_name='juntes')
     votacions = models.ManyToManyField(Election, related_name='juntes')
 
@@ -99,7 +101,7 @@ class Junta(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['-updated_at']
+        ordering = ['-celebracio']
         indexes = [
-            models.Index(fields=['-updated_at']),
+            models.Index(fields=['-celebracio']),
         ]

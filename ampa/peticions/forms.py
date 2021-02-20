@@ -52,9 +52,13 @@ class AdminCommentForm(forms.ModelForm):
 class JuntaForm(forms.ModelForm):
     class Meta:
         model = Junta
-        fields = (['name', 'public', 'html_message'])
+        fields = (['name', 'celebracio', 'public', 'html_message'])
+        widgets = {
+            'celebracio': forms.DateInput(format=('%Y-%m-%d'), attrs={"type": 'date'}),
+        }
         labels = {
             'name': 'Junta',
+            'celebracio': 'Data de celebració',
             'public': 'Publicar',
             'html_message': 'Text',
         }
