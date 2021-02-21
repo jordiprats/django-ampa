@@ -23,6 +23,7 @@
         <th></th>
         <th>Estat de la petició</th>
         <th>Categories</th>
+        <th>Juntes</th>
         <th>Autor</th>
         <th>Comentaris</th>
         <th>Última modificació</th>
@@ -41,9 +42,10 @@
           <td>{{ issue.likes.count }} <i style="color:green;" class="far fa-thumbs-up"></i> / {{ issue.dislikes.count }} <i style="color:red;" class="far fa-thumbs-down"></i></td>
           <td>{{ issue.get_status_display }}</td>
           <td>{{ issue.display_categories }}</td>
+          <td>{{ issue.display_juntes }}</td>
           <td>{{ issue.owner }}</td>
           <td>{{ issue.comments.count }}</td>
-          <td>{{ issue.updated_at | naturaltime }}</td>
+          <td>{{ issue.display_updated | naturaltime }}</td>
           <td>
             {% if user_admin %}
             <form style="display: inline;" action="{% url 'peticions.delete.issue' issue_id=issue.id %}" method="GET">

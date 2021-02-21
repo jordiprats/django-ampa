@@ -19,11 +19,6 @@
 
     {{ issue_instance.html_message | safe}}
 
-    {% if issue_instance.status != 'z' %}
-    <form style="display: inline;" action="{% url 'peticions.add.comment' issue_id=issue_instance.id %}" method="GET">
-        <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> comentari</button>
-    </form>
-    {% endif %}
     <br><br><hr>
 
 
@@ -45,4 +40,13 @@
     </li>
     {% endif %}
 {% endfor %}
+
+
+
+{% if issue_instance.status != 'z' %}
+<form style="display: inline;" action="{% url 'peticions.add.comment' issue_id=issue_instance.id %}" method="GET">
+    <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> comentari</button>
+</form>
+{% endif %}
+
 </ul>

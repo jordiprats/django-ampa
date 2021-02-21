@@ -68,6 +68,16 @@ class Issue(models.Model):
     def display_categories(self):
         return ','.join(list(self.categories.values_list('name', flat=True)))
 
+    def display_juntes(self):
+        return ','.join(list(self.juntes.values_list('name', flat=True)))
+
+    def display_updated(self):
+        updated = self.updated_at
+        for comment in self.comments.all():
+            if comment.updated_at > updated:
+                updated = comment.updated_at
+        return updated
+
     class Meta:
         ordering = ['-updated_at']
         indexes = [

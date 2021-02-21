@@ -15,7 +15,7 @@
 <a href="{% url 'peticions.list.categories' %}"><i class="fas fa-backward"></i> Categories</a>
 
 <form style="display: inline;" action="{% url 'peticions.delete.category' category_id=category_instance.id  %}" method="GET">
-    <button class="float-right btn btn-danger" type="submit">eliminar opció</button>
+    <button style="margin: 3px;" class="float-right btn btn-danger" type="submit">eliminar opció</button>
 </form>
 
 <div class="py-4 px-4 px-md-3 px-lg-4">
