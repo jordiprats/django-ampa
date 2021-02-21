@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import update_session_auth_hash
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -7,6 +7,10 @@ from cole.forms import *
 
 import sys
 import os
+
+@user_passes_test(lambda u: u.is_staff)
+def users_list(request):
+    pass
 
 @login_required
 def user_settings(request):

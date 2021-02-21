@@ -16,6 +16,11 @@ urlpatterns = [
     path('peticions/categories/add', views.edit_category, name='peticions.add.category'),
     path('peticions/categories/<category_id>/edit', views.edit_category, name='peticions.edit.category'),
     path('peticions/categories/<category_id>/delete', views.delete_category, name='peticions.delete.category'),
+    # representants
+    path('peticions/representants', views.list_representants, name='peticions.list.representants'),
+    path('peticions/representants/add', views.edit_representant, name='peticions.add.representant'),
+    path('peticions/representants/<representant_id>/edit', views.edit_representant, name='peticions.edit.representant'),
+    path('peticions/representants/<representant_id>/delete', views.delete_representant, name='peticions.delete.representant'),
     # issues
     path('peticions', views.list_issues, name='peticions.list.issues'),
     path('peticions/add', views.edit_issue, name='peticions.add.issue'),

@@ -15,6 +15,19 @@ ISSUE_STATUS = [
     (ISSUE_STATUS_CLOSED, 'tancat'),
 ]
 
+class Representant(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+        indexes = [
+            models.Index(fields=['name']),
+        ]
+
 class Category(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=256)
@@ -66,12 +79,11 @@ class Comment(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.SET_NULL, related_name='comments', default=None, blank=True, null=True)
 
     user = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='comments', default=None, blank=True, null=True)
+    representant = models.ForeignKey(Representant, on_delete=models.SET_NULL, related_name='comments', default=None, blank=True, null=True)
 
     html_message = models.TextField(max_length=50000, default=None, blank=True, null=True)
 
     internal = models.BooleanField(default=False)
-
-    ampa = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

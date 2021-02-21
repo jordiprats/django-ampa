@@ -10,18 +10,18 @@
 <table class="table table-bordred table-striped">
     <thead>
       <tr>
-        <th>Categoria</th>
+        <th>Representant</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-      {% for category in list_categories %}
+      {% for representant in list_representants %}
         <tr>
           <td>
-            <a href="{% url 'peticions.edit.category' category_id=category.id %}">{{ category.name }}</a>
+            <a href="{% url 'peticions.edit.representant' representant_id=representant.id %}">{{ representant.name }}</a>
           </td>
           <td>
-            <form style="display: inline;" action="{% url 'peticions.delete.category' category_id=category_instance.id  %}" method="GET">
+            <form style="display: inline;" action="{% url 'peticions.delete.representant' representant_id=representant.id  %}" method="GET">
               <button class="float-right btn btn-danger" type="submit"><i class="far fa-trash-alt"></i></button>
             </form>
           </td>
@@ -30,8 +30,8 @@
     </tbody>
   </table>
 
-  <form style="display: inline;" action="{% url 'peticions.add.category' %}" method="GET">
-    <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> categoria</button>
+  <form style="display: inline;" action="{% url 'peticions.add.representant' %}" method="GET">
+    <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> representant</button>
   </form>
 
 {% endblock %}

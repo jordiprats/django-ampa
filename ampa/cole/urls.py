@@ -18,6 +18,7 @@ urlpatterns = [
 
     # staff settings
     path('staff/settings', views.staff_settings, name='staff.settings'),
+    path('staff/users', views.users_list, name='list.users'),
 
     # cursos
     path('cursos/', views.list_cursos, name='list.cursos'),

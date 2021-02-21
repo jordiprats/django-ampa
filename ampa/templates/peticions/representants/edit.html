@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<style>
+#id_text {
+    width: 100%;
+}
+</style>
+
+<a href="{% url 'peticions.list.representants' %}"><i class="fas fa-backward"></i> Representants</a>
+
+<form style="display: inline;" action="{% url 'peticions.delete.representant' representant_id=representant_instance.id  %}" method="GET">
+    <button style="margin: 3px;" class="float-right btn btn-danger" type="submit">eliminar</button>
+</form>
+
+<div class="py-4 px-4 px-md-3 px-lg-4">
+    <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
+        {% csrf_token %}
+
+        {{ form|crispy }}
+        <br>
+        <button class="btn btn-primary" type="submit">guardar</button>
+    </form>
+</div>
+
+{% endblock %}

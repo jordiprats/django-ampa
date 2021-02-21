@@ -57,8 +57,8 @@ tinymce.init({
         <p class="float-right">{{ comment.updated_at | naturaltime }}
         </p>
         <p>
-            {% if comment.ampa %}
-            AMPA
+            {% if comment.representant %}
+            {{ comment.representant }}
             {% else %}
             {{ comment.user }}
             {% endif %}
@@ -73,8 +73,8 @@ tinymce.init({
         {% if owner_view %}
         <li class="text-muted">
             <p class="float-right">{{ comment.updated_at | naturaltime }}</p>
-            {% if comment.ampa %}
-            <p>AMPA</p>
+            {% if comment.representant %}
+            <p>{{ comment.representant }}</p>
             {% else %}
             <p>{{ comment.user }}</p>
             {% endif %}

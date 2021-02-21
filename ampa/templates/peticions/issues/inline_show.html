@@ -35,7 +35,7 @@
     <li>
     {% endif %}
         <p class="float-right">{{ comment.created_at | naturaltime }}</p>
-        {% if comment.ampa %}
+        {% if comment.representant %}
         <p>AMPA</p>
         {% else %}
         <p>{{ comment.user }}</p>

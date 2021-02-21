@@ -23,7 +23,7 @@ def delete_comment(request, issue_id, comment_id):
                 comment_instance.delete()
                 return redirect('peticions.edit.issue', {'issue_id': issue_id})
             else:
-                messages.error(request, 'Error eliminant la categoria')
+                messages.error(request, 'Error eliminant comentari')
         else:
             form = AreYouSureForm(request.GET)
         return render(request, 'peticions/comments/delete.html', { 'comment': comment_instance })
@@ -51,6 +51,26 @@ def delete_junta(request, junta_id):
         if request.user.is_superuser:
             messages.error(request, str(e))
         return redirect('peticions.list.juntes')
+
+@user_passes_test(lambda u: u.is_staff)
+def delete_representant(request, representant_id):
+    try:
+        instance_representant = Representant.objects.filter(id=representant_id)[0]
+       
+        if request.method == 'POST':
+            form = AreYouSureForm(request.POST)
+            if form.is_valid():
+                instance_representant.delete()
+                return redirect('peticions.list.representants')
+            else:
+                messages.error(request, 'Error eliminant representant')
+        else:
+            form = AreYouSureForm(request.GET)
+        return render(request, 'peticions/representants/delete.html', { 'instance_representant': instance_representant })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.list.representants')
 
 @user_passes_test(lambda u: u.is_staff)
 def delete_category(request, category_id):
@@ -93,6 +113,37 @@ def delete_issue(request, issue_id):
         return redirect('peticions.list.issues')
 
 @user_passes_test(lambda u: u.is_staff)
+def edit_representant(request, representant_id=None):
+    try:
+        if representant_id:
+            representant_instance = Representant.objects.filter(id=representant_id)[0]
+        else:
+            representant_instance = Representant()
+
+        if request.method == 'POST':
+            form = RepresentantForm(request.POST, instance=representant_instance)
+            if form.is_valid():
+                form.save()
+                messages.info(request, 'Representant guardat correctament')
+                return redirect('peticions.list.representants')
+            else:
+                messages.error(request, 'Formulari incorrecte')
+                return render(request, 'peticions/representants/edit.html', { 
+                                                        'form': form, 
+                                                        'representant_instance': representant_instance, 
+                                                    })
+        else:
+            form = RepresentantForm(instance=representant_instance)
+            return render(request, 'peticions/representants/edit.html', { 
+                                                                    'form': form, 
+                                                                    'representant_instance': representant_instance, 
+                                                                })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.list.representants')
+
+@user_passes_test(lambda u: u.is_staff)
 def edit_category(request, category_id=None):
     try:
         if category_id:
@@ -128,6 +179,15 @@ def list_categories(request):
     list_categories = Category.objects.all()
     return render(request, 'peticions/categories/list.html', {
                                                                 'list_categories': list_categories, 
+                                                                'public': False, 
+                                                                'user_admin': request.user.is_staff
+                                                            })
+
+@user_passes_test(lambda u: u.is_staff)
+def list_representants(request):
+    list_representants = Representant.objects.all()
+    return render(request, 'peticions/representants/list.html', {
+                                                                'list_representants': list_representants, 
                                                                 'public': False, 
                                                                 'user_admin': request.user.is_staff
                                                             })

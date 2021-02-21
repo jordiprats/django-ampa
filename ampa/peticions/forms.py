@@ -38,9 +38,9 @@ class CommentForm(forms.ModelForm):
 class AdminCommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = (['user', 'ampa', 'internal', 'html_message'])
+        fields = (['user', 'representant', 'internal', 'html_message'])
         labels = {
-            'ampa': 'Mostrar comentari com AMPA',
+            'representant': 'Mostra el comentari fet com a representant de:',
             'internal': 'restringir',
             'user': 'Autor',
             'html_message': 'Comentari',
@@ -72,4 +72,14 @@ class CategoryForm(forms.ModelForm):
         labels = {
             'name': 'Nom de la categoria', 
             'ordre': 'Ordre'
+        }
+
+class RepresentantForm(forms.ModelForm):
+    name = forms.TextInput(attrs={'size': '40'})
+    
+    class Meta:
+        model = Representant
+        fields = (['name'])
+        labels = {
+            'name': 'Representant',
         }
