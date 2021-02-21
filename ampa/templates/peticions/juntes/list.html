@@ -19,7 +19,7 @@
       {% for junta in list_juntes %}
         <tr>
           {% if user_admin %}
-          <td><a href="{% url 'peticions.edit.junta' junta_id=junta.id %}">{{ junta.name }}</a></td>
+          <td><a href="{% url 'peticions.edit.junta' junta_id=junta.id %}">{{ junta.name }}</a> - <a href="{% url 'peticions.show.junta' junta_id=junta.id %}">preview</a></td>
           {% else %}
             {% if junta.public %}
             <td><a href="{% url 'peticions.show.junta' junta_id=junta.id %}">{{ junta.name }}</a></td>

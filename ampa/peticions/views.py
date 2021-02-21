@@ -507,7 +507,13 @@ def list_juntes(request):
                                                         
 def show_junta(request, junta_id=None):
     try:
-        junta_instance = Junta.objects.filter(id=junta_id, public=True)[0]
+        if request.user.is_authenticated:
+            if request.user.is_staff:
+                junta_instance = Junta.objects.filter(id=junta_id)[0]
+            else:
+                junta_instance = Junta.objects.filter(id=junta_id, public=True)[0]
+        else:
+            junta_instance = Junta.objects.filter(id=junta_id, public=True)[0]
 
         return render(request, 'peticions/juntes/show.html', { 
                                                                 'junta_instance': junta_instance, 
