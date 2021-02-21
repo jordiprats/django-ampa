@@ -496,7 +496,7 @@ def list_juntes(request):
             user_admin = True
             list_juntes = Junta.objects.all()
         else:
-            list_juntes = Junta.objects.all(public=True)
+            list_juntes = Junta.objects.filter(public=True)
     else:
         list_juntes = Junta.objects.filter(public=True)
 
