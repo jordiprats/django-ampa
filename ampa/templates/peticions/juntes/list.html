@@ -22,7 +22,7 @@
           <td><a href="{% url 'peticions.edit.junta' junta_id=junta.id %}">{{ junta.name }}</a></td>
           {% else %}
             {% if junta.public %}
-            <td>AQUI SHOW</td>
+            <td><a href="{% url 'peticions.show.junta' junta_id=junta.id %}">{{ junta.name }}</a></td>
             {% else %}
             <td>{{ junta.name }}</td>
             {% endif %}

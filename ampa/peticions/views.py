@@ -494,11 +494,11 @@ def list_juntes(request):
     if request.user.is_authenticated:
         if request.user.is_staff:
             user_admin = True
-
-    if user_admin:
-        list_juntes = Junta.objects.all()
+            list_juntes = Junta.objects.all()
+        else:
+            list_juntes = Junta.objects.all(public=True)
     else:
-        list_juntes = Junta.objects.filter(public=False)
+        list_juntes = Junta.objects.filter(public=True)
 
     return render(request, 'peticions/juntes/list.html', {
                                                                 'list_juntes': list_juntes,
