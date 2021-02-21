@@ -504,3 +504,15 @@ def list_juntes(request):
                                                                 'list_juntes': list_juntes,
                                                                 'user_admin': user_admin
                                                             })
+                                                        
+def show_junta(request, junta_id=None):
+    try:
+        junta_instance = Junta.objects.filter(id=junta_id, public=True)[0]
+
+        return render(request, 'peticions/juntes/show.html', { 
+                                                                'junta_instance': junta_instance, 
+                                                            })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.list.juntes')

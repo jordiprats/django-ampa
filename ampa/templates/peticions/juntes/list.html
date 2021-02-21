@@ -21,7 +21,11 @@
           {% if user_admin %}
           <td><a href="{% url 'peticions.edit.junta' junta_id=junta.id %}">{{ junta.name }}</a></td>
           {% else %}
-          <td>{{ junta.name }}</td>
+            {% if junta.public %}
+            <td>AQUI SHOW</td>
+            {% else %}
+            <td>{{ junta.name }}</td>
+            {% endif %}
           {% endif %}
           <td>{{ junta.celebracio }}</td>
           <td>{{ junta.public|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>

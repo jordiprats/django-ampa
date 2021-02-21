@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<h1>{{ junta_instance.name }}</h1>
+
+{{ junta_instance.html_message | safe}}
+
+{% if junta_instance.issues.all %}
+<h2>Peticions</h2>
+<ul>
+    {% for issue in junta_instance.issues.all %}
+    <li>{{ issue.titol }}
+        
+        {% for label in issue.categories.all %}
+            <span class="badge badge-info">{{ label }}</span>
+        {% endfor %}
+        
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}
