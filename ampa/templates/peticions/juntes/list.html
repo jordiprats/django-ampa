@@ -18,14 +18,20 @@
     <tbody>
       {% for junta in list_juntes %}
         <tr>
+          {% if user_admin %}
           <td><a href="{% url 'peticions.edit.junta' junta_id=junta.id %}">{{ junta.name }}</a></td>
+          {% else %}
+          <td>{{ junta.name }}</td>
+          {% endif %}
           <td>{{ junta.celebracio }}</td>
           <td>{{ junta.public|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
           <td>{{ junta.updated_at | naturaltime }}</td>
           <td>
+            {% if user_admin %}
             <form style="display: inline;" action="{% url 'peticions.delete.junta' junta_id=junta.id %}" method="GET">
               <button class="float-right btn btn-danger" type="submit"><i class="far fa-trash-alt"></i></button>
-            </form>          
+            </form>  
+            {% endif %}        
           </td>
         </tr>
       {% endfor %}
