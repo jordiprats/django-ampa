@@ -111,6 +111,25 @@ def close_election(request, election_id):
         form = AreYouSureForm(request.GET)
     return render(request, 'voting/elections/close.html', { 'election_instance': election_instance })
 
+@login_required
+def delete_election(request, election_id):
+    if request.user.is_staff:
+        election_instance = Election.objects.filter(id=election_id)[0]
+    else:
+        election_instance = Election.objects.filter(id=election_id, owner=request.user)[0]
+
+    if request.method == 'POST':
+        form = AreYouSureForm(request.POST)
+        if form.is_valid():
+            election_instance.delete()
+            messages.info(request, 'Votació eliminada')
+            return redirect('voting.list.elections')
+        else:
+            messages.error(request, 'Error eliminant votació')
+    else:
+        form = AreYouSureForm(request.GET)
+    return render(request, 'voting/elections/delete.html', { 'election_instance': election_instance })
+
 def vote_election(request, election_id, token):
     try:
         election_instance = Election.objects.filter(id=election_id, open_id=token, status=ELECTION_STATUS_OPEN)[0]

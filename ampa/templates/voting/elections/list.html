@@ -28,6 +28,7 @@
         <th>Número d'opcions</th>
         <th>Número de vots</th>
         <th>Última modificació</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -48,6 +49,11 @@
           <td>{{ election.options.count }}</td>
           <td>{{ election.get_vote_count }} - <a href="{% url 'voting.show.election.results' election_id=election.id %}" target="_blank">Veure resultats</a></td>
           <td>{{ election.updated_at | naturaltime }}</td>
+          <td>
+            <form style="display: inline;" action="{% url 'voting.delete.election' election_id=election.id %}" method="GET">
+              <button class="float-right btn btn-danger" type="submit"><i class="far fa-trash-alt"></i></button>
+            </form>                 
+          </td>
         </tr>
         {% elif election.status == '2' %}
         <tr>
@@ -61,6 +67,11 @@
           <td>{{ election.options.count }}</td>
           <td>{{ election.get_vote_count }} - <a href="{% url 'voting.show.election.results' election_id=election.id %}" target="_blank">Veure resultats</a></td>
           <td>{{ election.updated_at | naturaltime }}</td>
+          <td>
+            <form style="display: inline;" action="{% url 'voting.delete.election' election_id=election.id %}" method="GET">
+              <button class="float-right btn btn-danger" type="submit"><i class="far fa-trash-alt"></i></button>
+            </form>                 
+          </td>
         </tr>
         {% else %}
         <tr>
@@ -78,6 +89,11 @@
           <td>{{ election.options.count }}</td>
           <td>No disponible</td>
           <td>{{ election.updated_at | naturaltime }}</td>
+          <td>
+            <form style="display: inline;" action="{% url 'voting.delete.election' election_id=election.id %}" method="GET">
+              <button class="float-right btn btn-danger" type="submit"><i class="far fa-trash-alt"></i></button>
+            </form>                 
+          </td>
         </tr>
         {% endif %}
       {% endfor %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<a href="{% url 'voting.list.elections' %}"><i class="fas fa-backward"></i> Votacions</a><br><br>
+
+Estas segur que vols ELIMINAR aquesta enquesta?
+<br><hr>
+
+{% include 'voting/elections/inline_preview.html' %}
+
+<hr>
+
+<br>
+<br>
+<form style="display: inline" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-danger" type="submit">ELIMINAR</button>
+</form>
+
+<form style="display: inline" action="{% url 'voting.list.elections' %}" method="GET">
+    <button class="btn btn-info" type="submit">Cancelar</button>
+</form>
+{% endblock %}
