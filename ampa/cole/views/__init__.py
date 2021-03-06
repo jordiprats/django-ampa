@@ -411,7 +411,7 @@ def login_builtin_user(request):
         next = request.POST.get('next', None)
         if next and '://' in next:
             next = None
-        user = authenticate(username=request.POST['login'], password=request.POST['password'])
+        user = authenticate(username=request.POST['login'].lower(), password=request.POST['password'])
         if user is not None:
             login(request, user)
             if next:
@@ -435,7 +435,7 @@ def signup(request):
         form = WIUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get('email')
+            username = form.cleaned_data.get('email').lower()
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user,backend='cole.backends.EmailBackend')

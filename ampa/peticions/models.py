@@ -3,6 +3,7 @@ from django.db import models
 from voting.models import *
 from cole.models import *
 
+import uuid
 
 ISSUE_STATUS_DRAFT = 'a'
 ISSUE_STATUS_OPEN = 'g'
@@ -45,6 +46,7 @@ class Category(models.Model):
 class Issue(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='issues', default=None, blank=True, null=True)
+    representant = models.ForeignKey(Representant, on_delete=models.SET_NULL, related_name='issues', default=None, blank=True, null=True)
 
     titol = models.CharField(max_length=256)
     html_message = models.TextField(max_length=50000, default=None, blank=True, null=True)

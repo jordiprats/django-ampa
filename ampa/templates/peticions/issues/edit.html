@@ -26,7 +26,7 @@ tinymce.init({
 <div class="py-4 px-4 px-md-3 px-lg-4">
     <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
         {% csrf_token %}
-        {{ form|crispy }}
+        {{ form.as_p }}
 
         <br>
         {% if is_new %}

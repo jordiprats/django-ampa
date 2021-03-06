@@ -9,8 +9,39 @@ import sys
 import os
 
 @user_passes_test(lambda u: u.is_staff)
+def edit_user(request, user_slug):
+    try:
+        user_instance = User.objects.filter(slug=user_slug)[0]
+
+        if request.method == 'POST':
+            form = AdminEditUser(request.POST, instance=user_instance)
+            if form.is_valid():
+                form.save()
+                messages.info(request, 'Guardada configuració de l\'usuari')
+                return redirect('list.users')
+            else:
+                messages.error(request, 'Formulari incorrecte')
+                return render(request, 'staff/users/edit.html', { 
+                                                        'form': form, 
+                                                        'user_instance': user_instance, 
+                                                    })
+        else:
+            form = AdminEditUser(instance=user_instance)
+            return render(request, 'staff/users/edit.html', { 
+                                                                    'form': form, 
+                                                                    'user_instance': user_instance, 
+                                                                })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('list.users')   
+
+@user_passes_test(lambda u: u.is_staff)
 def users_list(request):
-    pass
+    list_users = User.objects.all()
+    return render(request, 'staff/users/list.html', {
+                                                      'list_users': list_users, 
+                                                    })
 
 @login_required
 def user_settings(request):

@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.db.models import Q
 
 from peticions.models import *
 from peticions.forms import *
@@ -261,6 +262,8 @@ def add_all_junta_peticio(request, junta_id):
             form = AreYouSureForm(request.POST)
             if form.is_valid():
                 for issue in Issue.objects.filter(public=True, status=ISSUE_STATUS_OPEN):
+                    issue.status = ISSUE_STATUS_WAITING
+                    issue.save()
                     junta_instance.issues.add(issue)
                 junta_instance.save()
                 return redirect('peticions.edit.junta', junta_id=junta_id)
@@ -281,6 +284,9 @@ def add_junta_peticio(request, junta_id, issue_id):
             junta_instance = Junta.objects.filter(id=junta_id)[0]
             issue_instance = Issue.objects.filter(id=issue_id)[0]
 
+            issue_instance.status = ISSUE_STATUS_WAITING
+            issue_instance.save()
+
             junta_instance.issues.add(issue_instance)
 
             junta_instance.save()
@@ -298,6 +304,9 @@ def remove_junta_peticio(request, junta_id, issue_id):
         if request.method == "POST":
             junta_instance = Junta.objects.filter(id=junta_id)[0]
             issue_instance = Issue.objects.filter(id=issue_id)[0]
+
+            issue_instance.status = ISSUE_STATUS_OPEN
+            issue_instance.save()
 
             junta_instance.issues.remove(issue_instance)
 
@@ -368,6 +377,10 @@ def edit_comment(request, issue_id, comment_id=None):
         else:
             comment_instance = Comment(issue=Issue.objects.filter(id=issue_id)[0], user=request.user)
             is_new = True
+        
+        if is_new:
+            if request.user.representant:
+                comment_instance.representant=request.user.representant
 
         if request.method == 'POST':
             if request.user.is_staff:
@@ -428,6 +441,10 @@ def edit_issue(request, issue_id=None):
             issue_instance = Issue(owner=request.user)
             is_new = True
 
+        if is_new:
+            if request.user.representant:
+                comment_instance.representant=request.user.representant
+
         if request.user==issue_instance.owner or request.user.is_staff:
             owner_view = True
         else:
@@ -478,7 +495,7 @@ def list_issues(request):
     if request.user.is_staff:
         list_issues = Issue.objects.all()        
     else:
-        list_issues = Issue.objects.filter(public=True)
+        list_issues = Issue.objects.filter(public=True).filter(Q(status=ISSUE_STATUS_DRAFT) | Q(status=ISSUE_STATUS_OPEN))
     return render(request, 'peticions/issues/list.html', {
                                                             'list_issues': list_issues, 
                                                             'public': False, 

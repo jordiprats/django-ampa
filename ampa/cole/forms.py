@@ -1,4 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm
+from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.forms import ModelForm
 from django import forms
@@ -125,8 +126,13 @@ class EditAlumneParesForm(ModelForm):
             'validat': 'Firma de conformitat amb les dades'
         }
 
+def validate_user_email_doesnt_exists(value):
+    user = User.objects.filter(email=value.lower())
+    if user:
+        raise ValidationError('email already registered') 
+
 class WIUserCreationForm(UserCreationForm):
-    email = forms.EmailField(required=True)
+    email = forms.EmailField(required=True, validators=[validate_user_email_doesnt_exists])
 
     class Meta:
         model = get_user_model()
@@ -138,15 +144,22 @@ class WIUserCreationForm(UserCreationForm):
     def save(self, commit=True):
         if self.cleaned_data["invite"] == 'lestodelegats':
             user = super(WIUserCreationForm, self).save(commit=False)
-            user.username = user.email = self.cleaned_data["email"]
+            user.username = user.email = self.cleaned_data["email"].lower()
             if commit:
                 user.save()
             return user
         else:
             return None
 
-class AreYouSureForm(forms.Form):
-    pass
+class AdminEditUser(ModelForm):
+    class Meta:
+        model = User
+        fields = (['name', 'representant', 'is_staff'])
+        labels = {
+            'name': 'Nom',
+            'is_staff': 'Administrador',
+            'representant': 'Funció principal'
+        }
 
 class AMPAUserName(forms.Form):
     name = forms.CharField(label='Nom d\'usuari')
@@ -202,3 +215,6 @@ class PasswordChangeForm(forms.Form):
         
     class Meta:
         fields = (['password1', 'password2'])
+
+class AreYouSureForm(forms.Form):
+    pass

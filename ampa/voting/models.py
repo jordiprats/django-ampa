@@ -2,6 +2,7 @@ from django.db import models
 
 from cole.models import *
 
+import uuid
 import json
 
 ELECTION_STATUS_DRAFT = '0'

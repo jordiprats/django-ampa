@@ -17,13 +17,18 @@ class IssueForm(forms.ModelForm):
 class IssueAdminForm(forms.ModelForm):
     class Meta:
         model = Issue
-        fields = (['titol', 'categories', 'public', 'status', 'html_message'])
+        fields = (['titol', 'owner', 'representant', 'categories', 'public', 'status', 'html_message'])
         labels = {
             'titol': 'Titol petició',
+            'owner': 'Autor',
+            'representant': 'Mostra el comentari fet com a representant de:',
             'categories': 'Categories',
             'public': 'publicat',
             'status': 'Estat',
             'html_message': 'Descripció',
+        }
+        widgets = {
+            'owner': forms.Select(attrs={'disabled':'disabled'})
         }
 
 class CommentForm(forms.ModelForm):

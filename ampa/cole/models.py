@@ -20,6 +20,7 @@ class User(AbstractUser):
     invite = models.CharField(max_length=256)
 
     name = models.CharField(max_length=256, blank=True, null=True, default='')
+    representant = models.ForeignKey('peticions.Representant', on_delete=models.SET_NULL, related_name='users', default=None, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.username, allow_unicode=False)
@@ -30,6 +31,12 @@ class User(AbstractUser):
             return self.name
         else:
             return self.email
+
+    class Meta:
+        ordering = ['email']
+        indexes = [
+            models.Index(fields=['email']),
+        ]
 
 class Modalitat(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -431,3 +438,13 @@ class DocumentTemplate(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=256)
     html_message = models.TextField(max_length=50000, default='', blank=True, null=True)
+
+class Entitat(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=256, blank=True, null=True, default="")
+
+    logo = models.ForeignKey(FileAttachment, on_delete=models.CASCADE, related_name='entitats', blank=True, null=True)
+
+    codi_registre = models.CharField(max_length=256, blank=True, null=True, default="")
+
+    likable_issues = models.BooleanField(default=False)

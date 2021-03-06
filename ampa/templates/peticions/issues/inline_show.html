@@ -15,7 +15,11 @@
     </div>
     
     <h1>{{ issue_instance.titol }}</h1>
+    {% if issue_instance.representant %}
+    <p>{{ issue_instance.representant }}</p>
+    {% else %}
     <p>{{ issue_instance.owner }}</p>
+    {% endif %}
 
     {{ issue_instance.html_message | safe}}
 
@@ -31,7 +35,7 @@
     {% endif %}
         <p class="float-right">{{ comment.created_at | naturaltime }}</p>
         {% if comment.representant %}
-        <p>AMPA</p>
+        <p>{{ comment.representant }}</p>
         {% else %}
         <p>{{ comment.user }}</p>
         {% endif %}

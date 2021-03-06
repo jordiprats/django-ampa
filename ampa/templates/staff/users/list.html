@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+{% if user_admin %}
+<div class="float-right">
+  <form style="display: inline;" action="{% url 'peticions.list.representants' %}" method="GET">
+    <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-search"></i> representants</button>
+  </form>
+  <form style="display: inline;" action="{% url 'peticions.list.categories' %}" method="GET">
+    <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-search"></i> categories</button>
+  </form>
+</div>
+{% endif %}
+
+<table class="table table-bordred table-striped">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>email</th>
+        <th>representant</th>
+        <th>administrador</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in list_users %}
+        <tr>
+          <td>{{ user.name|default_if_none:"" }}</td>
+          <td><a href="{% url 'edit.user' user_slug=user.slug %}">{{ user.email }}</a></td>
+          <td>{{ user.representant|default_if_none:"" }}</td>
+          <td>{{ user.is_staff|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}
