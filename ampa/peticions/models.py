@@ -19,7 +19,7 @@ ISSUE_STATUS = [
 
 class Representant(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=256, unique=True)
 
     def __str__(self):
         return self.name
@@ -32,7 +32,7 @@ class Representant(models.Model):
 
 class Category(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=256, unique=True)
     ordre = models.IntegerField(default=1)
 
     def __str__(self):
@@ -126,7 +126,7 @@ class Junta(models.Model):
         return self.name
 
     def _get_categories(self):
-        return Category.objects.filter(id__in=self.issues.values('categories').distinct())
+        return Category.objects.filter(id__in=self.issues.values('categories').distinct()).annotate(cat_count=Count('issues')).filter(cat_count__gt=1)
 
     categories = property(_get_categories)
 
