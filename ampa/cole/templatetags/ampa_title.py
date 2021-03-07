@@ -14,7 +14,10 @@ register = template.Library()
 def ampa_title(value):
     try:
         entitat_instance = Entitat.objects.all()[0]
-        return entitat_instance.name
+        if entitat_instance.logo:
+            return "<img src='"+entitat_instance.logo.static_url+"'>"+str(entitat_instance.name)
+        else:
+            return str(entitat_instance.name)
     except Exception as e:
         print(str(e))
         return ""

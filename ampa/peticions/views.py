@@ -197,6 +197,7 @@ def list_representants(request):
 def forward_open_peticions(request):
     try:
         list_issues = Issue.objects.filter(public=True, status=ISSUE_STATUS_DRAFT)
+        config = Entitat.objects.first()
 
         if request.method == 'POST':
             form = AreYouSureForm(request.POST)
@@ -210,7 +211,7 @@ def forward_open_peticions(request):
                 messages.error(request, 'Error fent el canvi d\'estat')
         else:
             form = AreYouSureForm(request.GET)
-        return render(request, 'peticions/issues/forward_open.html', {'list_issues': list_issues})
+        return render(request, 'peticions/issues/forward_open.html', {'list_issues': list_issues, 'config': config})
     except Exception as e:
         if request.user.is_superuser:
             messages.error(request, str(e))
@@ -443,9 +444,11 @@ def edit_comment(request, issue_id, comment_id=None):
 @login_required
 def show_issue(request, issue_id):
     try:
+        config = Entitat.objects.first()
         issue_instance = Issue.objects.filter(id=issue_id)[0]
         return render(request, 'peticions/issues/show.html', { 
                                                 'issue_instance': issue_instance,
+                                                'config': config,
                                                 'user_admin': request.user.is_staff
                                             })
     except Exception as e:
@@ -515,12 +518,14 @@ def edit_issue(request, issue_id=None):
 
 @login_required
 def list_issues(request):
+    config = Entitat.objects.first()
     if request.user.is_staff:
         list_issues = Issue.objects.all()        
     else:
         list_issues = Issue.objects.filter(public=True).filter(Q(status=ISSUE_STATUS_DRAFT) | Q(status=ISSUE_STATUS_OPEN))
     return render(request, 'peticions/issues/list.html', {
                                                             'list_issues': list_issues,
+                                                            'config': config,
                                                             'public': False, 
                                                             'user_admin': request.user.is_staff
                                                         })

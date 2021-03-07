@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+  <h1>Canviar logotip de l'entitat</h1>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <br><br>
+
+    <ul>
+
+    <li>
+        <label for="logo">Pujar nou logo: </label>
+        <input type="file" name="logo">
+    </li>
+
+    </ul>
+    
+    <br><br>
+
+    <hr>
+
+    <button class="btn btn-info" type="submit" name="guardar" >Upload</button>
+  </form>
+
+
+{% endblock %}

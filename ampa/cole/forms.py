@@ -152,7 +152,8 @@ class WIUserCreationForm(UserCreationForm):
             "invite": "codi d'activació",
         }
     def save(self, commit=True):
-        if self.cleaned_data["invite"] == 'lestodelegats':
+        config = Entitat.objects.first()
+        if self.cleaned_data["invite"] == config.codi_registre:
             user = super(WIUserCreationForm, self).save(commit=False)
             user.username = user.email = self.cleaned_data["email"].lower()
             if commit:

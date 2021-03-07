@@ -403,8 +403,8 @@ class FileUpload(models.Model):
 
     filepath = models.CharField(max_length=256)
 
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uploads')
-    classe = models.ForeignKey(Classe, on_delete=models.CASCADE, related_name='uploads')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uploads', blank=True, null=True, default=None)
+    classe = models.ForeignKey(Classe, on_delete=models.CASCADE, related_name='uploads', blank=True, null=True, default=None)
 
     processed = models.BooleanField(default=False)
     error = models.BooleanField(default=False)
@@ -441,10 +441,10 @@ class DocumentTemplate(models.Model):
 
 class Entitat(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=256, blank=True, null=True, default="")
+    name = models.CharField(max_length=256, blank=True, null=True, default='')
 
     logo = models.ForeignKey(FileAttachment, on_delete=models.CASCADE, related_name='entitats', blank=True, null=True)
 
-    codi_registre = models.CharField(max_length=256, blank=True, null=True, default="")
+    codi_registre = models.CharField(max_length=256, blank=True, null=True, default='')
 
     likable_issues = models.BooleanField(default=False)

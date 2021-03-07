@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import update_session_auth_hash
+from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.conf import settings
@@ -8,8 +9,40 @@ from django.db.models import Q
 from cole.models import *
 from cole.forms import *
 
+import time
 import sys
 import os
+
+
+@user_passes_test(lambda u: u.is_staff)
+def upload_entitat_logo(request):
+    try:
+        entitat_instance = Entitat.objects.first()
+        if request.method == 'POST' and request.FILES['logo']:
+            myfile = request.FILES['logo']
+            upload_subdir = str(int(time.time()))
+            fs = FileSystemStorage(location=settings.UPLOADS_ROOT+'/'+upload_subdir)
+            filename = fs.save(myfile.name, myfile)
+
+            upload = FileAttachment(filename=myfile.name, filepath=fs.location+'/'+filename, upload_path=upload_subdir)
+            upload.save()
+
+            entitat_instance.logo = upload
+            entitat_instance.save()
+
+            return redirect('staff.settings')
+    except Exception as e:
+        print(str(e))
+        messages.error(request, 'Error pujant logo')
+        if request.user.is_staff:
+            messages.error(request, str(e))
+        if settings.DEBUG:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            print(str(e))
+
+    return render(request, 'staff/entitat/upload_logo.html')
 
 @user_passes_test(lambda u: u.is_staff)
 def edit_entitat(request):
@@ -22,7 +55,7 @@ def edit_entitat(request):
         print(entitat_instance.name)
 
         if request.method == 'POST':
-            print("POST "+entitat_instance.name)
+            print("POST "+str(entitat_instance.name))
             form = EntitatForm(request.POST, instance=entitat_instance)
             if form.is_valid():
                 form.save()
@@ -31,7 +64,7 @@ def edit_entitat(request):
             else:
                 messages.error(request, 'Error guardant')
         else:
-            form = EntitatForm(request.POST, instance=entitat_instance)
+            form = EntitatForm(instance=entitat_instance)
         return render(request, 'staff/entitat/edit.html', { 'entitat_instance': entitat_instance, 'form': form })
 
     except Exception as e:
@@ -61,7 +94,7 @@ def edit_curs_modalitat(request, modalitat_id=None):
             else:
                 messages.error(request, 'Error de validació')
         else:
-            form = ModalitatForm(request.POST, instance=modalitat_instance)
+            form = ModalitatForm(instance=modalitat_instance)
         return render(request, 'cursos/modalitats/edit.html', { 'modalitat_instance': modalitat_instance, 'new': new, 'form': form })
 
     except Exception as e:

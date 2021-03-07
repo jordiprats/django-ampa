@@ -20,6 +20,7 @@ urlpatterns = [
     # staff settings
     path('staff/settings', views.staff_settings, name='staff.settings'),
     path('staff/entitat', views.edit_entitat, name='edit.entitat'),
+    path('staff/entitat/logo', views.upload_entitat_logo, name='upload.logo.entitat'),
     path('staff/users', views.users_list, name='list.users'),
     path('staff/users/<user_slug>', views.edit_user, name='edit.user'),
     path('staff/users/<user_slug>/su', views.switch_user, name='switch.user'),

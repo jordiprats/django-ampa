@@ -4,7 +4,9 @@
     <thead>
       <tr>
         <th>Titol</th>
+        {% if config.likable_issues %}
         <th></th>
+        {% endif %}
         <th>publicada</th>
         <th>Estat de la petició</th>
         <th>Categories</th>
@@ -24,7 +26,9 @@
             - <a href="{% url 'peticions.show.issue' issue_id=issue.id %}">preview</a>
             {% endif %}
           </td>
+          {% if config.likable_issues %}
           <td>{{ issue.likes.count }} <i style="color:green;" class="far fa-thumbs-up"></i> / {{ issue.dislikes.count }} <i style="color:red;" class="far fa-thumbs-down"></i></td>
+          {% endif %}
           <td>{{ issue.public|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
           <td>{{ issue.get_status_display }}</td>
           <td>{{ issue.display_categories }}</td>
