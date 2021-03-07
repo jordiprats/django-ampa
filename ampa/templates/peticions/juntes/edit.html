@@ -3,6 +3,7 @@
 {% load static %}
 {% load humanize %}
 {% load crispy_forms_tags %}
+{% load issues_filter_by_category %}
 
 {% block content %}
 
@@ -44,9 +45,18 @@ tinymce.init({
 
 
 {% if junta_instance.issues.all %}
-<h2>Peticions</h2>
+<h2>General</h2>
 <ul>
-    {% for issue in junta_instance.issues.all %}
+    {% for issue in junta_instance.uncategorized_issues %}
+    <li><a href="{% url 'peticions.edit.issue' issue_id=issue.id %}">{{ issue.titol }}</a>
+        
+        {% for label in issue.categories.all %}
+            <span class="badge badge-info">{{ label }}</span>
+        {% endfor %}
+        
+    </li>
+    {% endfor %}
+    {% for issue in junta_instance.multicategorized_issues %}
     <li><a href="{% url 'peticions.edit.issue' issue_id=issue.id %}">{{ issue.titol }}</a>
         
         {% for label in issue.categories.all %}
@@ -57,5 +67,14 @@ tinymce.init({
     {% endfor %}
 </ul>
 {% endif %}
+
+{% for categoria in junta_instance.categories %}
+<h2>{{ categoria }}</h2>
+<ul>
+    {% for issue in categoria.id|issues_filter_by_category:junta_instance.issues.all %}
+    <li><a href="{% url 'peticions.edit.issue' issue_id=issue.id %}">{{ issue.titol }}</a></li>
+    {% endfor %}
+</ul>
+{% endfor %}
 
 {% endblock %}

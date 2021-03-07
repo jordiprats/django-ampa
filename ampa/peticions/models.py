@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.db import models
 
 from voting.models import *
@@ -12,7 +13,7 @@ ISSUE_STATUS_CLOSED = 'z'
 ISSUE_STATUS = [
     (ISSUE_STATUS_DRAFT, 'esborrany'),
     (ISSUE_STATUS_OPEN, 'proposada a junta'),
-    (ISSUE_STATUS_WAITING, 'a espera de resposta'),
+    (ISSUE_STATUS_WAITING, 'esperant resposta'),
     (ISSUE_STATUS_CLOSED, 'tancada'),
 ]
 
@@ -123,6 +124,22 @@ class Junta(models.Model):
 
     def __str__(self):
         return self.name
+
+    def _get_categories(self):
+        return Category.objects.filter(id__in=self.issues.values('categories').distinct())
+
+    categories = property(_get_categories)
+
+    def _get_uncategorized_issues(self):
+        return self.issues.filter(categories=None)
+
+    uncategorized_issues = property(_get_uncategorized_issues)
+
+    def _get_multicategorized_issues(self):
+        return self.issues.annotate(cat_count=Count('categories')).filter(cat_count__gt=1)
+
+    multicategorized_issues = property(_get_multicategorized_issues)
+
 
     class Meta:
         ordering = ['-celebracio']

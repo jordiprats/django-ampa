@@ -224,6 +224,9 @@ def edit_junta(request, junta_id=None):
             junta_instance = Junta.objects.filter(id=junta_id)[0]
         else:
             junta_instance = Junta()
+        
+        for categoria in junta_instance.categories:
+            print(categoria)
 
         if request.method == 'POST':
             form = JuntaForm(request.POST, instance=junta_instance)
