@@ -12,6 +12,7 @@ from django.db.models import Q
 from pathlib import Path
 
 from cole.views.attachments_views import *
+from cole.views.templates_views import *
 from cole.views.alumne_views import *
 from cole.views.cursos_views import *
 from cole.views.etapes_views import *

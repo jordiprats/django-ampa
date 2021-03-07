@@ -23,6 +23,16 @@ class ModalitatForm(forms.ModelForm):
             'name': 'Modalitat', 
         }
 
+class EntitatForm(forms.ModelForm):
+    class Meta:
+        model = Entitat
+        fields = (['name', 'codi_registre', 'likable_issues'])
+        labels = {
+            'name': 'Nom de l\'entitat',
+            'codi_registre': 'Codi per registare-se',
+            'likable_issues': 'Votació de peticions'
+        }
+
 class CursForm(forms.ModelForm):
     class Meta:
         model = Curs

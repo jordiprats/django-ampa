@@ -19,6 +19,7 @@ urlpatterns = [
 
     # staff settings
     path('staff/settings', views.staff_settings, name='staff.settings'),
+    path('staff/entitat', views.edit_entitat, name='edit.entitat'),
     path('staff/users', views.users_list, name='list.users'),
     path('staff/users/<user_slug>', views.edit_user, name='edit.user'),
     path('staff/users/<user_slug>/su', views.switch_user, name='switch.user'),
@@ -81,6 +82,9 @@ urlpatterns = [
     path('mailing/cessiodades/<classe_id>', views.are_you_sure_email, name='send.cessio.dades.email'),
     path('mailing/<mailing_id>/attachment', views.afegir_attachment_mailing_classe, name='add.attachment.mailing'),
     path('mailing/<mailing_id>/attachment/<attachment_id>/remove', views.remove_attachment_mailing, name='remove.attachment.mailing'),
+
+    # templates
+    path('plantilles/', views.list_templates, name='peticions.list.templates'),
 
     # ajuda inline
     path('help', views.show_help, name='show.help'),

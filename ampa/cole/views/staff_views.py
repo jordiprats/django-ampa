@@ -5,10 +5,43 @@ from django.contrib import messages
 from django.conf import settings
 from django.db.models import Q
 
+from cole.models import *
 from cole.forms import *
 
 import sys
 import os
+
+@user_passes_test(lambda u: u.is_staff)
+def edit_entitat(request):
+    try:
+        try:
+            entitat_instance = Entitat.objects.all()[0]
+        except:
+            entitat_instance = Entitat()
+
+        print(entitat_instance.name)
+
+        if request.method == 'POST':
+            print("POST "+entitat_instance.name)
+            form = EntitatForm(request.POST, instance=entitat_instance)
+            if form.is_valid():
+                form.save()
+                messages.info(request, 'Dades guardades')
+                return redirect('edit.entitat')
+            else:
+                messages.error(request, 'Error guardant')
+        else:
+            form = EntitatForm(request.POST, instance=entitat_instance)
+        return render(request, 'staff/entitat/edit.html', { 'entitat_instance': entitat_instance, 'form': form })
+
+    except Exception as e:
+        if request.user.is_staff:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            print(str(e))
+            messages.error(request, str(e))
+        return redirect('edit.entitat')
 
 @user_passes_test(lambda u: u.is_staff)
 def edit_curs_modalitat(request, modalitat_id=None):
