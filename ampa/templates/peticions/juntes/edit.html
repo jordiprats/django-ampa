@@ -24,7 +24,10 @@ tinymce.init({
 <a href="{% url 'peticions.list.juntes' %}"><i class="fas fa-backward"></i> juntes</a>
 
 <form style="display: inline;" action="{% url 'peticions.delete.junta' junta_id=junta_instance.id %}" method="GET">
-    <button class="float-right btn btn-danger" type="submit">eliminar junta</button>
+    <button class="float-right btn btn-danger" style="margin: 3px;" type="submit">eliminar junta</button>
+</form>
+<form style="display: inline;" action="{% url 'peticions.show.junta' junta_id=junta_instance.id %}" method="GET">
+    <button class="float-right btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-file-alt"></i> previsualitza</button>
 </form>
 
 <div class="py-4 px-4 px-md-3 px-lg-4">

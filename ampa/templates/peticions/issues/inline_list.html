@@ -1,0 +1,45 @@
+{% load humanize %}
+
+<table class="table table-bordred table-striped">
+    <thead>
+      <tr>
+        <th>Titol</th>
+        <th></th>
+        <th>publicada</th>
+        <th>Estat de la petició</th>
+        <th>Categories</th>
+        <th>Juntes</th>
+        <th>Autor</th>
+        <th>Comentaris</th>
+        <th>Última modificació</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for issue in list_issues %}
+        <tr>
+          <td>
+            <a href="{% url 'peticions.edit.issue' issue_id=issue.id %}">{{ issue.titol }}</a>
+            {% if user_admin %}
+            - <a href="{% url 'peticions.show.issue' issue_id=issue.id %}">preview</a>
+            {% endif %}
+          </td>
+          <td>{{ issue.likes.count }} <i style="color:green;" class="far fa-thumbs-up"></i> / {{ issue.dislikes.count }} <i style="color:red;" class="far fa-thumbs-down"></i></td>
+          <td>{{ issue.public|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
+          <td>{{ issue.get_status_display }}</td>
+          <td>{{ issue.display_categories }}</td>
+          <td>{{ issue.display_juntes }}</td>
+          <td>{{ issue.owner }}</td>
+          <td>{{ issue.comments.count }}</td>
+          <td>{{ issue.display_updated | naturaltime }}</td>
+          <td>
+            {% if user_admin %}
+            <form style="display: inline;" action="{% url 'peticions.delete.issue' issue_id=issue.id %}" method="GET">
+              <button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i></button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>

@@ -10,10 +10,10 @@ ISSUE_STATUS_OPEN = 'g'
 ISSUE_STATUS_WAITING = 'p'
 ISSUE_STATUS_CLOSED = 'z'
 ISSUE_STATUS = [
-    (ISSUE_STATUS_DRAFT, 'borrador'),
-    (ISSUE_STATUS_OPEN, 'obert'),
-    (ISSUE_STATUS_WAITING, 'pendent'),
-    (ISSUE_STATUS_CLOSED, 'tancat'),
+    (ISSUE_STATUS_DRAFT, 'esborrany'),
+    (ISSUE_STATUS_OPEN, 'proposada a junta'),
+    (ISSUE_STATUS_WAITING, 'a espera de resposta'),
+    (ISSUE_STATUS_CLOSED, 'tancada'),
 ]
 
 class Representant(models.Model):

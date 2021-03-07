@@ -14,8 +14,8 @@
 
 <a href="{% url 'list.users' %}"><i class="fas fa-backward"></i> Llista d'usuaris</a>
 
-<form style="display: inline;" action="% url 'peticions.delete.category' category_id=category_instance.id  %" method="GET">
-    <button style="margin: 3px;" class="float-right btn btn-danger" type="submit">eliminar usuari</button>
+<form style="display: inline;" action="{% url 'switch.user' user_slug=user_instance.slug  %}" method="GET">
+    <button style="margin: 3px;" class="float-right btn btn-warning" type="submit">login</button>
 </form>
 
 <div class="py-4 px-4 px-md-3 px-lg-4">

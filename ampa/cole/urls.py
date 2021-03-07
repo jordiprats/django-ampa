@@ -10,6 +10,7 @@ urlpatterns = [
     # user management
     path('user/settings', views.user_settings, name='user.settings'),
     path('user/password/change', views.change_password, name='user.password.change'),
+    
     # path('user/password/change/status', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
     # path('user/password/reset', auth_views.PasswordResetView.as_view(), name='password_reset'),
     # path('user/password/reset/status', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
@@ -20,6 +21,7 @@ urlpatterns = [
     path('staff/settings', views.staff_settings, name='staff.settings'),
     path('staff/users', views.users_list, name='list.users'),
     path('staff/users/<user_slug>', views.edit_user, name='edit.user'),
+    path('staff/users/<user_slug>/su', views.switch_user, name='switch.user'),
 
     # cursos
     path('cursos/', views.list_cursos, name='list.cursos'),

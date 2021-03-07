@@ -31,7 +31,7 @@ Les peticions han d'estar en estat "<b>obert</b>" per poder ser adjuntades a la 
           <td>
             <form style="display: inline" action="{% url 'peticions.edit.junta.remove.peticio' junta_id=junta_instance.id issue_id=issue.id %}" method="POST">
               {% csrf_token %}
-              <button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i></button>
+              <button class="btn btn-danger" type="submit"><i class="fas fa-times"></i></button>
             </form>
           </td>
           <td>

@@ -6,7 +6,11 @@
 {% block content %}
 
 {% if user_admin %}
+
 <div class="float-right">
+  <form style="display: inline;" action="{% url 'peticions.forward.open' %}" method="GET">
+    <button class="float-left btn btn-warning" style="margin: 3px;" type="submit"><i class="fas fa-angle-double-right"></i> progresar a junta</button>
+  </form>
   <form style="display: inline;" action="{% url 'peticions.list.representants' %}" method="GET">
     <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-search"></i> representants</button>
   </form>
@@ -16,53 +20,12 @@
 </div>
 {% endif %}
 
-<table class="table table-bordred table-striped">
-    <thead>
-      <tr>
-        <th>Titol</th>
-        <th></th>
-        <th>Estat de la petició</th>
-        <th>Categories</th>
-        <th>Juntes</th>
-        <th>Autor</th>
-        <th>Comentaris</th>
-        <th>Última modificació</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for issue in list_issues %}
-        <tr>
-          <td>
-            <a href="{% url 'peticions.edit.issue' issue_id=issue.id %}">{{ issue.titol }}</a>
-            {% if user_admin %}
-            - <a href="{% url 'peticions.show.issue' issue_id=issue.id %}">preview</a>
-            {% endif %}
-          </td>
-          <td>{{ issue.likes.count }} <i style="color:green;" class="far fa-thumbs-up"></i> / {{ issue.dislikes.count }} <i style="color:red;" class="far fa-thumbs-down"></i></td>
-          <td>{{ issue.get_status_display }}</td>
-          <td>{{ issue.display_categories }}</td>
-          <td>{{ issue.display_juntes }}</td>
-          <td>{{ issue.owner }}</td>
-          <td>{{ issue.comments.count }}</td>
-          <td>{{ issue.display_updated | naturaltime }}</td>
-          <td>
-            {% if user_admin %}
-            <form style="display: inline;" action="{% url 'peticions.delete.issue' issue_id=issue.id %}" method="GET">
-              <button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i></button>
-            </form>
-            {% endif %}
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+{% include 'peticions/issues/inline_list.html' %}
 
-
-  {% if not public %}
-  <form style="display: inline;" action="{% url 'peticions.add.issue' %}" method="GET">
-    <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> petició</button>
-  </form>
-  {% endif %}
+{% if not public %}
+<form style="display: inline;" action="{% url 'peticions.add.issue' %}" method="GET">
+  <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> petició</button>
+</form>
+{% endif %}
 
 {% endblock %}

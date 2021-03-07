@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash, login
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
@@ -7,6 +7,28 @@ from cole.forms import *
 
 import sys
 import os
+
+@user_passes_test(lambda u: u.is_staff)
+def switch_user(request, user_slug):
+    try:
+        user_instance = User.objects.filter(slug=user_slug)[0]
+
+        if request.method == 'POST':
+            form = AreYouSureForm(request.POST)
+            if form.is_valid():
+                login(request, user_instance)
+                return redirect('home')
+                messages.info(request, 'Canvi d\'usuari completat')
+            else:
+                messages.error(request, 'Error fent el canvi d\'usuari')
+        else:
+            form = AreYouSureForm(request.GET)
+        return render(request, 'staff/users/su.html', {'user_instance': user_instance})
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('list.users')   
+
 
 @user_passes_test(lambda u: u.is_staff)
 def edit_user(request, user_slug):

@@ -45,7 +45,7 @@ class AdminCommentForm(forms.ModelForm):
         model = Comment
         fields = (['user', 'representant', 'internal', 'html_message'])
         labels = {
-            'representant': 'Mostra el comentari fet com a representant de:',
+            'representant': 'Mostra la petició feta en nom de:',
             'internal': 'restringir',
             'user': 'Autor',
             'html_message': 'Comentari',

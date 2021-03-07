@@ -25,6 +25,7 @@ urlpatterns = [
     # issues
     path('peticions', views.list_issues, name='peticions.list.issues'),
     path('peticions/add', views.edit_issue, name='peticions.add.issue'),
+    path('peticions/forward/open', views.forward_open_peticions, name='peticions.forward.open'),
     path('peticions/<issue_id>/edit', views.edit_issue, name='peticions.edit.issue'),
     path('peticions/<issue_id>/show', views.show_issue, name='peticions.show.issue'),
     path('peticions/<issue_id>/like', views.like_issue, name='peticions.like.issue'),

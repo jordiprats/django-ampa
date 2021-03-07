@@ -194,6 +194,29 @@ def list_representants(request):
                                                             })
 
 @user_passes_test(lambda u: u.is_staff)
+def forward_open_peticions(request):
+    try:
+        list_issues = Issue.objects.filter(public=True, status=ISSUE_STATUS_DRAFT)
+
+        if request.method == 'POST':
+            form = AreYouSureForm(request.POST)
+            if form.is_valid():
+                for issue in list_issues:
+                    issue.status = ISSUE_STATUS_OPEN
+                    issue.save()
+                messages.info(request, 'Canviat l\'estat de les peticions')
+                return redirect('peticions.list.issues')    
+            else:
+                messages.error(request, 'Error fent el canvi d\'estat')
+        else:
+            form = AreYouSureForm(request.GET)
+        return render(request, 'peticions/issues/forward_open.html', {'list_issues': list_issues})
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.list.issues')       
+
+@user_passes_test(lambda u: u.is_staff)
 def edit_junta(request, junta_id=None):
     try:
         if junta_id:
@@ -271,7 +294,7 @@ def add_all_junta_peticio(request, junta_id):
                 messages.error(request, 'Error afegit peticions a la junta')
         else:
             form = AreYouSureForm(request.GET)
-        return render(request, 'peticions/juntes/addallissues.html', { 'junta_instance': junta_instance })
+        return render(request, 'peticions/juntes/add_all_issues.html', { 'junta_instance': junta_instance, 'list_issues_add': Issue.objects.filter(public=True, status=ISSUE_STATUS_OPEN) })
     except Exception as e:
         if request.user.is_superuser:
             messages.error(request, str(e))
@@ -497,7 +520,7 @@ def list_issues(request):
     else:
         list_issues = Issue.objects.filter(public=True).filter(Q(status=ISSUE_STATUS_DRAFT) | Q(status=ISSUE_STATUS_OPEN))
     return render(request, 'peticions/issues/list.html', {
-                                                            'list_issues': list_issues, 
+                                                            'list_issues': list_issues,
                                                             'public': False, 
                                                             'user_admin': request.user.is_staff
                                                         })
