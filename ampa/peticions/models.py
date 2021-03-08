@@ -126,7 +126,7 @@ class Junta(models.Model):
         return self.name
 
     def _get_categories(self):
-        return Category.objects.filter(id__in=self.issues.values('categories').distinct()).annotate(cat_count=Count('issues')).filter(cat_count__gt=1)
+        return Category.objects.filter(id__in=self.issues.values('categories').distinct()).annotate(cat_count=Count('issues')).filter(cat_count__gt=1).order_by('ordre')
 
     categories = property(_get_categories)
 
