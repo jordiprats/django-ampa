@@ -69,10 +69,10 @@ class Issue(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def display_categories(self):
-        return ','.join(list(self.categories.values_list('name', flat=True)))
+        return ', '.join(list(self.categories.values_list('name', flat=True)))
 
     def display_juntes(self):
-        return ','.join(list(self.juntes.values_list('name', flat=True)))
+        return ', '.join(list(self.juntes.values_list('name', flat=True)))
 
     def display_updated(self):
         updated = self.updated_at
