@@ -452,7 +452,9 @@ def show_issue(request, issue_id):
         return render(request, 'peticions/issues/show.html', { 
                                                 'issue_instance': issue_instance,
                                                 'config': config,
-                                                'user_admin': request.user.is_staff
+                                                'user_admin': request.user.is_staff,
+                                                'issue_add_comments': True,
+                                                'issue_title_size': 'h1'
                                             })
     except Exception as e:
         if request.user.is_superuser:
@@ -565,6 +567,8 @@ def show_junta(request, junta_id=None):
 
         return render(request, 'peticions/juntes/show.html', { 
                                                                 'junta_instance': junta_instance, 
+                                                                'issue_add_comments': False,
+                                                                'issue_title_size': 'h4'
                                                             })
     except Exception as e:
         if request.user.is_superuser:

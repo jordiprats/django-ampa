@@ -3,7 +3,9 @@
 <ul class="timeline">
 
     <div class="float-right">
+    {% if issue_add_comments %}
     <p>Creada: {{ issue_instance.created_at | naturaltime }} - Actualitzada: {{ issue_instance.updated_at | naturaltime }}</p>
+    {% endif %}
     {% if config.likable_issues %}
     ({{ issue_instance.likes.count }}) <form style="display: inline" action="{% url 'peticions.like.issue' issue_id=issue_instance.id %}" method="POST">
         {% csrf_token %}
@@ -16,7 +18,7 @@
     {% endif %}
     </div>
     
-    <h1>{{ issue_instance.titol }}</h1>
+    <{{ issue_title_size }}>{{ issue_instance.titol }}</{{ issue_title_size }}>
     {% if issue_instance.representant %}
     <p>{{ issue_instance.representant }}</p>
     {% else %}
@@ -35,7 +37,9 @@
     {% else %}
     <li>
     {% endif %}
+        {% if issue_add_comments %}
         <p class="float-right">{{ comment.created_at | naturaltime }}</p>
+        {% endif %}
         {% if comment.representant %}
         <p>{{ comment.representant }}</p>
         {% else %}
@@ -49,7 +53,7 @@
 
 
 
-{% if issue_instance.status != 'z' %}
+{% if issue_instance.status != 'z' and issue_add_comments %}
 <form style="display: inline;" action="{% url 'peticions.add.comment' issue_id=issue_instance.id %}" method="GET">
     <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> comentari</button>
 </form>

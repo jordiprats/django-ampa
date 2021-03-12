@@ -3,6 +3,7 @@
 {% load static %}
 {% load humanize %}
 {% load crispy_forms_tags %}
+{% load issues_filter_by_category %}
 
 {% block content %}
 
@@ -12,17 +13,32 @@
 
 {% if junta_instance.issues.all %}
 <h2>Peticions</h2>
+
+{% if junta_instance.issues.all %}
+<h3>General</h3>
 <ul>
-    {% for issue in junta_instance.issues.all %}
-    <li>{{ issue.titol }}
-        
-        {% for label in issue.categories.all %}
-            <span class="badge badge-info">{{ label }}</span>
-        {% endfor %}
-        
-    </li>
+    {% for issue_instance in junta_instance.uncategorized_issues %}
+        {% include 'peticions/issues/inline_show.html' %}
+        <br><br>
+    {% endfor %}
+    {% for issue_instance in junta_instance.multicategorized_issues %}
+        {% include 'peticions/issues/inline_show.html' %}
+        <br><br>
     {% endfor %}
 </ul>
+{% endif %}
+
+
+{% for categoria in junta_instance.categories %}
+<h3>{{ categoria }}</h3>
+<ul>
+    {% for issue_instance in categoria.id|issues_filter_by_category:junta_instance.issues.all %}
+        {% include 'peticions/issues/inline_show.html' %}
+        <br><br>
+    {% endfor %}
+</ul>
+{% endfor %}
+
 {% endif %}
 
 {% endblock %}
