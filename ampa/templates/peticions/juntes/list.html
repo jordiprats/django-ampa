@@ -11,6 +11,7 @@
         <th></th>
         <th>Data de celebració</th>
         <th>Publicada</th>
+        <th></th>
         <th>Última modificació</th>
         <th></th>
       </tr>
@@ -32,7 +33,16 @@
             {% endif %}
           {% endif %}
           <td>{{ junta.celebracio }}</td>
-          <td>{{ junta.public|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
+          <td>
+              {{ junta.public|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}
+          </td>
+          <td>
+            {% if not junta.public and user_admin %}
+            <form style="display: inline;" action="{% url 'peticions.preview_pdf.junta' junta_id=junta.id %}" method="GET">
+              <button class="btn btn-info" type="submit"><i class="fas fa-file-pdf"></i></button>
+            </form>  
+          {% endif %}
+          </td>
           <td>{{ junta.updated_at | naturaltime }}</td>
           <td>
             {% if user_admin %}

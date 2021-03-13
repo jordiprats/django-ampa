@@ -1,12 +1,13 @@
+pytz
+xlrd
 numpy
-django-crispy-forms
 pandas
 django
-xlrd
 psycopg2
-pytz
-XlsxWriter
 Markdown
 html2text
+XlsxWriter
 python-magic
+django-xhtml2pdf
 django-prometheus
+django-crispy-forms

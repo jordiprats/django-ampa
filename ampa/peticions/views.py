@@ -1,7 +1,9 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
+from django_xhtml2pdf.utils import generate_pdf
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from django.contrib import messages
 from django.db.models import Q
 
@@ -13,6 +15,24 @@ from cole.forms import *
 #
 # staff
 #
+
+@user_passes_test(lambda u: u.is_staff)
+def preview_pdf(request, junta_id):
+    try:
+        junta_instance = Junta.objects.filter(id=junta_id)[0]
+        resp = HttpResponse(content_type='application/pdf')
+        return generate_pdf('peticions/juntes/render_preview.html', file_object=resp, context={
+                                                                            'junta_instance': junta_instance, 
+                                                                            'issue_add_comments': False,
+                                                                            'issue_title_size': 'h4',
+                                                                            'user_admin': True,
+                                                                            'is_pdf': True
+                                                                        })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.list.juntes')
+
 
 @user_passes_test(lambda u: u.is_staff)
 def delete_comment(request, issue_id, comment_id):

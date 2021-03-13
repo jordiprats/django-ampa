@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+{% load issues_filter_by_category %}
+
+{% block content %}
+
+{% include 'peticions/juntes/inline_show.html' %}
+
+{% endblock %}
