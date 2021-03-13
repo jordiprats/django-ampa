@@ -37,7 +37,11 @@
               {{ "info"|list_to_badge:issue.categories.all }}
           </td>
           <td>{{ issue.display_juntes }}</td>
+          {% if issue.representant %}
+          <td>{{ issue.representant }}</td>
+          {% else %}
           <td>{{ issue.owner }}</td>
+          {% endif %}
           <td>{{ issue.comments.count }}</td>
           <td>{{ issue.display_updated | naturaltime }}</td>
           <td>
