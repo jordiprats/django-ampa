@@ -39,8 +39,8 @@
           <td>
             {% if not junta.public and user_admin %}
             <form style="display: inline;" action="{% url 'peticions.preview_pdf.junta' junta_id=junta.id %}" method="GET">
-              <button class="btn btn-info" type="submit"><i class="fas fa-file-pdf"></i></button>
-            </form>  
+              <button class="btn btn-warning" type="submit"><i class="fas fa-file-pdf"></i></button>
+            </form>
           {% endif %}
           </td>
           <td>{{ junta.updated_at | naturaltime }}</td>

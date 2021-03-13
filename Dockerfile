@@ -5,11 +5,11 @@ WORKDIR /code
 # GUNICORN - not an actual dependency
 RUN pip install gunicorn
 
-RUN apk add --no-cache --update postgresql-dev python3-dev musl-dev make cmake gcc g++ gfortran libmagic
+RUN apk add --no-cache --update postgresql-dev python3-dev musl-dev make cmake gcc g++ gfortran libmagic zlib zlib-dev
 
 # DEPENDENCIES
 COPY requirements.txt .
-RUN pip install -r requirements.txt && apk del make cmake gcc g++ gfortran
+RUN pip install -r requirements.txt && apk del make cmake gcc g++ gfortran zlib-dev
 
 COPY ampa .
 
