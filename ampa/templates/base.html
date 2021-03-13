@@ -65,7 +65,7 @@ ul.timeline > li:before {
 
       <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
         <div style="margin: 3px;">
-          {{ user | ampa_title | safe }}
+          <a href="{% url 'home' %}">{{ user | ampa_title | safe }}</a>
         </div>
         {% if user.is_authenticated %}
         <!-- button class="btn btn-primary" id="menu-toggle">Toggle Menu</button -->
@@ -77,9 +77,9 @@ ul.timeline > li:before {
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-            <li class="nav-item active">
+            <!-- <li class="nav-item active">
               <a class="nav-link" href="{% url 'home' %}">Home</a>
-            </li>
+            </li> -->
             {% if user.is_authenticated %}
             <li class="nav-item active dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
