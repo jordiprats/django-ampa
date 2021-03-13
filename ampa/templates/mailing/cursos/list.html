@@ -4,7 +4,13 @@
 
 {% block content %}
 
-<h1>Curs {{ curs_instance.curs }}</h1>
+<h1>Curs {{ curs_instance.curs }} <a href="{% url 'edit.curs' curs_id=curs_instance.id %}"><i class="far fa-edit"></i></a></h1>
+
+{% if curs_instance.modalitat %}
+Modalitat: {{ curs_instance.modalitat }}
+{% endif %}
+
+<hr>
 
 {% include 'cursos/inline_nav.html' %}
 
