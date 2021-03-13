@@ -19,10 +19,14 @@
       {% for junta in list_juntes %}
         <tr>
           {% if user_admin %}
-          <td><a href="{% url 'peticions.edit.junta' junta_id=junta.id %}">{{ junta.name }}</a> - <a href="{% url 'peticions.show.junta' junta_id=junta.id %}">preview</a></td>
+          {% if junta.public %}
+            <td><a href="{% url 'peticions.show.acte.junta' junta_slug=junta.slug %}">{{ junta.name }}</a> - <a href="{% url 'peticions.edit.junta' junta_id=junta.id %}">editar</a></td>
+          {% else %}
+            <td><a href="{% url 'peticions.edit.junta' junta_id=junta.id %}">{{ junta.name }}</a> - <a href="{% url 'peticions.show.junta' junta_id=junta.id %}">preview</a></td>
+          {% endif %}
           {% else %}
             {% if junta.public %}
-            <td><a href="{% url 'peticions.show.junta' junta_id=junta.id %}">{{ junta.name }}</a></td>
+            <td><a href="{% url 'peticions.show.acte.junta' junta_slug=junta.slug %}">{{ junta.name }}</a></td>
             {% else %}
             <td>{{ junta.name }}</td>
             {% endif %}
@@ -41,6 +45,29 @@
       {% endfor %}
     </tbody>
   </table>
+
+  {% if list_juntes.has_other_pages %}
+  <hr/>
+  <ul class="pagination d-flex justify-content-center">
+    {% if list_juntes.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page={{ list_juntes.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+    {% endif %}
+    {% for i in list_juntes.paginator.page_range %}
+      {% if list_juntes.number == i %}
+        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+      {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if list_juntes.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ list_juntes.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+    {% endif %}
+  </ul>
+  {% endif %}
 
   {% if user_admin %}
   <form style="display: inline;" action="{% url 'peticions.add.junta' %}" method="GET">

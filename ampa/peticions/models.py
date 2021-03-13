@@ -1,3 +1,4 @@
+from django.utils.text import slugify
 from django.db.models import Count
 from django.db import models
 
@@ -50,9 +51,11 @@ class Issue(models.Model):
     representant = models.ForeignKey(Representant, on_delete=models.SET_NULL, related_name='issues', default=None, blank=True, null=True)
 
     titol = models.CharField(max_length=256)
+    slug = models.SlugField(max_length=256, default=None, blank=True, null=True)
     html_message = models.TextField(max_length=50000, default=None, blank=True, null=True)
 
     public = models.BooleanField(default=True)
+    destacada = models.BooleanField(default=False)
 
     status = models.CharField(
         max_length=1,
@@ -67,6 +70,12 @@ class Issue(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        if not self.slug:
+            self.slug = slugify(self.titol, allow_unicode=False)
+        super().save(*args, **kwargs)
 
     def display_categories(self):
         return ', '.join(list(self.categories.values_list('name', flat=True)))
@@ -109,7 +118,10 @@ class Comment(models.Model):
 
 class Junta(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    
     name = models.CharField(max_length=256)
+    slug = models.SlugField(max_length=256, unique=True)
+
     html_message = models.TextField(max_length=50000, default='', blank=True, null=True)
 
     public = models.BooleanField(default=False)
@@ -121,6 +133,12 @@ class Junta(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        if not self.slug:
+            self.slug = slugify(self.name, allow_unicode=False)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name

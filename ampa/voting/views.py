@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -16,11 +17,26 @@ def home(request):
 @login_required
 def list_elections(request):
     if request.user.is_superuser and request.GET.get('admin', ''):
-        list_elections = Election.objects.all()
-        return render(request, 'voting/elections/list.html', {'list_elections': list_elections, 'admin_view': True, 'user_admin': request.user.is_staff })
+        list_elections_raw = Election.objects.all()
+        admin_view = True
     else:
-        list_elections = Election.objects.filter(owner=request.user)
-        return render(request, 'voting/elections/list.html', {'list_elections': list_elections, 'admin_view': False, 'user_admin': request.user.is_staff })
+        list_elections_raw = Election.objects.filter(owner=request.user)
+        admin_view = False
+
+    for voting in list_elections_raw:
+        print(voting.id)
+
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(list_elections_raw, 10)
+    try:
+        elections = paginator.page(page)
+    except PageNotAnInteger:
+        elections = paginator.page(1)
+    except EmptyPage:
+        elections = paginator.page(paginator.num_pages)
+    
+    return render(request, 'voting/elections/list.html', {'list_elections': elections, 'admin_view': admin_view, 'user_admin': request.user.is_staff })
 
 
 @login_required

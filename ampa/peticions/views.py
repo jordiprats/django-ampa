@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -47,7 +48,10 @@ def delete_junta(request, junta_id):
                 messages.error(request, 'Error eliminant la junta')
         else:
             form = AreYouSureForm(request.GET)
-        return render(request, 'peticions/juntes/delete.html', { 'junta_instance': junta_instance })
+        return render(request, 'peticions/juntes/delete.html', { 
+                                                                    'junta_instance': junta_instance,
+                                                                    'issue_title_size': 'h4',
+                                                                })
     except Exception as e:
         if request.user.is_superuser:
             messages.error(request, str(e))
@@ -114,6 +118,37 @@ def delete_issue(request, issue_id):
         return redirect('peticions.list.issues')
 
 @user_passes_test(lambda u: u.is_staff)
+def publish_junta(request, junta_id):
+    try:
+        junta_instance = Junta.objects.filter(id=junta_id)[0]
+       
+        if request.method == 'POST':
+            form = AreYouSureForm(request.POST)
+            if form.is_valid():
+                
+                for issue in junta_instance.issues.all():
+                    issue.status = ISSUE_STATUS_CLOSED
+                    issue.save()
+                junta_instance.public = True
+                junta_instance.save()
+
+                messages.info(request, 'Junta publicada')
+
+                return redirect('peticions.list.juntes')
+            else:
+                messages.error(request, 'Error eliminant la junta')
+        else:
+            form = AreYouSureForm(request.GET)
+        return render(request, 'peticions/juntes/publish.html', { 
+                                                                    'junta_instance': junta_instance,
+                                                                    'issue_title_size': 'h4',
+                                                                })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.list.juntes')
+
+@user_passes_test(lambda u: u.is_staff)
 def edit_representant(request, representant_id=None):
     try:
         if representant_id:
@@ -177,7 +212,18 @@ def edit_category(request, category_id=None):
 
 @user_passes_test(lambda u: u.is_staff)
 def list_categories(request):
-    list_categories = Category.objects.all()
+    list_categories_raw = Category.objects.all()
+
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(list_categories_raw, 10)
+    try:
+        list_categories = paginator.page(page)
+    except PageNotAnInteger:
+        list_categories = paginator.page(1)
+    except EmptyPage:
+        list_categories = paginator.page(paginator.num_pages)
+
     return render(request, 'peticions/categories/list.html', {
                                                                 'list_categories': list_categories, 
                                                                 'public': False, 
@@ -186,7 +232,18 @@ def list_categories(request):
 
 @user_passes_test(lambda u: u.is_staff)
 def list_representants(request):
-    list_representants = Representant.objects.all()
+    list_representants_raw = Representant.objects.all()
+
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(list_representants_raw, 10)
+    try:
+        list_representants = paginator.page(page)
+    except PageNotAnInteger:
+        list_representants = paginator.page(1)
+    except EmptyPage:
+        list_representants = paginator.page(paginator.num_pages)
+
     return render(request, 'peticions/representants/list.html', {
                                                                 'list_representants': list_representants, 
                                                                 'public': False, 
@@ -524,10 +581,22 @@ def edit_issue(request, issue_id=None):
 @login_required
 def list_issues(request):
     config = Entitat.objects.first()
+
     if request.user.is_staff:
-        list_issues = Issue.objects.all()        
+        list_issues_raw = Issue.objects.all()        
     else:
-        list_issues = Issue.objects.filter(public=True).filter(Q(status=ISSUE_STATUS_DRAFT) | Q(status=ISSUE_STATUS_OPEN))
+        list_issues_raw = Issue.objects.filter(public=True).filter(Q(status=ISSUE_STATUS_DRAFT) | Q(status=ISSUE_STATUS_OPEN))
+
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(list_issues_raw, 10)
+    try:
+        list_issues = paginator.page(page)
+    except PageNotAnInteger:
+        list_issues = paginator.page(1)
+    except EmptyPage:
+        list_issues = paginator.page(paginator.num_pages)
+
     return render(request, 'peticions/issues/list.html', {
                                                             'list_issues': list_issues,
                                                             'config': config,
@@ -544,21 +613,33 @@ def list_juntes(request):
     if request.user.is_authenticated:
         if request.user.is_staff:
             user_admin = True
-            list_juntes = Junta.objects.all()
+            list_juntes_raw = Junta.objects.all()
         else:
-            list_juntes = Junta.objects.filter(public=True)
+            list_juntes_raw = Junta.objects.filter(public=True)
     else:
-        list_juntes = Junta.objects.filter(public=True)
+        list_juntes_raw = Junta.objects.filter(public=True)
+
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(list_juntes_raw, 10)
+    try:
+        list_juntes = paginator.page(page)
+    except PageNotAnInteger:
+        list_juntes = paginator.page(1)
+    except EmptyPage:
+        list_juntes = paginator.page(paginator.num_pages)
 
     return render(request, 'peticions/juntes/list.html', {
                                                                 'list_juntes': list_juntes,
                                                                 'user_admin': user_admin
                                                             })
-                                                        
-def show_junta(request, junta_id=None):
+
+def show_junta(request, junta_id):
     try:
+        user_admin = False
         if request.user.is_authenticated:
             if request.user.is_staff:
+                user_admin = True
                 junta_instance = Junta.objects.filter(id=junta_id)[0]
             else:
                 junta_instance = Junta.objects.filter(id=junta_id, public=True)[0]
@@ -568,8 +649,19 @@ def show_junta(request, junta_id=None):
         return render(request, 'peticions/juntes/show.html', { 
                                                                 'junta_instance': junta_instance, 
                                                                 'issue_add_comments': False,
-                                                                'issue_title_size': 'h4'
+                                                                'issue_title_size': 'h4',
+                                                                'user_admin': user_admin
                                                             })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.list.juntes')
+
+def show_acte_junta(request, junta_slug):
+    try:
+        junta_instance = Junta.objects.filter(slug=junta_slug)[0]
+
+        return show_junta(request, junta_instance.id)
     except Exception as e:
         if request.user.is_superuser:
             messages.error(request, str(e))

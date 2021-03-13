@@ -8,16 +8,16 @@
 
 <div class="tab-content" id="pills-tabContent">
     <div class="tab-pane fade show active" id="tab-modules" role="tabpanel" aria-labelledby="pills-home-tab">
-        <h2>Eliminació de la junta {{ junta_instance.name }}</h2>
+        <h2>Estas segur que vols publicar de {{ junta_instance.name }}?</h2>
 
         {% include 'peticions/juntes/inline_show.html' %}
 
-        Estas segur que vols eliminar aquesta junta?
+        Estas segur que vols publicar aquesta junta?
         <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
             {% csrf_token %}
             {{ form.as_p }}
             <hr>
-            <button class="btn btn-danger" type="submit">ELIMINAR</button>
+            <button class="btn btn-success" type="submit">Publicar</button>
         </form>
     </div>
 </div>

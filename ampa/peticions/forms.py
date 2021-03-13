@@ -10,7 +10,6 @@ class IssueForm(forms.ModelForm):
         labels = {
             'titol': 'Titol petició',
             'categories': 'Categories',
-            'public': 'publicat',
             'html_message': 'Descripció',
         }
 
@@ -24,6 +23,7 @@ class IssueAdminForm(forms.ModelForm):
             'representant': 'Mostra la petició feta com a representant de:',
             'categories': 'Categories',
             'public': 'publicat',
+            'destacada': 'Destacar petició',
             'status': 'Estat',
             'html_message': 'Descripció',
         }
