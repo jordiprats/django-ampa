@@ -131,6 +131,8 @@ class Junta(models.Model):
     issues = models.ManyToManyField(Issue, related_name='juntes')
     votacions = models.ManyToManyField(Election, related_name='juntes')
 
+    latest_export = models.CharField(max_length=256, blank=True, null=True, default=None)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

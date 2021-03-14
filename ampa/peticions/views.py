@@ -21,7 +21,7 @@ def preview_pdf(request, junta_id):
     try:
         junta_instance = Junta.objects.filter(id=junta_id)[0]
         resp = HttpResponse(content_type='application/pdf')
-        return generate_pdf('peticions/juntes/render_preview.html', file_object=resp, context={
+        return generate_pdf('peticions/juntes/render_pdf.html', file_object=resp, context={
                                                                             'junta_instance': junta_instance, 
                                                                             'issue_add_comments': False,
                                                                             'issue_title_size': 'h4',

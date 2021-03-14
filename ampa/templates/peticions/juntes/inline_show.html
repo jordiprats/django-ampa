@@ -7,6 +7,9 @@
 
 {% if junta_instance.issues.all %}
 <h3>General</h3>
+{% if is_pdf %}
+<a id="#{{ "general"|slugify }}"></a>
+{% endif %}
 <ul>
     {% for issue_instance in junta_instance.uncategorized_issues %}
         {% include 'peticions/issues/inline_show.html' %}
@@ -22,6 +25,9 @@
 
 {% for categoria in junta_instance.categories %}
 <h3>{{ categoria }}</h3>
+{% if is_pdf %}
+<a id="#{{ categoria|slugify }}"></a>
+{% endif %}
 <ul>
     {% for issue_instance in categoria.id|issues_filter_by_category:junta_instance.issues.all %}
         {% include 'peticions/issues/inline_show.html' %}

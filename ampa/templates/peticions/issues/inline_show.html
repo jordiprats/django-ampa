@@ -19,16 +19,19 @@
     </div>
     
     <{{ issue_title_size }}>{{ issue_instance.titol }}</{{ issue_title_size }}>
+    {% if not is_pdf %}
     {% if issue_instance.representant %}
     <p>{{ issue_instance.representant }}</p>
     {% else %}
     <p>{{ issue_instance.owner }}</p>
     {% endif %}
+    {% endif %}
 
     {{ issue_instance.html_message | safe}}
 
+    {% if not is_pdf %}
     <br><hr>
-
+    {% endif %}
 
 {% for comment in issue_instance.comments.all %}
     {% if not comment.internal or comment.user == user or user_admin %}
@@ -46,7 +49,10 @@
         <p>{{ comment.user }}</p>
         {% endif %}
         <p>{{ comment.html_message | safe }}</p>
+
+        {% if not is_pdf %}
         <hr>
+        {% endif %}
     </li>
     {% endif %}
 {% endfor %}

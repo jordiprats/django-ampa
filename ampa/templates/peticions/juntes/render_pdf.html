@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+{% load issues_filter_by_category %}
+
+{% block content %}
+
+
+<!-- {% if junta_instance.issues.all %}
+<h2>Index</h2>
+<ul>
+
+{% if junta_instance.issues.all %}
+<li><a href="#{{ "general"|slugify }}">General</a></li>
+{% endif %}
+
+
+{% for categoria in junta_instance.categories %}
+<li><a href="#{{ categoria|slugify }}">{{ categoria }}</a></li>
+{% endfor %}
+
+</ul>
+{% endif %} -->
+
+{% include 'peticions/juntes/inline_show.html' %}
+
+{% endblock %}

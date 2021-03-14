@@ -11,7 +11,7 @@ import os
 import re
 
 class Command(BaseCommand):
-    help = 'Import uploaded XLS files'
+    help = 'Export XLS'
 
     def add_arguments(self, parser):
         parser.add_argument('classe_id', nargs='?', default=None)
@@ -22,7 +22,7 @@ class Command(BaseCommand):
             try:
                 classe_instance = Classe.objects.filter(id=options['classe_id'])[0]
             except:
-                print('Class no trobada')
+                print('Classe no trobada')
                 return False
         else:
             try:
