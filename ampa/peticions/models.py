@@ -123,6 +123,7 @@ class Junta(models.Model):
     slug = models.SlugField(max_length=256, unique=True)
 
     html_message = models.TextField(max_length=50000, default='', blank=True, null=True)
+    peu_message = models.TextField(max_length=50000, default='', blank=True, null=True)
 
     public = models.BooleanField(default=False)
 

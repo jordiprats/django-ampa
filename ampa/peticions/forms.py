@@ -54,6 +54,14 @@ class AdminCommentForm(forms.ModelForm):
             'user': forms.Select(attrs={'disabled':'disabled'})
         }
 
+class JuntaPeuForm(forms.ModelForm):
+    class Meta:
+        model = Junta
+        fields = (['peu_message'])
+        labels = {
+            'peu_message': 'Text',
+        }
+
 class JuntaForm(forms.ModelForm):
     class Meta:
         model = Junta

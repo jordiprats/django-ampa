@@ -27,9 +27,6 @@ tinymce.init({
 <form style="display: inline;" action="{% url 'peticions.delete.junta' junta_id=junta_instance.id %}" method="GET">
     <button class="float-right btn btn-danger" style="margin: 3px;" type="submit">eliminar junta</button>
 </form>
-<form style="display: inline;" action="{% url 'peticions.show.junta' junta_id=junta_instance.id %}" method="GET">
-    <button class="float-right btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-file-alt"></i> previsualitza</button>
-</form>
 
 <div class="py-4 px-4 px-md-3 px-lg-4">
     <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
@@ -37,9 +34,11 @@ tinymce.init({
         {{ form|crispy }}
 
         <br>
-        <button class="btn btn-success" type="submit" name="guardar" >guardar</button>
-        <button class="btn btn-info" type="submit" name="queixarem" >gestionar peticions</button>
-        <button class="btn btn-info" type="submit" name="votarem" disabled>gestionar votacions</button>
+        <button class="btn btn-success" type="submit" name="guardar" ><i class="far fa-save"></i> guardar</button>
+        <button class="btn btn-info" type="submit" name="queixarem" ><i class="fas fa-th-list"></i> gestionar peticions</button>
+        <button class="btn btn-info" type="submit" name="votarem" disabled><i class="fas fa-vote-yea"></i> gestionar votacions</button>
+        <button class="btn btn-info" type="submit" name="pudor"><i class="fas fa-align-left"></i> edita peu</button>
+        <button class="btn btn-info" type="submit" name="veure"><i class="fas fa-file-alt"></i> previsualitza</button>
     </form>
 </div>
 

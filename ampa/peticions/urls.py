@@ -6,6 +6,7 @@ urlpatterns = [
     path('', views.list_juntes, name='peticions.list.juntes'),
     path('add', views.edit_junta, name='peticions.add.junta'),
     path('<junta_id>/edit', views.edit_junta, name='peticions.edit.junta'),
+    path('<junta_id>/footer/edit', views.edit_junta_peu, name='peticions.edit.peu.junta'),
     path('<junta_id>/show', views.show_junta, name='peticions.show.junta'),
     path('<junta_id>/pdf/preview', views.preview_pdf, name='peticions.preview_pdf.junta'),
     path('<junta_id>/delete', views.delete_junta, name='peticions.delete.junta'),

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+{% load issues_filter_by_category %}
+
+{% block content %}
+
+
+<script src="http://static.ampa.systemadmin.es/js/tinymce/tinymce.min.js"></script>
+
+
+<script type="text/javascript">
+tinymce.init({
+    selector: '#id_peu_message',
+    language: 'ca',
+    menubar: false,
+    plugins: "link image code lists",
+    toolbar: 'styleselect | forecolor | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | link | undo redo | code',
+    height: '600'
+});
+</script>
+
+<a href="{% url 'peticions.edit.junta' junta_id=junta_instance.id%}"><i class="fas fa-backward"></i> tornar</a>
+
+<div class="py-4 px-4 px-md-3 px-lg-4">
+    <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+
+        <br>
+        <button class="btn btn-success" type="submit" name="guardar" ><i class="far fa-save"></i> guardar</button>
+    </form>
+</div>
+
+{% endblock %}

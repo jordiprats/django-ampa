@@ -295,6 +295,36 @@ def forward_open_peticions(request):
         return redirect('peticions.list.issues')       
 
 @user_passes_test(lambda u: u.is_staff)
+def edit_junta_peu(request, junta_id):
+    try:
+        junta_instance = Junta.objects.filter(id=junta_id)[0]
+
+        if request.method == 'POST':
+            form = JuntaPeuForm(request.POST, instance=junta_instance)
+            if form.is_valid():
+                form.save()
+                messages.info(request, 'Peu de junta guardat correctament')
+                return redirect('peticions.edit.junta', junta_id=junta_id)
+                
+            else:
+                messages.error(request, 'Formulari incorrecte')
+                return render(request, 'peticions/juntes/edit_peu.html', { 
+                                                        'form': form, 
+                                                        'junta_instance': junta_instance, 
+                                                    })
+        else:
+            form = JuntaPeuForm(instance=junta_instance)
+            return render(request, 'peticions/juntes/edit_peu.html', { 
+                                                                    'form': form, 
+                                                                    'junta_instance': junta_instance, 
+                                                                })
+
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.edit.junta', junta_id=junta_id)
+
+@user_passes_test(lambda u: u.is_staff)
 def edit_junta(request, junta_id=None):
     try:
         if junta_id:
@@ -317,7 +347,15 @@ def edit_junta(request, junta_id=None):
                         boto_apretat = str(form.data['queixarem'])
                         return redirect('peticions.edit.junta.list.peticions', junta_id=junta_instance.id)
                     except:
-                        pass
+                        try:
+                            boto_apretat = str(form.data['veure'])
+                            return redirect('peticions.show.junta', junta_id=junta_instance.id)
+                        except:
+                            try:
+                                boto_apretat = str(form.data['pudor'])
+                                return redirect('peticions.edit.peu.junta', junta_id=junta_instance.id)
+                            except:
+                                pass
                 return redirect('peticions.list.juntes')
                 
             else:
