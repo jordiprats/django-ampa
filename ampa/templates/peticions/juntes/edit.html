@@ -48,7 +48,7 @@ tinymce.init({
 <h2>General</h2>
 <ul>
     {% for issue in junta_instance.uncategorized_issues %}
-    <li><a href="{% url 'peticions.edit.issue' issue_id=issue.id %}">{{ issue.titol }}</a>
+    <li><a href="{% url 'peticions.edit.issue' issue_id=issue.id %}" target="_blank">{{ issue.titol }}</a>
         
         {% for label in issue.categories.all %}
             <span class="badge badge-info">{{ label }}</span>
@@ -57,7 +57,7 @@ tinymce.init({
     </li>
     {% endfor %}
     {% for issue in junta_instance.multicategorized_issues %}
-    <li><a href="{% url 'peticions.edit.issue' issue_id=issue.id %}">{{ issue.titol }}</a>
+    <li><a href="{% url 'peticions.edit.issue' issue_id=issue.id %}" target="_blank">{{ issue.titol }}</a>
         
         {% for label in issue.categories.all %}
             <span class="badge badge-info">{{ label }}</span>
@@ -72,7 +72,7 @@ tinymce.init({
 <h2>{{ categoria }}</h2>
 <ul>
     {% for issue in categoria.id|issues_filter_by_category:junta_instance.issues.all %}
-    <li><a href="{% url 'peticions.edit.issue' issue_id=issue.id %}">{{ issue.titol }}</a></li>
+    <li><a href="{% url 'peticions.edit.issue' issue_id=issue.id %}" target="_blank">{{ issue.titol }}</a></li>
     {% endfor %}
 </ul>
 {% endfor %}
