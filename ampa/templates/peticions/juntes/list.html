@@ -5,6 +5,18 @@
 
 {% block content %}
 
+{% if user_admin %}
+
+<div class="float-right">
+  <form style="display: inline;" action="{% url 'peticions.list.representants' %}" method="GET">
+    <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-list-ul"></i> representants</button>
+  </form>
+  <form style="display: inline;" action="{% url 'peticions.list.categories' %}" method="GET">
+    <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-list-ul"></i> categories</button>
+  </form>
+</div>
+{% endif %}
+
 <table class="table table-bordred table-striped">
     <thead>
       <tr>
