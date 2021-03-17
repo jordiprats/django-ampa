@@ -640,10 +640,19 @@ def edit_issue(request, issue_id=None):
 def list_issues(request):
     config = Entitat.objects.first()
 
+    tancades = request.GET.get('tancades', None)
+    no_junta = request.GET.get('no_junta', None)
+
     if request.user.is_staff:
         list_issues_raw = Issue.objects.all()        
     else:
         list_issues_raw = Issue.objects.filter(public=True).filter(Q(status=ISSUE_STATUS_DRAFT) | Q(status=ISSUE_STATUS_OPEN))
+
+    if tancades:
+        list_issues_raw = list_issues_raw.filter(status=ISSUE_STATUS_CLOSED)
+
+    if no_junta:
+        list_issues_raw = list_issues_raw.filter(juntes=None)
 
     page = request.GET.get('page', 1)
 
