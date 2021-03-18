@@ -355,7 +355,11 @@ def edit_junta(request, junta_id=None):
                                 boto_apretat = str(form.data['pudor'])
                                 return redirect('peticions.edit.peu.junta', junta_id=junta_instance.id)
                             except:
-                                pass
+                                try:
+                                    boto_apretat = str(form.data['presentar'])
+                                    return redirect('peticions.present.junta', junta_id=junta_instance.id)
+                                except:
+                                    pass
                 return redirect('peticions.list.juntes')
                 
             else:
@@ -507,6 +511,14 @@ def dislike_issue(request, issue_id):
 
     return redirect('peticions.show.issue', issue_id=issue_id)
 
+#
+# login required
+#
+
+@login_required
+def filter_issues(request):
+    return render(request, 'peticions/issues/filter.html')
+
 @login_required
 def edit_comment(request, issue_id, comment_id=None):
     try:
@@ -646,7 +658,7 @@ def list_issues(request):
     if request.user.is_staff:
         list_issues_raw = Issue.objects.all()        
     else:
-        list_issues_raw = Issue.objects.filter(public=True).filter(Q(status=ISSUE_STATUS_DRAFT) | Q(status=ISSUE_STATUS_OPEN))
+        list_issues_raw = Issue.objects.filter(public=True).filter(Q(status=ISSUE_STATUS_DRAFT) | Q(status=ISSUE_STATUS_OPEN) | Q(status=ISSUE_STATUS_CLOSED))
 
     if tancades:
         list_issues_raw = list_issues_raw.filter(status=ISSUE_STATUS_CLOSED)
@@ -700,6 +712,29 @@ def list_juntes(request):
                                                                 'list_juntes': list_juntes,
                                                                 'user_admin': user_admin
                                                             })
+
+def present_junta(request, junta_id):
+    try:
+        user_admin = False
+        if request.user.is_authenticated:
+            if request.user.is_staff:
+                user_admin = True
+                junta_instance = Junta.objects.filter(id=junta_id)[0]
+            else:
+                junta_instance = Junta.objects.filter(id=junta_id, public=True)[0]
+        else:
+            junta_instance = Junta.objects.filter(id=junta_id, public=True)[0]
+
+        return render(request, 'peticions/juntes/present.html', { 
+                                                                'junta_instance': junta_instance, 
+                                                                'issue_add_comments': False,
+                                                                'issue_title_size': 'h4',
+                                                                'user_admin': user_admin
+                                                            })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.list.juntes')
 
 def show_junta(request, junta_id):
     try:

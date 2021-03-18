@@ -8,6 +8,7 @@ urlpatterns = [
     path('<junta_id>/edit', views.edit_junta, name='peticions.edit.junta'),
     path('<junta_id>/footer/edit', views.edit_junta_peu, name='peticions.edit.peu.junta'),
     path('<junta_id>/show', views.show_junta, name='peticions.show.junta'),
+    path('<junta_id>/present', views.present_junta, name='peticions.present.junta'),
     path('<junta_id>/pdf/preview', views.preview_pdf, name='peticions.preview_pdf.junta'),
     path('<junta_id>/delete', views.delete_junta, name='peticions.delete.junta'),
     path('<junta_id>/publish', views.publish_junta, name='peticions.publish.junta'),
@@ -28,6 +29,7 @@ urlpatterns = [
     path('peticions/representants/<representant_id>/delete', views.delete_representant, name='peticions.delete.representant'),
     # issues
     path('peticions', views.list_issues, name='peticions.list.issues'),
+    path('peticions/filter', views.filter_issues, name='peticions.filter.issues'),
     path('peticions/add', views.edit_issue, name='peticions.add.issue'),
     path('peticions/forward/open', views.forward_open_peticions, name='peticions.forward.open'),
     path('peticions/<issue_id>/edit', views.edit_issue, name='peticions.edit.issue'),

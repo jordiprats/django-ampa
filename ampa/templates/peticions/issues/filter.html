@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+<a href="{% url 'peticions.list.issues' %}"><i class="fas fa-backward"></i> Peticions</a>
+<br><br>
+
+<form style="display: inline;" action="{% url 'peticions.filter.issues' %}" method="POST">
+
+
+  
+  <button class="float-left btn btn-info" style="margin: 3px;" type="submit">filtrar</button>
+</form>
+
+{% endblock %}

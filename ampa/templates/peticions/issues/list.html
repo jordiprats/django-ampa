@@ -7,6 +7,10 @@
 
 {% if user_admin %}
 
+<form style="display: inline;" action="{% url 'peticions.filter.issues' %}" method="GET">
+  <button class="float-left btn btn-secondary" style="margin: 3px;" type="submit"><i class="fas fa-filter"></i></button>
+</form>
+
 <div class="float-right">
   <form style="display: inline;" action="{% url 'peticions.forward.open' %}" method="GET">
     <button class="float-left btn btn-warning" style="margin: 3px;" type="submit"><i class="fas fa-angle-double-right"></i> progresar a junta</button>

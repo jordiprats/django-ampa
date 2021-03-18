@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+{% load issues_filter_by_category %}
+
+{% block content %}
+
+<h1>{{ junta_instance.name }}</h1>
+
+
+<div id="carouselExampleControls" class="carousel slide" data-interval="false">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div style="color: black; text-align: left; margin-left: 40px;" class="carousel-caption d-primary d-md-block ">
+            <br><br><br><br><br>
+            {{ junta_instance.html_message | safe}}
+          </div>
+        <img class="d-block w-100" src="https://articulate-heroes.s3.amazonaws.com/uploads/rte/rydofbpq_SpiralNotebook_FirstPage.png" alt="First slide">
+      </div>
+
+
+
+      {% if junta_instance.issues.all %}
+      
+      {% if junta_instance.issues.all %}
+
+      <div class="carousel-item ">
+        <div style="color: black; text-align: left; margin-left: 40px;" class="carousel-caption d-primary d-md-block h-100">
+            <br><br><br><br><br>
+            <h2>General</h2>
+          </div>
+        <img class="d-block w-100" src="https://articulate-heroes.s3.amazonaws.com/uploads/rte/rydofbpq_SpiralNotebook_FirstPage.png" alt="First slide">
+      </div>
+
+          {% for issue_instance in junta_instance.uncategorized_issues %}
+
+            <div class="carousel-item ">
+                <div style="color: black;" class="carousel-caption d-primary d-md-block  h-100">
+                    <br><br><br><br><br>
+                    {% include 'peticions/issues/inline_show.html' %}
+                </div>
+                <img class="d-block w-100" src="https://articulate-heroes.s3.amazonaws.com/uploads/rte/rydofbpq_SpiralNotebook_FirstPage.png" alt="First slide">
+            </div>
+
+              
+          {% endfor %}
+          {% for issue_instance in junta_instance.multicategorized_issues %}
+          <div class="carousel-item ">
+            <div style="color: black;" class="carousel-caption d-primary d-md-block  h-100">
+                <br><br><br><br><br>
+                {% include 'peticions/issues/inline_show.html' %}
+            </div>
+            <img class="d-block w-100" src="https://articulate-heroes.s3.amazonaws.com/uploads/rte/rydofbpq_SpiralNotebook_FirstPage.png" alt="First slide">
+        </div>
+          {% endfor %}
+
+      {% endif %}
+      
+      
+      {% for categoria in junta_instance.categories %}
+      <div class="carousel-item ">
+        <div style="color: black;" class="carousel-caption d-primary d-md-block  h-100">
+            <br><br><br><br><br>
+            <h2>{{ categoria }}</h2>
+          </div>
+        <img class="d-block w-100" src="https://articulate-heroes.s3.amazonaws.com/uploads/rte/rydofbpq_SpiralNotebook_FirstPage.png" alt="First slide">
+      </div>
+          {% for issue_instance in categoria.id|issues_filter_by_category:junta_instance.issues.all %}
+          <div class="carousel-item ">
+            <div style="color: black; text-align: left; margin-left: 40px;" class="carousel-caption d-primary d-md-block  h-100">
+                <br><br><br><br><br>
+                {% include 'peticions/issues/inline_show.html' %}
+            </div>
+            <img class="d-block w-100" src="https://articulate-heroes.s3.amazonaws.com/uploads/rte/rydofbpq_SpiralNotebook_FirstPage.png" alt="First slide">
+        </div>
+          {% endfor %}
+      {% endfor %}
+      
+      {% endif %}
+      
+
+
+
+
+      <div class="carousel-item">
+        <div style="color: black; text-align: left; margin-left: 40px;" class="carousel-caption d-primary d-md-block  h-100">
+            <br><br><br><br><br>
+            {{ junta_instance.peu_message | safe}}
+          </div>
+        <img class="d-block w-100" src="https://articulate-heroes.s3.amazonaws.com/uploads/rte/rydofbpq_SpiralNotebook_FirstPage.png" alt="First slide">
+      </div>
+
+
+    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+</div>
+
+
+
+
+
+
+{% endblock %}

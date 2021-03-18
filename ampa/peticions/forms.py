@@ -3,6 +3,23 @@ from django import forms
 
 from peticions.models import *
 
+class IssueFilterForm(forms.Form):
+    #TODO:
+    name = forms.CharField(label='Nom d\'usuari')
+
+    def __init__(self, data, **kwargs):
+        initial = kwargs.get('initial', {})
+        data = {**initial, **data}
+        super().__init__(data, **kwargs)
+
+    def clean(self):
+        try:
+            name = self.data['name'][0]
+        except:
+            return
+    class Meta:
+        fields = (['name'])
+
 class IssueForm(forms.ModelForm):
     class Meta:
         model = Issue
