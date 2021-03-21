@@ -2,12 +2,13 @@
 
 {% load static %}
 {% load humanize %}
+{% load set_protocol %}
 {% load crispy_forms_tags %}
 
 {% block content %}
 
 
-<script src="http://static.ampa.systemadmin.es/js/tinymce/tinymce.min.js"></script>
+<script src="{{ 'http://static.ampa.systemadmin.es/js/tinymce/tinymce.min.js'|set_protocol }}"></script>
 
 
 <script type="text/javascript">

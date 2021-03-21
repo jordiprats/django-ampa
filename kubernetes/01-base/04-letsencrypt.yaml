@@ -33,4 +33,7 @@ spec:
   issuerRef:
     kind: Issuer
     name: letsencrypt
-  commonName: ampa.systemadmin.es
+  #commonName: ampa.systemadmin.es
+  dnsNames:
+    - ampa.systemadmin.es
+    - static.ampa.systemadmin.es

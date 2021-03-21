@@ -10,11 +10,13 @@ import uuid
 ISSUE_STATUS_DRAFT = 'a'
 ISSUE_STATUS_OPEN = 'g'
 ISSUE_STATUS_WAITING = 'p'
+ISSUE_STATUS_REJECTED = 'y'
 ISSUE_STATUS_CLOSED = 'z'
 ISSUE_STATUS = [
     (ISSUE_STATUS_DRAFT, 'esborrany'),
     (ISSUE_STATUS_OPEN, 'proposada a junta'),
     (ISSUE_STATUS_WAITING, 'esperant resposta'),
+    (ISSUE_STATUS_REJECTED, 'rebutjada'),
     (ISSUE_STATUS_CLOSED, 'tancada'),
 ]
 

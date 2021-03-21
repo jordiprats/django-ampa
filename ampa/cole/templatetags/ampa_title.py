@@ -20,7 +20,8 @@ def ampa_title(value):
             entitat_name = ""
         
         if entitat_instance.logo:
-            return "<img src='"+entitat_instance.logo.static_url+"'>"+str(entitat_name)
+            desired_protocol =  os.getenv('PROTOCOL', 'http')   
+            return "<img src='"+re.sub('^http://', desired_protocol+'://', entitat_instance.logo.static_url)+"'>"+str(entitat_name)
         else:
             return str(entitat_name)
     except Exception as e:

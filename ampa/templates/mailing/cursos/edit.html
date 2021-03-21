@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 
 {% load static %}
+{% load set_protocol %}
 
 {% block content %}
 
 
-<script src="http://static.ampa.systemadmin.es/js/tinymce/tinymce.min.js"></script>
+<script src="{{ 'http://static.ampa.systemadmin.es/js/tinymce/tinymce.min.js'|set_protocol }}"></script>
 
 
 <script type="text/javascript">

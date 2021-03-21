@@ -40,6 +40,8 @@ if os.getenv('DEBUG', False):
 else:
     DEBUG=False
 
+PROTOCOL = os.getenv('PROTOCOL', 'http')
+
 ALLOWED_HOSTS = [ os.getenv('PUBLIC_HOSTNAME', 'ampa') ]
 
 if DEBUG:
@@ -175,9 +177,9 @@ STATICFILES_FINDERS = [
 
 STATIC_URL = '/static/'
 
-STATIC_DOMAIN = 'http://'+os.getenv('STATIC_HOSTNAME', 'ampa')+'/'
+STATIC_DOMAIN = PROTOCOL + '://'+os.getenv('STATIC_HOSTNAME', 'ampa')+'/'
 
-PUBLIC_DOMAIN = 'http://'+os.getenv('PUBLIC_HOSTNAME', 'ampa')
+PUBLIC_DOMAIN = PROTOCOL + '://'+os.getenv('PUBLIC_HOSTNAME', 'ampa')
 
 #
 #
