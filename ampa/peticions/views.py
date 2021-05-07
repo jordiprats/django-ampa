@@ -643,7 +643,7 @@ def edit_issue(request, issue_id=None):
 
         if is_new:
             if request.user.representant:
-                comment_instance.representant=request.user.representant
+                issue_instance.representant=request.user.representant
 
         if request.user==issue_instance.owner or request.user.is_staff:
             owner_view = True
@@ -686,8 +686,8 @@ def edit_issue(request, issue_id=None):
                                                                     'user_admin': request.user.is_staff
                                                                 })
     except Exception as e:
-        #if request.user.is_superuser:
-        messages.error(request, str(e))
+        if request.user.is_superuser:
+            messages.error(request, str(e))
         return redirect('peticions.list.issues')
 
 @login_required
