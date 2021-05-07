@@ -7,14 +7,56 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.db.models import Q
 
+from docxtpl import DocxTemplate
+
 from peticions.models import *
 from peticions.forms import *
 
 from cole.forms import *
 
+import io
+
 #
 # staff
 #
+
+@user_passes_test(lambda u: u.is_staff)
+def preview_docx(request, junta_id):
+    try:
+        junta_instance = Junta.objects.filter(id=junta_id)[0]
+        junta_instance.render_text_version()
+
+        tpl = DocxTemplate("/home/jprats/git/django-ampa/test.docx")
+
+        context = {
+                    'junta_instance': junta_instance, 
+                    'issue_add_comments': False,
+                    'issue_title_size': 'h4',
+                    'user_admin': True,
+                    'is_pdf': True
+                }
+
+        tpl.render(context)
+        # tpl.save('./test_output.docx')
+
+        tpl_io = io.BytesIO()
+        tpl.save(tpl_io)
+        tpl_io.seek(0)
+
+        response = HttpResponse(tpl_io.read())
+
+        # Content-Disposition header makes a file downloadable
+        response["Content-Disposition"] = "attachment; filename=preview.docx"
+
+        # Set the appropriate Content-Type for docx file
+        response["Content-Type"] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+
+        return response
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.list.juntes')
+
 
 @user_passes_test(lambda u: u.is_staff)
 def preview_pdf(request, junta_id):
@@ -644,8 +686,8 @@ def edit_issue(request, issue_id=None):
                                                                     'user_admin': request.user.is_staff
                                                                 })
     except Exception as e:
-        if request.user.is_superuser:
-            messages.error(request, str(e))
+        #if request.user.is_superuser:
+        messages.error(request, str(e))
         return redirect('peticions.list.issues')
 
 @login_required

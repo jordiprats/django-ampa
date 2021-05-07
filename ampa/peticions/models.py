@@ -5,6 +5,7 @@ from django.db import models
 from voting.models import *
 from cole.models import *
 
+import html2text
 import uuid
 
 ISSUE_STATUS_DRAFT = 'a'
@@ -138,6 +139,16 @@ class Junta(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    text_message = ""
+
+    def render_text_version(self):
+        h2t = html2text.HTML2Text()
+
+        h2t.ignore_links = True
+        self.text_message = h2t.handle(self.html_message)
+
+        return self.text_message
 
     def save(self, *args, **kwargs):
         self.full_clean()
