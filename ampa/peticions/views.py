@@ -710,20 +710,20 @@ def list_issues(request):
 
     issue_status = request.GET.get('status_filter', None)
 
-    print(str(issue_status))
+    # print(str(issue_status))
 
     if request.user.is_staff:
         list_issues_raw = Issue.objects.all()
     else:
         list_issues_raw = Issue.objects.filter(public=True)
 
-    print(list_issues_raw.count())
+    # print(list_issues_raw.count())
 
     if issue_status:
-        print('applico filtre status')
+        # print('applico filtre status')
         list_issues_raw = list_issues_raw.filter(status=issue_status)
 
-    print(list_issues_raw.count())
+    # print(list_issues_raw.count())
 
     page = request.GET.get('page', 1)
     paginator = Paginator(list_issues_raw, 10)
