@@ -181,6 +181,36 @@ def delete_issue(request, issue_id):
         return redirect('peticions.list.issues')
 
 @user_passes_test(lambda u: u.is_staff)
+def close_junta(request, junta_id):
+    try:
+        junta_instance = Junta.objects.filter(id=junta_id)[0]
+       
+        if request.method == 'POST':
+            form = AreYouSureForm(request.POST)
+            if form.is_valid():
+                
+                for issue in junta_instance.issues.all():
+                    issue.status = ISSUE_STATUS_CLOSED
+                    issue.save()
+                junta_instance.save()
+
+                messages.info(request, 'Junta tancada')
+
+                return redirect('peticions.list.juntes')
+            else:
+                messages.error(request, 'Error tancant la junta')
+        else:
+            form = AreYouSureForm(request.GET)
+        return render(request, 'peticions/juntes/close.html', { 
+                                                                    'junta_instance': junta_instance,
+                                                                    'issue_title_size': 'h4',
+                                                                })
+    except Exception as e:
+        if request.user.is_superuser:
+            messages.error(request, str(e))
+        return redirect('peticions.list.juntes')
+
+@user_passes_test(lambda u: u.is_staff)
 def publish_junta(request, junta_id):
     try:
         junta_instance = Junta.objects.filter(id=junta_id)[0]
@@ -199,7 +229,7 @@ def publish_junta(request, junta_id):
 
                 return redirect('peticions.list.juntes')
             else:
-                messages.error(request, 'Error eliminant la junta')
+                messages.error(request, 'Error publicant junta')
         else:
             form = AreYouSureForm(request.GET)
         return render(request, 'peticions/juntes/publish.html', { 
@@ -402,7 +432,11 @@ def edit_junta(request, junta_id=None):
                                     boto_apretat = str(form.data['presentar'])
                                     return redirect('peticions.present.junta', junta_id=junta_instance.id)
                                 except:
-                                    pass
+                                    try:
+                                        boto_apretat = str(form.data['tancar'])
+                                        return redirect('peticions.close.junta', junta_id=junta_instance.id)
+                                    except:
+                                        pass
                 return redirect('peticions.list.juntes')
                 
             else:
