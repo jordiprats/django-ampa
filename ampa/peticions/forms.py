@@ -4,8 +4,7 @@ from django import forms
 from peticions.models import *
 
 class IssueFilterForm(forms.Form):
-    #TODO:
-    name = forms.CharField(label='Nom d\'usuari')
+    status_filter = forms.ChoiceField(choices=ISSUE_STATUS, required = False)
 
     def __init__(self, data, **kwargs):
         initial = kwargs.get('initial', {})
@@ -14,11 +13,14 @@ class IssueFilterForm(forms.Form):
 
     def clean(self):
         try:
-            name = self.data['name'][0]
+            status_filter = self.data['status_filter'][0]
         except:
             return
     class Meta:
-        fields = (['name'])
+        fields = (['status_filter'])
+        labels = {
+            'status_filter': 'Estat de la petició',
+        }
 
 class IssueForm(forms.ModelForm):
     class Meta:

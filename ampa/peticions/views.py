@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
 from django_xhtml2pdf.utils import generate_pdf
 from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.contrib import messages
 from django.db.models import Q
@@ -559,7 +560,20 @@ def dislike_issue(request, issue_id):
 
 @login_required
 def filter_issues(request):
-    return render(request, 'peticions/issues/filter.html')
+    if request.method == 'POST':
+        form = IssueFilterForm(request.POST)
+        
+        try:
+            if form.data['status_filter'][0]:
+                url = reverse('peticions.list.issues')
+                return HttpResponseRedirect(url + "?status_filter="+form.data['status_filter'][0])
+        except Exception as e:
+            if request.user.is_superuser:
+                messages.error(request, str(e))
+            return redirect('peticions.list.issues')
+    else:
+        form = IssueFilterForm(request.GET)
+        return render(request, 'peticions/issues/filter.html', {'form': form })
 
 @login_required
 def edit_comment(request, issue_id, comment_id=None):
@@ -694,22 +708,24 @@ def edit_issue(request, issue_id=None):
 def list_issues(request):
     config = Entitat.objects.first()
 
-    tancades = request.GET.get('tancades', None)
-    no_junta = request.GET.get('no_junta', None)
+    issue_status = request.GET.get('status_filter', None)
+
+    print(str(issue_status))
 
     if request.user.is_staff:
-        list_issues_raw = Issue.objects.all()        
+        list_issues_raw = Issue.objects.all()
     else:
-        list_issues_raw = Issue.objects.filter(public=True).filter(Q(status=ISSUE_STATUS_DRAFT) | Q(status=ISSUE_STATUS_OPEN) | Q(status=ISSUE_STATUS_CLOSED))
+        list_issues_raw = Issue.objects.filter(public=True)
 
-    if tancades:
-        list_issues_raw = list_issues_raw.filter(status=ISSUE_STATUS_CLOSED)
+    print(list_issues_raw.count())
 
-    if no_junta:
-        list_issues_raw = list_issues_raw.filter(juntes=None)
+    if issue_status:
+        print('applico filtre status')
+        list_issues_raw = list_issues_raw.filter(status=issue_status)
+
+    print(list_issues_raw.count())
 
     page = request.GET.get('page', 1)
-
     paginator = Paginator(list_issues_raw, 10)
     try:
         list_issues = paginator.page(page)
@@ -722,7 +738,8 @@ def list_issues(request):
                                                             'list_issues': list_issues,
                                                             'config': config,
                                                             'public': False, 
-                                                            'user_admin': request.user.is_staff
+                                                            'user_admin': request.user.is_staff,
+                                                            'issue_status': issue_status
                                                         })
 
 #

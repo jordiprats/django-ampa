@@ -9,10 +9,13 @@
 <br><br>
 
 <form style="display: inline;" action="{% url 'peticions.filter.issues' %}" method="POST">
+  {% csrf_token %}
 
+  {{ form.as_p }}
 
-  
   <button class="float-left btn btn-info" style="margin: 3px;" type="submit">filtrar</button>
 </form>
+
+
 
 {% endblock %}
