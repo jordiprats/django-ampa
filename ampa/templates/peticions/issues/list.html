@@ -5,18 +5,17 @@
 
 {% block content %}
 
-{% if user_admin %}
-
 <form style="display: inline;" action="{% url 'peticions.filter.issues' %}" method="GET">
   <button class="float-left btn btn-primary" style="margin: 3px;" type="submit"><i class="fas fa-filter"></i></button>
 </form>
+
+{% if user_admin %}
 
 {% if issue_status %}
 <form style="display: inline;" action="{% url 'peticions.list.issues' %}" method="GET">
   <button class="float-left btn btn-danger" style="margin: 3px;" type="submit"><i class="far fa-trash-alt"></i> eliminar filtre</i></button>
 </form>
 {% endif %}
-
 
 <div class="float-right">
   <form style="display: inline;" action="{% url 'peticions.forward.open' %}" method="GET">
