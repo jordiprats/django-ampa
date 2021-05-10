@@ -82,7 +82,7 @@ class JuntaPeuForm(forms.ModelForm):
 class JuntaForm(forms.ModelForm):
     class Meta:
         model = Junta
-        fields = (['name', 'celebracio', 'public', 'html_message'])
+        fields = (['name', 'celebracio', 'public', 'html_message', 'wordtemplate'])
         widgets = {
             'celebracio': forms.DateInput(format=('%Y-%m-%d'), attrs={"type": 'date'}),
         }
@@ -91,6 +91,7 @@ class JuntaForm(forms.ModelForm):
             'celebracio': 'Data de celebració',
             'public': 'Publicar',
             'html_message': 'Text',
+            'wordtemplate': 'Plantilla',
         }
 
 class CategoryForm(forms.ModelForm):

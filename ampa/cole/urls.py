@@ -86,6 +86,7 @@ urlpatterns = [
 
     # templates
     path('plantilles/', views.list_templates, name='peticions.list.templates'),
+    path('plantilles/upload', views.upload_template, name='peticions.add.template'),
 
     # ajuda inline
     path('help', views.show_help, name='show.help'),

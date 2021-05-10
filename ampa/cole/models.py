@@ -433,11 +433,14 @@ class EmailSent(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-
+# ???
 class DocumentTemplate(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=256)
     html_message = models.TextField(max_length=50000, default='', blank=True, null=True)
+
+class WordTemplate(FileAttachment):
+    pass
 
 class Entitat(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

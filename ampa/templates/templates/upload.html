@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<br><br>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <ul>
+
+    <li>
+        <label for="file">Fitxer a afegir</label>
+        <input type="file" name="attachment">
+    </li>
+
+    </ul>
+
+    <hr>
+
+    <button class="btn btn-info" type="submit" name="guardar" >Upload</button>
+  </form>
+
+{% endblock %}

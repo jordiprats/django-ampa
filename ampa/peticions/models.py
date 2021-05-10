@@ -137,6 +137,8 @@ class Junta(models.Model):
 
     latest_export = models.CharField(max_length=256, blank=True, null=True, default=None)
 
+    wordtemplate = models.ForeignKey(WordTemplate, on_delete=models.SET_NULL, related_name='juntes', default=None, blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -151,9 +153,9 @@ class Junta(models.Model):
         return self.text_message
 
     def save(self, *args, **kwargs):
-        self.full_clean()
         if not self.slug:
             self.slug = slugify(self.name, allow_unicode=False)
+        self.full_clean()
         super().save(*args, **kwargs)
 
     def __str__(self):
