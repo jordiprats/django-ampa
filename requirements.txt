@@ -3,6 +3,7 @@ xlrd
 numpy
 pandas
 django
+docxtpl
 psycopg2
 Markdown
 html2text
