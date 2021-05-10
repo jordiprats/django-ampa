@@ -70,11 +70,11 @@
       {% if list_issues.number == i %}
         <li class="page-item active"><span class="page-link">{{ i }}</span></li>
       {% else %}
-        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ i }}{% if issue_status %}&status_filter={{ issue_status }}{% endif %}">{{ i }}</a></li>
       {% endif %}
     {% endfor %}
     {% if list_issues.has_next %}
-      <li class="page-item"><a class="page-link" href="?page={{ list_issues.next_page_number }}">&raquo;</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ list_issues.next_page_number }}{% if issue_status %}&status_filter={{ issue_status }}{% endif %}">&raquo;</a></li>
     {% else %}
       <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
     {% endif %}
