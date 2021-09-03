@@ -55,6 +55,12 @@
     <button class="float-right btn btn-info" style="margin: 3px;" type="submit">exportar Excel</button>
   </form>
 
+  {% if is_staff %}
+  <form style="display: inline;" action="{% url 'copy.curs.classe' classe_id=instance_classe.id %}" method="GET">
+    <button class="float-right btn btn-danger" style="margin: 3px;" type="submit">copiar a nou curs</button>
+  </form>
+  {% endif %}
+
 <h1>{{ instance_classe.nom }} <a href="{% url 'edit.classe' classe_id=instance_classe.id %}"><i class="far fa-edit"></i></a></h1>
 {{ instance_classe.curs }}
 

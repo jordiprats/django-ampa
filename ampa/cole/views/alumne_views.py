@@ -151,9 +151,9 @@ def unlink_alumne_classes(request, alumne_id, classe_id):
             if form.is_valid():
                 alumne_instance.classes.remove(classe_instance)
                 alumne_instance.save()
-                messages.info(request, 'Classe eliminada')
+                messages.info(request, 'Alumne eliminat de la classe')
 
-                return redirect('list.alumne.classes', { 'alumne_id': alumne_id})
+                return redirect('show.classe', classe_id=classe_id)
             else:
                 messages.error(request, 'Error eliminant la classe')
         else:

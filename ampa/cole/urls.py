@@ -57,6 +57,7 @@ urlpatterns = [
     path('classes/<classe_id>/delete', views.delete_classe, name='delete.classe'),
     path('classes/<classe_id>/upload/', views.upload_xls, name='upload.classe.xls'),
     path('classes/<classe_id>/upload/again/', views.reimport, name='upload.classe.xls.again'),
+    path('classes/<classe_id>/copy', views.copiar_classe, name='copy.curs.classe'),
     path('classes/<classe_id>/export', views.exportar_classe, name='exportar.xls'),
     path('classes/<classe_id>/exporting', views.wait_export, name='wait.export'),
     path('classes/<classe_id>/export/<export_name>', views.get_export, name='get.classe.export'),

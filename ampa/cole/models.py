@@ -62,7 +62,10 @@ class Curs(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.curs
+        if self.modalitat:
+            return self.curs+'/'+str(self.modalitat)
+        else:
+            return self.curs
 
     class Meta:
         unique_together = ('curs', 'modalitat')
@@ -151,7 +154,7 @@ class Classe(models.Model):
         return self._get_full_nom()
 
     class Meta:
-        ordering = ['curs', 'etapa','nom']
+        ordering = ['-curs', 'etapa','nom']
         unique_together = ('nom', 'curs', 'delegat')
 
 class Alumne(models.Model):

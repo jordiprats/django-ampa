@@ -208,11 +208,11 @@ def edit_classe(request, classe_id=None):
                 form.save()
                 messages.info(request, 'Dades guardades correctament')
             else:
-                return render(request, 'classes/edit.html', { 'form': form, 'classe_id': classe_id, 'classe_instance': classe_instance })
+                return render(request, 'classes/edit.html', { 'form': form, 'classe_id': classe_id, 'classe_instance': classe_instance, 'action': 'editar' })
             return redirect('show.classe', classe_id=classe_instance.id)
         else:
             form = ClasseForm(instance=classe_instance)
-        return render(request, 'classes/edit.html', { 'form': form, 'classe_id': classe_id, 'classe_instance': classe_instance })
+        return render(request, 'classes/edit.html', { 'form': form, 'classe_id': classe_id, 'classe_instance': classe_instance, 'action': 'editar' })
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -346,6 +346,72 @@ def upload_xls(request, classe_id):
         return render(request, 'classes/upload.html', {'instance_classe': current_classe})
     else:
         return redirect('home')
+
+@user_passes_test(lambda u: u.is_staff)
+def copiar_classe(request, classe_id):
+    try:
+        if classe_id:
+            classe_instance = Classe.objects.filter(id=classe_id)[0]
+        if request.method == 'POST':
+            form = ClasseForm(request.POST, instance=classe_instance)
+            if form.is_valid():
+                new_classe = Classe(delegat=request.user)
+                dades_new_classe = form.save(commit=False)
+                
+                new_classe.nom = dades_new_classe.nom
+                new_classe.alias = dades_new_classe.alias
+                new_classe.tutor = dades_new_classe.tutor
+
+                new_classe.curs = dades_new_classe.curs
+                new_classe.etapa = dades_new_classe.etapa
+
+                new_classe.nom_delegat = dades_new_classe.nom_delegat
+                new_classe.telefon_delegat = dades_new_classe.telefon_delegat
+                new_classe.email_delegat = dades_new_classe.email_delegat
+
+                new_classe.nom_subdelegat = dades_new_classe.nom_subdelegat
+                new_classe.telefon_subdelegat = dades_new_classe.telefon_subdelegat
+                new_classe.email_subdelegat = dades_new_classe.email_subdelegat
+
+                new_classe.delegat = dades_new_classe.delegat
+                new_classe.subdelegat = dades_new_classe.subdelegat
+                
+                new_classe.save()
+
+                for alumne in classe_instance.alumnes.all():
+                    alumne.classes.add(new_classe)
+                    alumne.save()
+
+                messages.info(request, 'Classe copiada correctament')
+
+                return redirect('show.classe', classe_id=new_classe.id)
+            else:
+                return render(request, 'classes/edit.html', { 'form': form, 'classe_id': classe_id, 'classe_instance': classe_instance, 'action': 'copiar', 'classe_nom_was': classe_instance.nom })    
+        else:
+            classe_nom_was = classe_instance.nom
+            classe_instance.nom = ""
+            classe_instance.alias = ""
+            classe_instance.tutor = ""
+
+            classe_instance.nom_delegat = ""
+            classe_instance.telefon_delegat = ""
+            classe_instance.email_delegat = ""
+
+            classe_instance.nom_subdelegat = ""
+            classe_instance.telefon_subdelegat = ""
+            classe_instance.email_subdelegat = ""
+
+            form = ClasseForm(instance=classe_instance)
+        return render(request, 'classes/edit.html', { 'form': form, 'classe_id': classe_id, 'classe_instance': classe_instance, 'action': 'copiar', 'classe_nom_was': classe_nom_was })
+    except Exception as e:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+        print(str(e))
+        if classe_id:
+            return redirect('show.classe', classe_id=classe_id)
+        else:
+            return redirect('list.classes')
 
 @login_required
 def exportar_classe(request, classe_id):

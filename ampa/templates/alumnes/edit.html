@@ -8,14 +8,21 @@
 <h1><a href="{% url 'show.classe' classe_id=classe_id %}">{{ classe_nom }}</a> / {{ alumne_instance.print_name }}</h1>
 
 {% if staff_view %}
-<form style="display: inline;" action="{% url 'delete.alumne' classe_id=classe_id alumne_id=alumne_id %}" method="GET">
-    <button class="float-right btn btn-danger" type="submit">eliminar alumne</button>
+<!-- <form style="display: inline;" action="{% url 'delete.alumne' classe_id=classe_id alumne_id=alumne_id %}" method="GET">
+    <button style="margin-right: 6px;"class="float-right btn btn-danger" type="submit"><i class="far fa-trash-alt"></i></button>
+</form> -->
+
+<form style="display: inline;" action="{% url 'unlink.alumne.classes' classe_id=classe_id alumne_id=alumne_id %}" method="GET">
+    <button style="margin-right: 6px;"class="float-right btn btn-danger" type="submit"><i class="fas fa-user-minus"></i> eliminar de la classe</button>
 </form>
+
 {% endif %}
 
 <form style="display: inline;" action="{% url 'list.alumne.classes' alumne_id=alumne_id %}" method="GET">
-    <button style="margin-right: 6px;" class="float-right btn btn-success" type="submit"><i class="fas fa-search"></i> classes</button>
+    <button style="margin-right: 6px;" class="float-right btn btn-info" type="submit"><i class="fas fa-search"></i> classes</button>
 </form>
+
+
 
 {% else %}
 <h1><a href="{% url 'show.classe' classe_id=classe_id %}">{{ classe_nom }}</a> / afegir alumne</h1>

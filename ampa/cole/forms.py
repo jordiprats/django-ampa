@@ -172,6 +172,8 @@ class AdminEditUser(ModelForm):
             'representant': 'Funció principal'
         }
 
+
+
 class AMPAUserName(forms.Form):
     name = forms.CharField(label='Nom d\'usuari')
 
