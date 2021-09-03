@@ -80,6 +80,28 @@ class ClasseForm(forms.ModelForm):
             'html_message': 'Missatge', 
         }
 
+class StaffClasseForm(forms.ModelForm):
+    class Meta:
+        model = Classe
+        fields = (['nom', 'alias', 'curs', 'etapa', 'delegat', 'subdelegat', 'tutor', 'nom_delegat', 'telefon_delegat', 'email_delegat', 'nom_subdelegat', 'telefon_subdelegat', 'email_subdelegat'])
+        labels = {
+            'nom': 'Classe', 
+            'alias': 'Nom de la classe', 
+            'curs': 'Curs escolar',
+            'etapa': 'Etapa',
+            'delegat': 'Delegat',
+            'subdelegat': 'Subdelegat',
+            'tutor:': 'Nom tutor de la classe', 
+            'nom_delegat': 'Nom del delegat', 
+            'telefon_delegat': 'Telèfon del delegat', 
+            'email_delegat': 'e-Mail del delegat', 
+            'nom_subdelegat': 'Nom del subdelegat', 
+            'telefon_subdelegat': 'Telèfon del subdelegat', 
+            'email_subdelegat': 'e-Mail del subdelegat',
+            'subject': 'Asumpte', 
+            'html_message': 'Missatge', 
+        }
+
 class EditAlumneForm(ModelForm):
     def __init__(self, *args, **kwargs):
         staff_view = kwargs.pop('staff_view',None)

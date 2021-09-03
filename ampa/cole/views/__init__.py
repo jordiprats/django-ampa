@@ -203,7 +203,10 @@ def edit_classe(request, classe_id=None):
         else:
             classe_instance = Classe(delegat=request.user)
         if request.method == 'POST':
-            form = ClasseForm(request.POST, instance=classe_instance)
+            if request.user.is_staff:
+                form = StaffClasseForm(request.POST, instance=classe_instance)
+            else:
+                form = ClasseForm(request.POST, instance=classe_instance)
             if form.is_valid():
                 form.save()
                 messages.info(request, 'Dades guardades correctament')
@@ -211,7 +214,10 @@ def edit_classe(request, classe_id=None):
                 return render(request, 'classes/edit.html', { 'form': form, 'classe_id': classe_id, 'classe_instance': classe_instance, 'action': 'editar' })
             return redirect('show.classe', classe_id=classe_instance.id)
         else:
-            form = ClasseForm(instance=classe_instance)
+            if request.user.is_staff:
+                form = StaffClasseForm(instance=classe_instance)
+            else:
+                form = ClasseForm(instance=classe_instance)
         return render(request, 'classes/edit.html', { 'form': form, 'classe_id': classe_id, 'classe_instance': classe_instance, 'action': 'editar' })
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -353,11 +359,11 @@ def copiar_classe(request, classe_id):
         if classe_id:
             classe_instance = Classe.objects.filter(id=classe_id)[0]
         if request.method == 'POST':
-            form = ClasseForm(request.POST, instance=classe_instance)
+            form = StaffClasseForm(request.POST, instance=classe_instance)
             if form.is_valid():
                 new_classe = Classe(delegat=request.user)
                 dades_new_classe = form.save(commit=False)
-                
+
                 new_classe.nom = dades_new_classe.nom
                 new_classe.alias = dades_new_classe.alias
                 new_classe.tutor = dades_new_classe.tutor
@@ -401,7 +407,7 @@ def copiar_classe(request, classe_id):
             classe_instance.telefon_subdelegat = ""
             classe_instance.email_subdelegat = ""
 
-            form = ClasseForm(instance=classe_instance)
+            form = StaffClasseForm(instance=classe_instance)
         return render(request, 'classes/edit.html', { 'form': form, 'classe_id': classe_id, 'classe_instance': classe_instance, 'action': 'copiar', 'classe_nom_was': classe_nom_was })
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
