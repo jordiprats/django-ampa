@@ -4,6 +4,7 @@ numpy
 pandas
 django
 docxtpl
+unidecode
 psycopg2
 Markdown
 html2text

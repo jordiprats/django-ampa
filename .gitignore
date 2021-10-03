@@ -2,6 +2,7 @@
 *.xls
 *.xlsx
 .~lock.*.xlsx#
+.~lock.*.xls#
 *.pot
 *.py[cod]
 __pycache__/

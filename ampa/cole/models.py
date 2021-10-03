@@ -5,6 +5,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.db import models
 
+import unidecode
 import uuid
 import re
 
@@ -166,6 +167,10 @@ class Alumne(models.Model):
     nom = models.CharField(max_length=256)
     cognom1 = models.CharField(max_length=256)
     cognom2 = models.CharField(max_length=256, default=None, blank=True, null=True)
+
+    nom_unaccented = models.CharField(max_length=256, default="", blank=True, null=True)
+    cognom1_unaccented = models.CharField(max_length=256, default="", blank=True, null=True)
+    cognom2_unaccented = models.CharField(max_length=256, default="", blank=True, null=True)
     
     naixement = models.DateTimeField(default=None, blank=True, null=True)
 
@@ -235,6 +240,15 @@ class Alumne(models.Model):
         return attachments_dict
 
     extrainfo_hash = property(_get_extrainfo_hash)
+
+    def save(self, *args, **kwargs):
+        if self.nom:
+            self.nom_unaccented = unidecode.unidecode(self.nom.replace('·', '.')).lower()
+        if self.cognom1:
+            self.cognom1_unaccented = unidecode.unidecode(self.cognom1.replace('·', '.')).lower()
+        if self.cognom2:
+            self.cognom2_unaccented = unidecode.unidecode(self.cognom2.replace('·', '.')).lower()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self._get_print_name()

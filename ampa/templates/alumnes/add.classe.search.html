@@ -26,17 +26,24 @@
     <tbody>
       {% for alumne in llistat_alumnes %}
         <tr>
-          <td>{{ alumne.print_name }}</td>
+          <td>
+            <form action="{% url 'search.edit.alumne' alumne_id=alumne.id %}" method="GET">
+              <button style="margin-right: 10px;" class="float-left btn btn-info" type="submit"><i class="fas fa-edit"></i></button>
+            </form>   
+            <a href="{% url 'form.pares.edit.alumne' alumne_id=alumne.id %}">{{ alumne.print_name }}</a>
+          </td>
           {% if alumne.classe %}
           <td>{{ alumne.classe.nom }}</td>
           {% else %}
           <td>-</td>
           {% endif %}
+          {% if classe_id %}
           <td>
             <form action="{% url 'add.alumne.classe' classe_id=classe_id alumne_id=alumne.id %}" method="GET">
               <button style="margin-right: 10px;" class="float-left btn btn-info" type="submit"><i class="fas fa-plus"></i> {{ classe_full_nom }}</button>
             </form>
           </td>
+          {% endif %}
         </tr>
       {% endfor %}
     </tbody>

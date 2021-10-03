@@ -17,8 +17,18 @@
     <li><a href="{% url 'list.users' %}">Llistat d'usuaris</a></li>
 </ul>
 
+<h2>Alumnes</h2>
+<ul>
+    <li><a href="{% url 'alumne.search' %}">Buscar Alumne per nom</a></li>
+    <li><a href="{% url 'alumne.search.by.phone' %}">Buscar Alumne per telefon associat</a></li>
+</ul>
+
+
 <h2>Cursos</h2>
-<a href="{% url 'list.cursos' %}">Llistat complet de cursos</a>
+<ul>
+    <li><a href="{% url 'list.cursos' %}">Llistat complet de cursos</a></li>
+</ul>
+
 
 {% include 'cursos/inline_list.html' %}
 

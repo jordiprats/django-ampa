@@ -73,6 +73,8 @@ urlpatterns = [
     path('classes/<classe_id>/<alumne_id>/delete', views.delete_alumne, name='delete.alumne'),
 
     # alumnes
+    path('alumnes/search', views.add_classe_search_alumne, name='alumne.search'),
+    path('alumnes/phone/search', views.search_alumne_by_phone, name='alumne.search.by.phone'),
     path('alumnes/<alumne_id>', views.edit_alumne_form_pares, name='form.pares.edit.alumne'),
     path('alumnes/<alumne_id>/classes', views.edit_alumne_classes, name='list.alumne.classes'),
     path('alumnes/<alumne_id>/classes/<classe_id>/unlink', views.unlink_alumne_classes, name='unlink.alumne.classes'),

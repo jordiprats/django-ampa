@@ -170,19 +170,45 @@ def add_alumne_classe(request, classe_id, alumne_id):
         return redirect('show.classe', classe_id=classe_id)
 
 @user_passes_test(lambda u: u.is_staff)
-def add_classe_search_alumne(request, classe_id):
+def search_alumne_by_phone(request):
     try:
-        classe_instance = Classe.objects.filter(id=classe_id).first()
+        phone = request.GET.get('q', '')
+        if phone:
+            llistat_alumnes = Alumne.objects.filter(Q(telf_tutor1__icontains=phone) | Q(telf_tutor1__icontains=phone) )
+        else:
+            llistat_alumnes = Alumne.objects.none()
+        return render(request, 'alumnes/add.classe.search.html', { 
+                                                                    'llistat_alumnes': llistat_alumnes, 
+                                                                    'classe_id': None, 
+                                                                    'classe_full_nom': None
+                                                                })
+    except Exception as e:
+        if request.user.is_staff:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            print(str(e))
+            messages.error(request, str(e))
+        return redirect('alumne.search.by.phone', classe_id=classe_id)
+
+@user_passes_test(lambda u: u.is_staff)
+def add_classe_search_alumne(request, classe_id=None):
+    try:
+        if classe_id:
+            classe_instance = Classe.objects.filter(id=classe_id).first()
+            classe_full_nom =  classe_instance.full_nom
+        else:
+            classe_full_nom = None
         
         query = request.GET.get('q', '')
         if query:
-            llistat_alumnes = Alumne.objects.filter(Q(nom__icontains=query) | Q(cognom1__icontains=query) | Q(cognom2__icontains=query))
+            llistat_alumnes = Alumne.objects.filter(Q(nom_unaccented__icontains=query) | Q(cognom1_unaccented__icontains=query) | Q(cognom2_unaccented__icontains=query))
         else:
             llistat_alumnes = None
         return render(request, 'alumnes/add.classe.search.html', { 
                                                                     'llistat_alumnes': llistat_alumnes, 
                                                                     'classe_id': classe_id, 
-                                                                    'classe_full_nom': classe_instance.full_nom
+                                                                    'classe_full_nom': classe_full_nom
                                                                 })
     except Exception as e:
         if request.user.is_staff:
