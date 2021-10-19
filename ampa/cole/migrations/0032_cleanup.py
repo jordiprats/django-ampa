@@ -4,7 +4,6 @@ def forward(apps, schema_editor):
     Alumne = apps.get_model("cole", "Alumne")
     for alumne in Alumne.objects.all():
         if alumne.classes.count() == 0:
-            print("Deleting alumne {}".format(alumne._get_print_name()))
             alumne.delete()
         else:
             alumne.save()
