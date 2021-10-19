@@ -258,7 +258,7 @@ def delete_classe(request, classe_id):
 def list_classes(request, curs_id=None):
     if request.user.is_authenticated:
         # TODO: refactor
-        if request.user.is_superuser and request.GET.get('admin', ''):
+        if request.user.is_staff and request.GET.get('admin', ''):
             if curs_id:
                 list_classes = Classe.objects.filter(curs__id=curs_id)
             else:
