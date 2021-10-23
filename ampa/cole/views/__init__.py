@@ -260,15 +260,15 @@ def list_classes(request, curs_id=None):
         # TODO: refactor
         if request.user.is_staff and request.GET.get('admin', ''):
             if curs_id:
-                list_classes = Classe.objects.filter(curs__id=curs_id).order_by('curs')
+                list_classes = Classe.objects.filter(curs__id=curs_id).order_by('curs', 'etapa', 'nom')
             else:
-                list_classes = Classe.objects.all().order_by('curs')
+                list_classes = Classe.objects.all().order_by('curs', 'etapa', 'nom')
             return render(request, 'classes/list.html', { 'list_classes': list_classes, 'admin_view': True, 'user_admin': request.user.is_staff })
         else:
             if curs_id:
-                list_classes = Classe.objects.filter(curs__id=curs_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user)).order_by('curs')
+                list_classes = Classe.objects.filter(curs__id=curs_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user)).order_by('curs', 'etapa', 'nom')
             else:
-                list_classes = Classe.objects.filter(Q(delegat=request.user) | Q(subdelegat=request.user)).order_by('curs')
+                list_classes = Classe.objects.filter(Q(delegat=request.user) | Q(subdelegat=request.user)).order_by('curs', 'etapa', 'nom')
             return render(request, 'classes/list.html', { 'list_classes': list_classes, 'admin_view': False, 'user_admin': request.user.is_staff })
     else:
         return redirect('home')
