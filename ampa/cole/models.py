@@ -185,7 +185,7 @@ class Classe(models.Model):
 
     class Meta:
         ordering = ['-curs', 'etapa','nom']
-        unique_together = ('nom', 'curs', 'delegat')
+        unique_together = ('nom', 'curs', 'etapa', 'delegat')
 
 class Alumne(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
