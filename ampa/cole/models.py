@@ -277,6 +277,10 @@ class Alumne(models.Model):
             self.cognom1_unaccented = unidecode.unidecode(self.cognom1.replace('·', '.')).lower()
         if self.cognom2:
             self.cognom2_unaccented = unidecode.unidecode(self.cognom2.replace('·', '.')).lower()
+        if self.telf_tutor1:
+            self.telf_tutor1 = self.telf_tutor1.replace(" ", "")
+        if self.telf_tutor2:
+            self.telf_tutor2 = self.telf_tutor2.replace(" ", "")
         super().save(*args, **kwargs)
 
     def __str__(self):
