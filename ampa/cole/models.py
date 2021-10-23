@@ -82,7 +82,7 @@ class Curs(models.Model):
 
     class Meta:
         unique_together = ('curs', 'modalitat')
-        ordering = ['curs']
+        ordering = ['-curs']
         indexes = [
             models.Index(fields=['curs']),
         ]
@@ -191,7 +191,7 @@ class Alumne(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     #id_nen         nom        cognom1     cognom2            naixement         pare      telf1       mare      telf2                                              email     cessio signatura
     # TODO: petar num_llista
-    num_llista = models.IntegerField()
+    num_llista = models.IntegerField(default=0)
     
     nom = models.CharField(max_length=256)
     cognom1 = models.CharField(max_length=256)

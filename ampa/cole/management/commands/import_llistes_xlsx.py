@@ -8,6 +8,8 @@ import unidecode
 import pandas
 import re
 
+dry_run = False
+
 class Command(BaseCommand):
   help = 'Import uploaded XLS files'
 
@@ -16,6 +18,8 @@ class Command(BaseCommand):
 
   def handle(self, *args, **options):
     filename = options['file'][0]
+
+    admin_user = User.objects.filter(is_superuser=True).first()
 
     for alumne in Alumne.objects.filter(classes=None):
       print("Deleting alumne {}".format(alumne._get_print_name()))
@@ -30,7 +34,25 @@ class Command(BaseCommand):
 
     all_sheets_excel = pandas.read_excel(filename, sheet_name=None, )
 
+    curs = Curs.objects.filter(modalitat=None).order_by('-curs').first()
+
+    if not curs:
+      print("No curs found")
+      return
+
+    print("Curs: {}".format(curs))
+
     for sheet_name in all_sheets_excel.keys():
+      print("Processing sheet {}".format(sheet_name))
+
+      etapa = Etapa.objects.filter(nom__icontains=sheet_name.lower().strip()).first()
+
+      if etapa is None:
+        print("Skipping sheet {}".format(sheet_name))
+        continue
+      else:
+        print("Important etapa {}".format(etapa))
+
       excel_data_df = pandas.read_excel(filename, sheet_name=sheet_name, )
 
       excel_data_df.columns = [ "classe", "alumne" ]
@@ -40,6 +62,11 @@ class Command(BaseCommand):
         if type(row['classe']) == str and row['classe']:
           print("== "+row['classe']+' '+sheet_name)
           current_classe = row['classe']
+
+          if not dry_run:
+            new_classe = Classe(nom=row['classe'], curs=curs, etapa=etapa, delegat=admin_user)
+            new_classe.save()
+
           continue
 
         if type(row['alumne']) == str and row['alumne']:
@@ -53,10 +80,34 @@ class Command(BaseCommand):
           # print("?="+nom_filtered_alumne)
           alumnes = Alumne.objects.annotate(full_name=Concat('nom_unaccented', V(' '), 'cognom1_unaccented', V(' '), 'cognom2_unaccented', )).filter(full_name__icontains=nom_filtered_alumne)
           if len(alumnes) == 0:
-            print(" X? "+nom_filtered_alumne)
+            cognoms = nom_filtered_alumne_parts[0].split(' ')
+            if len(cognoms) == 1:
+              cognom1 = cognoms[0]
+              cognom2 = ''
+            elif len(cognoms) == 2:
+              cognom1 = cognoms[0]
+              cognom2 = cognoms[1]
+            else:
+              cognom1 = cognoms[0]
+              cognom2 = ' '.join(cognoms[1:])
+
+            print("New student: "+nom_filtered_alumne_parts[1].strip()+'/'+cognom1+'/'+cognom2)
+
+            if not dry_run:
+              alumne = Alumne(nom=nom_filtered_alumne_parts[1].strip(), cognom1=cognom1, cognom2=cognom2)
+              alumne.save()
+              alumne.classes.add(new_classe)
+              alumne.save()
+
           elif len(alumnes) == 1:
-            print("   "+alumnes[0].print_name)
+            print("Promoting student: "+alumnes[0].print_name)
+
+            if not dry_run:
+              alumnes[0].classes.add(new_classe)
+              alumnes[0].save()
+
           else:
+            print("Skipping due to multiple matches")
             for alumne in alumnes:
               print(" ? "+alumne.print_name)
 
