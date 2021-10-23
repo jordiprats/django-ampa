@@ -246,7 +246,7 @@ class Alumne(models.Model):
 
     def _get_classe_actual(self):
         try:
-            return self.classes.order_by('curs')[0]
+            return self.classes.order_by('-curs').first()
         except:
             return None
 
