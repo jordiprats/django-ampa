@@ -172,7 +172,7 @@ def add_alumne_classe(request, classe_id, alumne_id):
 @user_passes_test(lambda u: u.is_staff)
 def search_alumne_by_phone(request):
     try:
-        phone = request.GET.get('q', '')
+        phone = request.GET.get('q', '').strip()
         if phone:
             llistat_alumnes = Alumne.objects.filter(Q(telf_tutor1__icontains=phone) | Q(telf_tutor1__icontains=phone) )
         else:
@@ -200,7 +200,7 @@ def add_classe_search_alumne(request, classe_id=None):
         else:
             classe_full_nom = None
         
-        query = request.GET.get('q', '')
+        query = request.GET.get('q', '').lower().strip()
         if query:
             llistat_alumnes = Alumne.objects.filter(Q(nom_unaccented__icontains=query) | Q(cognom1_unaccented__icontains=query) | Q(cognom2_unaccented__icontains=query))
         else:
