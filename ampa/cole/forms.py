@@ -81,16 +81,21 @@ class ClasseForm(forms.ModelForm):
         }
 
 class StaffClasseForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(StaffClasseForm, self).__init__(*args, **kwargs)
+        self.fields['delegat'].disabled = True
+        self.fields['subdelegat'].disabled = True
+
     class Meta:
         model = Classe
-        fields = (['nom', 'alias', 'curs', 'etapa', 'delegat', 'subdelegat', 'tutor', 'nom_delegat', 'telefon_delegat', 'email_delegat', 'nom_subdelegat', 'telefon_subdelegat', 'email_subdelegat'])
+        fields = (['nom', 'alias', 'curs', 'etapa', 'tutor', 'nom_delegat', 'telefon_delegat', 'email_delegat', 'nom_subdelegat', 'telefon_subdelegat', 'email_subdelegat', 'delegat', 'subdelegat',])
         labels = {
             'nom': 'Classe', 
             'alias': 'Nom de la classe', 
             'curs': 'Curs escolar',
             'etapa': 'Etapa',
-            'delegat': 'Delegat',
-            'subdelegat': 'Subdelegat',
+            'delegat': 'Delegat - Usuari del sistema',
+            'subdelegat': 'Subdelegat - Usuari del sistema',
             'tutor:': 'Nom tutor de la classe', 
             'nom_delegat': 'Nom del delegat', 
             'telefon_delegat': 'Telèfon del delegat', 

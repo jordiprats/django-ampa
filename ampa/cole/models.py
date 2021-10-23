@@ -33,6 +33,18 @@ class User(AbstractUser):
         else:
             return self.email
 
+    def save(self, *args, **kwargs):
+        self.email = self.email.lower().strip()
+        classes_delegat = Classe.objects.filter(email_delegat__iexact=self.email.lower().strip())
+        for classe in classes_delegat:
+            classe.save()
+
+        classes_subdelegat = Classe.objects.filter(email_subdelegat__iexact=self.email.lower().strip())
+        for classe in classes_subdelegat:
+            classe.save()
+        
+        super().save(*args, **kwargs)
+
     class Meta:
         ordering = ['email']
         indexes = [
@@ -153,6 +165,23 @@ class Classe(models.Model):
 
     def __str__(self):
         return self._get_full_nom()
+
+    def save(self, *args, **kwargs):
+        if self.email_delegat:
+            self.email_delegat = self.email_delegat.lower().strip()
+
+            delegat = User.objects.filter(email__iexact=self.email_delegat).first()
+            if delegat:
+                self.delegat = delegat
+
+        if self.email_subdelegat:
+            self.email_subdelegat = self.email_subdelegat.lower().strip()
+        
+            subdelegat = User.objects.filter(email__iexact=self.email_subdelegat).first()
+            if subdelegat:
+                self.subdelegat = subdelegat
+        
+        super().save(*args, **kwargs)
 
     class Meta:
         ordering = ['-curs', 'etapa','nom']
