@@ -19,26 +19,32 @@ def alumne_signup(request):
     try:
         query = request.GET.get('q', '').lower().strip()
         if query:
-            instance = Alumne.objects.annotate(
+            results = Alumne.objects.annotate(
                                     full_name=Concat('nom_unaccented', V(' '), 'cognom1_unaccented', V(' '), 'cognom2_unaccented', )
                                     ).filter(
                                         full_name__iexact=query
                                         )
-            if len(instance) != 1:
+            if len(results) != 1:
                 instance = None
             else:
+                alumne_instance = results[0]
+                form = EditAlumneParesForm(alumne_instance)
+                
                 # make sure the user is not already registered
-                if instance[0].tutor1 or instance[0].tutor2:
-                    instance = None
-                if instance[0].email_tutor1 or instance[0].email_tutor2:
-                    instance = None
-                if instance[0].telf_tutor1 or instance[0].telf_tutor2:
-                    instance = None
+                if alumne_instance.tutor1 or alumne_instance.tutor2:
+                    alumne_instance = None
+                    form = None
+                elif alumne_instance.email_tutor1 or alumne_instance.email_tutor2:
+                    alumne_instance = None
+                    form = None
+                elif alumne_instance.telf_tutor1 or alumne_instance.telf_tutor2:
+                    alumne_instance = None
+                    form = None
         else:
             instance = None
         return render(request, 'alumnes/signup.html', {
-                                                        'form': EditAlumneParesForm(instance=instance.first()) if instance else None,
-                                                        'instance': instance.first() if instance else None, 
+                                                        'form': form,
+                                                        'instance': alumne_instance, 
                                                     })
     except Exception as e:
         # if request.user.is_staff:
