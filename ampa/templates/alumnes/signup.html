@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+{% if instance %}
+
+  {% include 'alumnes/inline_pares_form.html' %}
+
+{% else %}
+
+  <br>
+  <form method="GET">
+      <div class="form-group has-search">
+          <input name="q" type="text" value="" class="form-control" placeholder="Search">
+      </div>
+      <button class="btn btn-primary" type="submit">buscar</button>
+  </form>
+  <br>
+
+{% endif %}
+
+{% endblock %}

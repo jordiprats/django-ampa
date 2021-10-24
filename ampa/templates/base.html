@@ -77,9 +77,6 @@ ul.timeline > li:before {
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-            <!-- <li class="nav-item active">
-              <a class="nav-link" href="{% url 'home' %}">Home</a>
-            </li> -->
             {% if user.is_authenticated %}
             <li class="nav-item active dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -108,6 +105,9 @@ ul.timeline > li:before {
             </li>
             {% else %}
             {% if not is_pdf %}
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'alumne.signup' %}">Registre</a>
+            </li>
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'login' %}">Sign in</a>
             </li>

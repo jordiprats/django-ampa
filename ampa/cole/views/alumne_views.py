@@ -1,7 +1,9 @@
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib.auth import update_session_auth_hash
 from django.core.files.storage import FileSystemStorage
+from django.db.models.functions import Concat
 from django.shortcuts import render, redirect
+from django.db.models import Value as V
 from django.contrib import messages
 from django.conf import settings
 from django.db.models import Q
@@ -11,6 +13,39 @@ from cole.forms import *
 import time
 import sys
 import os
+
+def alumne_signup(request):
+    print("alumne_signup")
+    try:
+        query = request.GET.get('q', '').lower().strip()
+        if query:
+            instance = Alumne.objects.annotate(
+                                    full_name=Concat('nom_unaccented', V(' '), 'cognom1_unaccented', V(' '), 'cognom2_unaccented', )
+                                    ).filter(
+                                        tutor1=None,
+                                        tutor2=None,
+                                        telf_tutor1=None,
+                                        telf_tutor2=None,
+                                        email_tutor1="",
+                                        email_tutor2="",
+                                        full_name__iexact=query
+                                        )
+            if len(instance) != 1:
+                instance = None
+        else:
+            instance = None
+        return render(request, 'alumnes/signup.html', {
+                                                        'form': EditAlumneParesForm(instance=instance.first()) if instance else None,
+                                                        'instance': instance.first() if instance else None, 
+                                                    })
+    except Exception as e:
+        # if request.user.is_staff:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+        print(str(e))
+        messages.error(request, str(e))
+        return redirect('home')
 
 @login_required
 def edit_alumne(request, classe_id, alumne_id=None):

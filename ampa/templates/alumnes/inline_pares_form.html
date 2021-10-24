@@ -1,0 +1,12 @@
+{% load crispy_forms_tags %}
+
+<h1>{{ instance.print_name }}</h1>
+<div class="py-4 px-4 px-md-3 px-lg-4">
+  <form action="{% url 'form.pares.edit.alumne' alumne_id=instance.id %}" class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST" >
+      {% csrf_token %}
+      {{ form | crispy }}
+      <button class="btn btn-primary" type="submit">guardar canvis</button>
+  </form>
+</div>
+<hr>
+<p>Les dades incloses en aquest document podran ser incorporades a un fitxer de dades personals amb la finalitat de gestionar les relacions entre l'AMPA Lestonnac i les famílies. L'AMPA Lestonnac utilitzarà aquestes dades per aquelles activitats que li siguin pròpies i no les cedirà a terceres persones o organismes, tret de les autoritzades al document, sense la seva autorització expressa. En aplicació de la LO 15/1999 i del RD 1332/1994 vostè podrà exercir el seu dret d'accés, rectificació o cancel·lació d'aquestes dades a la Secretaria de l'AMPA.</p>
