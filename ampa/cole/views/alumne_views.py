@@ -22,16 +22,18 @@ def alumne_signup(request):
             instance = Alumne.objects.annotate(
                                     full_name=Concat('nom_unaccented', V(' '), 'cognom1_unaccented', V(' '), 'cognom2_unaccented', )
                                     ).filter(
-                                        tutor1=None,
-                                        tutor2=None,
-                                        telf_tutor1=None,
-                                        telf_tutor2=None,
-                                        email_tutor1="",
-                                        email_tutor2="",
                                         full_name__iexact=query
                                         )
             if len(instance) != 1:
                 instance = None
+            else:
+                # make sure the user is not already registered
+                if instance[0].tutor1 or instance[0].tutor2:
+                    instance = None
+                if instance[0].email_tutor1 or instance[0].email_tutor2:
+                    instance = None
+                if instance[0].telf_tutor1 or instance[0].telf_tutor2:
+                    instance = None
         else:
             instance = None
         return render(request, 'alumnes/signup.html', {
