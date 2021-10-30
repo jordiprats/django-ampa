@@ -495,12 +495,26 @@ def login_builtin_user(request):
             next = None
         user = authenticate(username=request.POST['login'].lower().strip(), password=request.POST['password'])
         if user is not None:
+            if user.is_default_password:
+                max_allowed = datetime.datetime.now() - datetime.timedelta(days=7)
+                if user.last_password_change < max_allowed:
+                    messages.error(request, 'El compte està bloquejat. Si us plau, contacti amb l\'administrador.')
+                    return redirect('home')
+            else:
+                if not user.is_staff:
+                    max_allowed = datetime.datetime.now() - datetime.timedelta(days=400)
+                    if user.last_password_change < max_allowed:
+                        messages.error(request, 'El compte està bloquejat. Si us plau, contacti amb l\'administrador.')
+                        return redirect('home')
+
             login(request, user)
             # update last login
             user.save()
             if next:
                 return redirect(next)
             else:
+                if user.is_default_password:
+                    return redirect('user.password.change')
                 return redirect('home')
         else:
             return render(request, 'login.html', {'message': 'User not found or password invalid'})

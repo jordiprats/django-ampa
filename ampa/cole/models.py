@@ -25,6 +25,9 @@ class User(AbstractUser):
 
     last_login = models.DateTimeField(auto_now=True)
 
+    is_default_password = models.BooleanField(default=False)
+    last_password_change = models.DateTimeField()
+
     def __str__(self):
         if self.name:
             return self.name
@@ -500,5 +503,6 @@ class Entitat(models.Model):
     logo = models.ForeignKey(FileAttachment, on_delete=models.CASCADE, related_name='entitats', blank=True, null=True)
 
     codi_registre = models.CharField(max_length=256, blank=True, null=True, default='')
+    password_default = models.CharField(max_length=256, blank=True, null=True, default='AMPA00')
 
     likable_issues = models.BooleanField(default=False)

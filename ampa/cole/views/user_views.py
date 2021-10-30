@@ -5,6 +5,7 @@ from django.contrib import messages
 
 from cole.forms import *
 
+import datetime
 import sys
 import os
 
@@ -28,7 +29,25 @@ def switch_user(request, user_slug):
         if request.user.is_superuser:
             messages.error(request, str(e))
         return redirect('list.users')   
-
+@user_passes_test(lambda u: u.is_staff)
+def reset_password_all_users(request):
+    if request.method == 'POST':
+        form = AreYouSureForm(request.POST)
+        entitat = Entitat.objects.all().first()
+        if form.is_valid():
+            for user in User.objects.filter(is_staff=False):
+                user.set_password(entitat.password_default)
+                user.is_default_password = True
+                user.last_password_change = datetime.now()
+                user.save()
+            messages.info(request, 'Contrasenyes resetejades')
+        else:
+            messages.error(request, 'Error resetejant les contrasenyes')
+        return redirect('list.users')
+    else:
+        form = AreYouSureForm()
+        list_users = User.objects.filter(is_staff=False)
+        return render(request, 'staff/users/reset_password_all_users.html', {'form': form, 'list_users': list_users})
 
 @user_passes_test(lambda u: u.is_staff)
 def edit_user(request, user_slug):
@@ -100,6 +119,8 @@ def change_password(request, user_slug=None):
                             password_actual = ""
                         if user_instance.check_password(password_actual) or request.user.is_staff:
                             user_instance.set_password(form.data['password1'][0])
+                            user_instance.last_password_change = datetime.now()
+                            user_instance.is_default_password = False
                             user_instance.save()
                             if not request.user.is_staff:
                                 update_session_auth_hash(request, user_instance)
