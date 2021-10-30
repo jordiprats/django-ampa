@@ -34,16 +34,18 @@ class User(AbstractUser):
             return self.email
 
     def save(self, *args, **kwargs):
-        self.email = self.email.lower().strip()
-        classes_delegat = Classe.objects.filter(email_delegat__iexact=self.email.lower().strip())
-        for classe in classes_delegat:
-            classe.save()
-
-        classes_subdelegat = Classe.objects.filter(email_subdelegat__iexact=self.email.lower().strip())
-        for classe in classes_subdelegat:
-            classe.save()
-        
+        self.email = self.email.lower().strip()     
         super().save(*args, **kwargs)
+        try:
+            classes_delegat = Classe.objects.filter(email_delegat__iexact=self.email.lower().strip())
+            for classe in classes_delegat:
+                classe.save()
+
+            classes_subdelegat = Classe.objects.filter(email_subdelegat__iexact=self.email.lower().strip())
+            for classe in classes_subdelegat:
+                classe.save()
+        except:
+            pass
 
     class Meta:
         ordering = ['email']
