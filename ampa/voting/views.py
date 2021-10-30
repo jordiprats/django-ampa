@@ -16,7 +16,7 @@ def home(request):
 
 @login_required
 def list_elections(request):
-    if request.user.is_superuser and request.GET.get('admin', ''):
+    if request.user.is_staff and request.GET.get('admin', ''):
         list_elections_raw = Election.objects.all()
         admin_view = True
     else:

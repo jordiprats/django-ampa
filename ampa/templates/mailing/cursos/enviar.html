@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+{% include 'mailing/show.html' %}
+
+<b>Enviar</b>
+Estas segur que vols programar l'enviament per {{ instance_curs.curs }}? 
+<form style="display: inline" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-success" type="submit">enviar</button>
+</form>
+<form style="display: inline" action="{% url 'edit.curs.mailing' curs_id=instance_curs.id mailing_id=instance_mailing.id %}" method="GET">
+    <button class="btn btn-danger" type="submit">cancelar</button>
+  </form>
+{% endblock %}

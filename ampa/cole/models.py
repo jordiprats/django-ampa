@@ -227,17 +227,25 @@ class Alumne(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     classes = models.ManyToManyField(Classe, related_name='alumnes')
 
+    def _get_cessio_emails(self):
+        emails = []
+        emails += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", self.email_tutor1.lower())
+        emails += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", self.email_tutor2.lower())
+
+        return emails
+
+    cessio_emails = property(_get_cessio_emails)
+
     def _get_mailing_emails(self):
         emails = []
-        if self.tutor1_cessio and self.validat:
+        if self.tutor1_cessio:
             emails += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", self.email_tutor1.lower())
         
-        if self.tutor2_cessio and self.validat:
+        if self.tutor2_cessio:
             emails += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", self.email_tutor2.lower())
 
         return emails
-    
-    emails = property(_get_mailing_emails)
+
     mailing_emails = property(_get_mailing_emails)
 
     def _get_print_name(self):
@@ -394,14 +402,7 @@ class Mailing(models.Model):
 
     def _get_recipient_emails(self):
         mailing_emails = set()
-        if not self.curs:
-            classes = self.curs.classes.all()
-        elif not self.etapa:
-            classes = self.etapa.classes.all()
-        elif not self.curs:
-            classes = self.curs.classes.all()
-        else:
-            classes = self.classes.all()
+        classes = self.classes.all()
         for classe in classes:
             for alumne in classe.alumnes.all():
                 for email in alumne.mailing_emails:

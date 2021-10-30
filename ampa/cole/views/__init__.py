@@ -52,7 +52,7 @@ def show_classe(request, classe_id):
             
 @login_required
 def list_classe_mailings(request, classe_id):
-    if request.user.is_superuser:
+    if request.user.is_staff:
         instance_classe = Classe.objects.filter(id=classe_id)[0]
     else:
         instance_classe = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
@@ -64,7 +64,7 @@ def list_classe_mailings(request, classe_id):
 @login_required
 def enviar_mailing_classe(request, classe_id, mailing_id):
     try:
-        if request.user.is_superuser:
+        if request.user.is_staff:
             instance_classe = Classe.objects.filter(id=classe_id)[0]
         else:
             instance_classe = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
@@ -92,7 +92,7 @@ def enviar_mailing_classe(request, classe_id, mailing_id):
 @login_required
 def show_mailing_classe(request, classe_id, mailing_id):
     try:
-        if request.user.is_superuser:
+        if request.user.is_staff:
             instance_classe = Classe.objects.filter(id=classe_id)[0]
         else:
             instance_classe = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
@@ -117,7 +117,7 @@ def show_mailing_classe(request, classe_id, mailing_id):
 @login_required
 def editar_mailing_classe(request, classe_id, mailing_id=None):
     try:
-        if request.user.is_superuser:
+        if request.user.is_staff:
             instance_classe = Classe.objects.filter(id=classe_id)[0]
         else:
             instance_classe = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
@@ -202,7 +202,8 @@ def edit_classe(request, classe_id=None):
         if classe_id:
             classe_instance = Classe.objects.filter(id=classe_id)[0]
         else:
-            classe_instance = Classe(delegat=request.user)
+            curs_instance = Curs.objects.filter(modalitat=None)[0]
+            classe_instance = Classe(delegat=request.user, curs=curs_instance)
         if request.method == 'POST':
             if request.user.is_staff:
                 form = StaffClasseForm(request.POST, instance=classe_instance)
@@ -234,7 +235,7 @@ def edit_classe(request, classe_id=None):
 def delete_classe(request, classe_id):
     try:
         if request.user.is_authenticated:
-            if request.user.is_superuser:
+            if request.user.is_staff:
                 instance_classe = Classe.objects.filter(id=classe_id)[0]
             else:
                 instance_classe = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
@@ -261,7 +262,7 @@ def list_classes(request, curs_id=None):
     if request.user.is_authenticated:
 
         if not curs_id:
-            curs_instance = Curs.objects.first()
+            curs_instance = Curs.objects.filter(modalitat=None).first()
             curs_id = curs_instance.id
 
         if request.GET.get('admin', 'NOTSET') == 'NOTSET' and request.user.is_staff:
@@ -433,7 +434,7 @@ def copiar_classe(request, classe_id):
 def exportar_classe(request, classe_id):
     try:
         if request.user.is_authenticated:
-            if request.user.is_superuser:
+            if request.user.is_staff:
                 instance_classe = Classe.objects.filter(id=classe_id)[0]
             else:
                 instance_classe = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
@@ -464,15 +465,21 @@ def exportar_classe(request, classe_id):
         print(str(e))
         return redirect('home')    
 
-def are_you_sure_email(request, classe_id):
+def are_you_sure_cessio_dades_email(request, classe_id):
     try:
         if request.user.is_authenticated:
-            instance_classe = Classe.objects.filter(id=classe_id, ultim_email=None, ready_to_send=False)[0]
+            if request.user.is_staff:
+                instance_classe = Classe.objects.filter(id=classe_id)[0]
+            else:
+                instance_classe = Classe.objects.filter(id=classe_id, ultim_email=None, ready_to_send=False)[0]
 
             if request.method == 'POST':
                 form = AreYouSureForm(request.POST)
                 if form.is_valid():
                     messages.info(request, 'Programat l\'enviament de emails')
+
+                    if request.user.is_staff:
+                        instance_classe.ultim_email = None
 
                     instance_classe.ready_to_send = True
                     instance_classe.save()

@@ -17,9 +17,10 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('alumne_id', nargs='?', default=None)
         parser.add_argument('--email', nargs='?', default=None)
+        parser.add_argument('--dry-run', action='store_true')
 
     # funció genèrica de emails
-    def send_html_email(self, subject, html_message, email_from, email_reply_to, recipient_list, attachments={}):
+    def send_html_email(self, subject, html_message, email_from, email_reply_to, recipient_list, attachments={}, dry_run=False):
 
         text_maker = html2text.HTML2Text()
         text_maker.ignore_links = True
@@ -42,14 +43,17 @@ class Command(BaseCommand):
             attachment_fd = open(attachments[key], 'rb')
             mail.attach(key, attachment_fd.read(), mimetype)
 
-        return mail.send()
+        if dry_run:
+            print("enviant: "+str(recipient_list))
+        else:
+            return mail.send()
 
     # cessió de dades
-    def send_email_cessio_dades_alumne(self, alumne, to=None):
+    def send_email_cessio_dades_alumne(self, alumne, to=None, dry_run=False):
         if to:
             emails = re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", to.lower())
         else:
-            emails = alumne.emails
+            emails = alumne.cessio_emails
         
         headers = { 'Reply-To': alumne.classe.delegat.email }
 
@@ -58,9 +62,11 @@ class Command(BaseCommand):
         email_from = settings.AMPA_DEFAULT_FROM
         recipient_list = emails
 
-        self.send_html_email(subject, html_message, email_from, alumne.classe.delegat.email, recipient_list)       
+        self.send_html_email(subject, html_message, email_from, alumne.classe.delegat.email, recipient_list, dry_run=dry_run)       
 
     def handle(self, *args, **options):
+        dry_run = options['dry_run']
+
         if options['alumne_id']:
             try:
                 print(options['alumne_id'])
@@ -114,7 +120,8 @@ class Command(BaseCommand):
                                                 email_from=email_from,
                                                 email_reply_to=email_reply_to,
                                                 recipient_list= [ email ],
-                                                attachments=mailing_attachments
+                                                attachments=mailing_attachments,
+                                                dry_run=dry_run
                                             )
                         email.sent = True
                     except Exception as e:
@@ -133,8 +140,8 @@ class Command(BaseCommand):
                 try:
                     print("classe: "+classe.nom)
                     for alumne in classe.alumnes.all():
-                        if alumne.emails:
-                            self.send_email_cessio_dades_alumne(alumne)
+                        if alumne.cessio_emails:
+                            self.send_email_cessio_dades_alumne(alumne, dry_run=dry_run)
                     classe.ready_to_send = False
                     classe.ultim_email = datetime.datetime.now()
                     classe.save()

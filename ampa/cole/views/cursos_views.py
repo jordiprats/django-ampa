@@ -66,7 +66,7 @@ def edit_curs(request, curs_id=None):
 @user_passes_test(lambda u: u.is_staff)
 def list_curs_mailings(request, curs_id):
     try:
-        curs_instance = Curs.objects.filter(id=curs_id).first()
+        curs_instance = Curs.objects.filter(id=curs_id, modalitat=None).first()
 
         list_mailings = Mailing.objects.filter(curs__id=curs_id)
 
@@ -149,16 +149,18 @@ def show_mailing_curs(request, curs_id, mailing_id):
             print(str(e))
         return redirect('list.curs.mailings', curs_id=curs_id)
 
-# TODO:
 @user_passes_test(lambda u: u.is_staff)
-def enviar_mailing_curs(request, classe_id, mailing_id):
-    try:
-        if request.user.is_superuser:
-            instance_classe = Classe.objects.filter(id=classe_id)[0]
-        else:
-            instance_classe = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
-        
-        instance_mailing = Mailing.objects.filter(classes__id=instance_classe.id)[0]
+def enviar_mailing_curs(request, curs_id, mailing_id):
+    try:      
+        instance_mailing = Mailing.objects.filter(id=mailing_id)[0]
+
+        instance_curs = Curs.objects.filter(id=curs_id).first()
+
+        classes = instance_curs.classes.all()
+
+        for classe_instance in classes:
+            instance_mailing.classes.add(classe_instance)
+        instance_mailing.save()
         
         if request.method == 'POST':
             form = AreYouSureForm(request.POST)
@@ -167,13 +169,13 @@ def enviar_mailing_curs(request, classe_id, mailing_id):
                 instance_mailing.save()
                 messages.info(request, 'e-Mail programat per enviar-se')
 
-                return redirect('list.classe.mailings', classe_id=instance_classe.id)
+                return redirect('list.curs.mailings', curs_id=curs_id)
             else:
-                messages.error(request, 'Error eliminant l\'alumne')
+                messages.error(request, 'Programant l\'enviament')
         else:
             form = AreYouSureForm(request.GET)
-        return render(request, 'mailing/classes/enviar.html', { 'instance_mailing': instance_mailing, 'instance_classe': instance_classe })
+        return render(request, 'mailing/cursos/enviar.html', { 'instance_mailing': instance_mailing, 'instance_curs': instance_curs })
 
     except Exception as e:
         print(str(e))
-        return redirect('show.classe', classe_id=classe_id)
+        return redirect('list.curs.mailings', curs_id=curs_id)

@@ -17,9 +17,10 @@ def list_etapes(request):
 @user_passes_test(lambda u: u.is_staff)
 def show_etapa(request, etapa_id):
     try:
+        curs = Curs.objects.filter(modalitat=None).first()
         etapa_instance = Etapa.objects.filter(id=etapa_id)[0]
 
-        return render(request, 'etapes/show.html', { 'content': 'overview', 'etapa_instance': etapa_instance, 'list_classes': etapa_instance.classes.all })
+        return render(request, 'etapes/show.html', { 'content': 'overview', 'etapa_instance': etapa_instance, 'list_classes': etapa_instance.classes.filter(curs=curs) })
     except Exception as e:
         if request.user.is_staff:
             print(str(e))
@@ -109,7 +110,6 @@ def edit_mailing_etapa(request, etapa_id, mailing_id=None):
                                                                         'image_hash': instance_mailing.images_hash,
                                                                         'attachment_hash': instance_mailing.attachment_hash
                                                                     })
-            return redirect('list.etapa.mailings', etapa_id=etapa_id)
         else:
             form = ClasseMailingForm(instance=instance_mailing)
         return render(request, 'mailing/classes/edit.html', { 
@@ -134,7 +134,7 @@ def show_mailing_etapa(request, etapa_id, mailing_id):
         
         instance_mailing = Mailing.objects.filter(etapa__id=etapa_id)[0]
         
-        return render(request, 'mailing/classes/show.html', { 
+        return render(request, 'mailing/etapa/show.html', { 
                                                                 'instance_mailing': instance_mailing, 
                                                                 'instance_etapa': instance_etapa,
                                                                 'image_hash': instance_mailing.images_hash,
@@ -149,16 +149,20 @@ def show_mailing_etapa(request, etapa_id, mailing_id):
             print(str(e))
         return redirect('list.etapa.mailings', etapa_id=etapa_id)
 
-# TODO:
 @user_passes_test(lambda u: u.is_staff)
-def enviar_mailing_etapa(request, classe_id, mailing_id):
+def enviar_mailing_etapa(request, etapa_id, mailing_id):
     try:
-        if request.user.is_superuser:
-            instance_classe = Classe.objects.filter(id=classe_id)[0]
-        else:
-            instance_classe = Classe.objects.filter(id=classe_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user))[0]
+        curs = Curs.objects.filter(modalitat=None).first()
         
-        instance_mailing = Mailing.objects.filter(classes__id=instance_classe.id)[0]
+        instance_etapa = Etapa.objects.filter(id=etapa_id)[0]
+        
+        classes = instance_etapa.classes.filter(curs=curs)
+
+        instance_mailing = Mailing.objects.filter(id=mailing_id)[0]
+
+        for classe_instance in classes:
+            instance_mailing.classes.add(classe_instance)
+        instance_mailing.save()
         
         if request.method == 'POST':
             form = AreYouSureForm(request.POST)
@@ -167,13 +171,13 @@ def enviar_mailing_etapa(request, classe_id, mailing_id):
                 instance_mailing.save()
                 messages.info(request, 'e-Mail programat per enviar-se')
 
-                return redirect('list.classe.mailings', classe_id=instance_classe.id)
+                return redirect('list.etapa.mailings', etapa_id=instance_etapa.id)
             else:
-                messages.error(request, 'Error eliminant l\'alumne')
+                messages.error(request, 'Programent enviament')
         else:
             form = AreYouSureForm(request.GET)
-        return render(request, 'mailing/classes/enviar.html', { 'instance_mailing': instance_mailing, 'instance_classe': instance_classe })
+        return render(request, 'mailing/etapes/enviar.html', { 'instance_mailing': instance_mailing, 'instance_etapa': instance_etapa })
 
     except Exception as e:
         print(str(e))
-        return redirect('show.classe', classe_id=classe_id)
+        return redirect('list.etapa.mailings', etapa_id=instance_etapa.id)

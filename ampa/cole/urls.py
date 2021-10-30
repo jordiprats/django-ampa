@@ -86,7 +86,7 @@ urlpatterns = [
     path('alumnes/<alumne_id>/extra/<extrainfo_id>/edit', views.edit_extrainfo_alumne, name='edit.extrainfo.alumne'),
 
     # general mailing
-    path('mailing/cessiodades/<classe_id>', views.are_you_sure_email, name='send.cessio.dades.email'),
+    path('mailing/cessiodades/<classe_id>', views.are_you_sure_cessio_dades_email, name='send.cessio.dades.email'),
     path('mailing/<mailing_id>/attachment', views.afegir_attachment_mailing_classe, name='add.attachment.mailing'),
     path('mailing/<mailing_id>/attachment/<attachment_id>/remove', views.remove_attachment_mailing, name='remove.attachment.mailing'),
 

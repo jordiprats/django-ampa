@@ -151,7 +151,7 @@ class EditAlumneParesForm(ModelForm):
         self.fields['cognom2'].disabled = True
     class Meta:
         model = Alumne
-        fields = (['nom', 'cognom1', 'cognom2', 'naixement', 'tutor1', 'telf_tutor1', 'email_tutor1', 'tutor1_cessio', 'tutor2', 'telf_tutor2', 'email_tutor2', 'tutor2_cessio', 'validat' ])
+        fields = (['nom', 'cognom1', 'cognom2', 'naixement', 'tutor1', 'telf_tutor1', 'email_tutor1', 'tutor1_cessio', 'tutor2', 'telf_tutor2', 'email_tutor2', 'tutor2_cessio', ])
         widgets = {
             'naixement': forms.DateInput(format=('%Y-%m-%d'), attrs={"type": 'date'}),
         }
@@ -169,7 +169,6 @@ class EditAlumneParesForm(ModelForm):
             'email_tutor2': 'eMail tutor 2',
             'tutor2_cessio': 'Cessió de dades del segon tutor', 
             'emails': 'emails', 
-            'validat': 'Firma de conformitat amb les dades'
         }
 
 def validate_user_email_doesnt_exists(value):
