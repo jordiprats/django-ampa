@@ -7,7 +7,7 @@
 <div class="float-right">
     {% if user_admin %}
       {% if admin_view %}
-          <a href="{% url 'list.classes' %}">veure com usuari</a>
+          <a href="{% url 'list.classes' %}?admin=0">veure com usuari</a>
       {% else %}
           <a href="{% url 'list.classes' %}?admin=1">veure com admin</a>
       {% endif %}

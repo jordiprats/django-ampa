@@ -1,11 +1,11 @@
 from django.contrib.auth import login, logout, authenticate
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 from django.views.decorators.http import require_GET
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate
 from django.utils.text import slugify
-from django.http import HttpResponse
 from django.contrib import messages
 from django.conf import settings
 from django.db.models import Q
@@ -255,10 +255,15 @@ def delete_classe(request, classe_id):
         print(str(e))
         return redirect('show.classe', classe_id=classe_id)
 
+@login_required
 def list_classes(request, curs_id=None):
     if request.user.is_authenticated:
+
+        if request.GET.get('admin', 'NOTSET') == 'NOTSET' and request.user.is_staff:
+            url = reverse('list.classes')
+            return HttpResponseRedirect(url+'?admin=1')
         # TODO: refactor
-        if request.user.is_staff and request.GET.get('admin', ''):
+        if request.user.is_staff and request.GET.get('admin', '')=='1':
             if curs_id:
                 list_classes = Classe.objects.filter(curs__id=curs_id).order_by('curs', 'etapa', 'nom')
             else:
