@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import update_session_auth_hash, login
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.utils import timezone
 
 from cole.forms import *
 
@@ -80,6 +81,19 @@ def edit_user(request, user_slug):
 @user_passes_test(lambda u: u.is_staff)
 def users_list(request):
     list_users = User.objects.all()
+
+    for user in list_users:
+        if user.is_default_password:
+            max_allowed = timezone.now() - datetime.timedelta(days=7)
+            if user.last_password_change < max_allowed:
+                user.is_locked = True
+                user.save()
+        else:
+            if not user.is_staff:
+                max_allowed = timezone.now() - datetime.timedelta(days=400)
+                if user.last_password_change < max_allowed:
+                    user.is_locked = True
+                    user.save()
     return render(request, 'staff/users/list.html', {
                                                       'list_users': list_users, 
                                                     })
@@ -121,6 +135,8 @@ def change_password(request, user_slug=None):
                             user_instance.set_password(form.data['password1'][0])
                             user_instance.last_password_change = datetime.datetime.now()
                             user_instance.is_default_password = False
+                            if request.user.is_staff:
+                                user_instance.is_locked = False
                             user_instance.save()
                             if not request.user.is_staff:
                                 update_session_auth_hash(request, user_instance)

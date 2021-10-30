@@ -28,6 +28,8 @@ class User(AbstractUser):
     is_default_password = models.BooleanField(default=False)
     last_password_change = models.DateTimeField(default=None, blank=True, null=True)
 
+    is_locked = models.BooleanField(default=False)
+
     def __str__(self):
         if self.name:
             return self.name
