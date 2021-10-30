@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 
-import datetime
+from datetime import datetime
 
 def forward(apps, schema_editor):
     User = apps.get_model("cole", "User")
@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='last_password_change',
-            field=models.DateTimeField(default=None),
+            field=models.DateTimeField(blank=True, default=None, null=True),
         ),
         migrations.RunPython(forward)
     ]

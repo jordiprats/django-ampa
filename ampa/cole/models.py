@@ -26,7 +26,7 @@ class User(AbstractUser):
     last_login = models.DateTimeField(auto_now=True)
 
     is_default_password = models.BooleanField(default=False)
-    last_password_change = models.DateTimeField(default=None)
+    last_password_change = models.DateTimeField(default=None, blank=True, null=True)
 
     def __str__(self):
         if self.name:

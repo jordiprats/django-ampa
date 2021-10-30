@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate
 from django.utils.text import slugify
 from django.contrib import messages
+from django.utils import timezone
 from django.conf import settings
 from django.db.models import Q
 from pathlib import Path
@@ -496,13 +497,13 @@ def login_builtin_user(request):
         user = authenticate(username=request.POST['login'].lower().strip(), password=request.POST['password'])
         if user is not None:
             if user.is_default_password:
-                max_allowed = datetime.datetime.now() - datetime.timedelta(days=7)
+                max_allowed = timezone.now() - datetime.timedelta(days=7)
                 if user.last_password_change < max_allowed:
                     messages.error(request, 'El compte està bloquejat. Si us plau, contacti amb l\'administrador.')
                     return redirect('home')
             else:
                 if not user.is_staff:
-                    max_allowed = datetime.datetime.now() - datetime.timedelta(days=400)
+                    max_allowed = timezone.now() - datetime.timedelta(days=400)
                     if user.last_password_change < max_allowed:
                         messages.error(request, 'El compte està bloquejat. Si us plau, contacti amb l\'administrador.')
                         return redirect('home')

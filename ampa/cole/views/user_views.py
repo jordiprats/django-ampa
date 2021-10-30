@@ -18,8 +18,8 @@ def switch_user(request, user_slug):
             form = AreYouSureForm(request.POST)
             if form.is_valid():
                 login(request, user_instance)
-                return redirect('home')
                 messages.info(request, 'Canvi d\'usuari completat')
+                return redirect('home')
             else:
                 messages.error(request, 'Error fent el canvi d\'usuari')
         else:
@@ -38,7 +38,7 @@ def reset_password_all_users(request):
             for user in User.objects.filter(is_staff=False):
                 user.set_password(entitat.password_default)
                 user.is_default_password = True
-                user.last_password_change = datetime.now()
+                user.last_password_change = datetime.datetime.now()
                 user.save()
             messages.info(request, 'Contrasenyes resetejades')
         else:
@@ -119,7 +119,7 @@ def change_password(request, user_slug=None):
                             password_actual = ""
                         if user_instance.check_password(password_actual) or request.user.is_staff:
                             user_instance.set_password(form.data['password1'][0])
-                            user_instance.last_password_change = datetime.now()
+                            user_instance.last_password_change = datetime.datetime.now()
                             user_instance.is_default_password = False
                             user_instance.save()
                             if not request.user.is_staff:
