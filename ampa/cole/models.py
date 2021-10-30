@@ -23,6 +23,8 @@ class User(AbstractUser):
     name = models.CharField(max_length=256, blank=True, null=True, default='')
     representant = models.ForeignKey('peticions.Representant', on_delete=models.SET_NULL, related_name='users', default=None, blank=True, null=True)
 
+    last_login = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         if self.name:
             return self.name

@@ -487,6 +487,8 @@ def login_builtin_user(request):
         user = authenticate(username=request.POST['login'].lower().strip(), password=request.POST['password'])
         if user is not None:
             login(request, user)
+            # update last login
+            user.save()
             if next:
                 return redirect(next)
             else:
