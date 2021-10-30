@@ -259,6 +259,10 @@ def delete_classe(request, classe_id):
 def list_classes(request, curs_id=None):
     if request.user.is_authenticated:
 
+        if not curs_id:
+            curs_instance = Curs.objects.first()
+            curs_id = curs_instance.id
+
         if request.GET.get('admin', 'NOTSET') == 'NOTSET' and request.user.is_staff:
             url = reverse('list.classes')
             return HttpResponseRedirect(url+'?admin=1')
