@@ -23,10 +23,6 @@ class User(AbstractUser):
     name = models.CharField(max_length=256, blank=True, null=True, default='')
     representant = models.ForeignKey('peticions.Representant', on_delete=models.SET_NULL, related_name='users', default=None, blank=True, null=True)
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.username, allow_unicode=False)
-        super().save(*args, **kwargs)
-
     def __str__(self):
         if self.name:
             return self.name
@@ -35,13 +31,14 @@ class User(AbstractUser):
 
     def save(self, *args, **kwargs):
         self.email = self.email.lower().strip()     
+        self.slug = slugify(self.username, allow_unicode=False)
         super().save(*args, **kwargs)
         try:
-            classes_delegat = Classe.objects.filter(email_delegat__iexact=self.email.lower().strip())
+            classes_delegat = Classe.objects.filter(email_delegat__iexact=self.email)
             for classe in classes_delegat:
                 classe.save()
 
-            classes_subdelegat = Classe.objects.filter(email_subdelegat__iexact=self.email.lower().strip())
+            classes_subdelegat = Classe.objects.filter(email_subdelegat__iexact=self.email)
             for classe in classes_subdelegat:
                 classe.save()
         except:

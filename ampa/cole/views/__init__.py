@@ -484,7 +484,7 @@ def login_builtin_user(request):
         next = request.POST.get('next', None)
         if next and '://' in next:
             next = None
-        user = authenticate(username=request.POST['login'].lower(), password=request.POST['password'])
+        user = authenticate(username=request.POST['login'].lower().strip(), password=request.POST['password'])
         if user is not None:
             login(request, user)
             if next:
