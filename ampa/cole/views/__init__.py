@@ -521,8 +521,11 @@ def signup(request):
             form.save()
             username = form.cleaned_data.get('email').lower()
             raw_password = form.cleaned_data.get('password1')
+            if request.user.is_authenticated:
+                if request.user.is_staff:
+                    return redirect('home')
             user = authenticate(username=username, password=raw_password)
-            login(request, user,backend='cole.backends.EmailBackend')
+            login(request, user, backend='cole.backends.EmailBackend')
             return redirect('home')
     else:
         form = WIUserCreationForm()

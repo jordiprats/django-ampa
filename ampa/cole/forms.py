@@ -181,8 +181,9 @@ class WIUserCreationForm(UserCreationForm):
 
     class Meta:
         model = get_user_model()
-        fields = ("email", "password1", "password2", "invite")
+        fields = ("name", "email", "password1", "password2", "invite")
         labels = {
+            "name": "Nom",
             "email": "email",
             "invite": "codi d'activació",
         }
@@ -191,6 +192,7 @@ class WIUserCreationForm(UserCreationForm):
         if self.cleaned_data["invite"] == config.codi_registre:
             user = super(WIUserCreationForm, self).save(commit=False)
             user.username = user.email = self.cleaned_data["email"].lower()
+            user.name = self.cleaned_data["name"]
             if commit:
                 user.save()
             return user
