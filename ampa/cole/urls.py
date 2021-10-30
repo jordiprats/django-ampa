@@ -10,6 +10,7 @@ urlpatterns = [
     # user management
     path('user/settings', views.user_settings, name='user.settings'),
     path('user/password/change', views.change_password, name='user.password.change'),
+    path('user/<user_slug>/password/change', views.change_password, name='staff.user.password.change'),
     
     # path('user/password/change/status', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
     # path('user/password/reset', auth_views.PasswordResetView.as_view(), name='password_reset'),

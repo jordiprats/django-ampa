@@ -80,17 +80,29 @@ def user_settings(request):
     return render(request, 'users/settings.html', { 'user': request.user, 'form': form })    
 
 @login_required
-def change_password(request):
+def change_password(request, user_slug=None):
     try:
         if request.user.is_authenticated:
+            if user_slug and request.user.is_staff:
+                user_instance = User.objects.filter(slug=user_slug).first()
+            else:
+                user_instance = request.user
             if request.method == 'POST':
-                form = PasswordChangeForm(request.POST)
+                if request.user.is_staff:
+                    form = StaffPasswordChangeForm(request.POST)
+                else:
+                    form = PasswordChangeForm(request.POST)
                 if form.is_valid():
                     try:
-                        if request.user.check_password(form.data['password_actual'][0]):
-                            request.user.set_password(form.data['password1'][0])
-                            request.user.save()
-                            update_session_auth_hash(request, request.user)
+                        try:
+                            password_actual = form.data['password_actual'][0]
+                        except:
+                            password_actual = ""
+                        if user_instance.check_password(password_actual) or request.user.is_staff:
+                            user_instance.set_password(form.data['password1'][0])
+                            user_instance.save()
+                            if not request.user.is_staff:
+                                update_session_auth_hash(request, user_instance)
                             messages.info(request, 'Contrasenya actualitzada')
                             return redirect('home')
                         else:
@@ -101,7 +113,10 @@ def change_password(request):
                 else:
                     messages.error(request, 'Error al canviar la contrasenya')
             else:
-                form = PasswordChangeForm(request.GET)
+                if request.user.is_staff:
+                    form = StaffPasswordChangeForm(request.GET)
+                else:
+                    form = PasswordChangeForm(request.GET)
             return render(request, 'users/password_change.html', { 'form': form } )
  
     except Exception as e:

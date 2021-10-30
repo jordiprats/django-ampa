@@ -23,6 +23,11 @@
         {% csrf_token %}
 
         {{ form.as_p }}
+
+        <ul>
+            <li><a href="{% url 'staff.user.password.change' user_slug=user_instance.slug %}">Canviar contrasenya</a></li>
+        </ul>
+
         <br>
         <button class="btn btn-primary" type="submit">guardar</button>
     </form>
