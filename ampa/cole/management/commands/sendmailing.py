@@ -65,7 +65,10 @@ class Command(BaseCommand):
         self.send_html_email(subject, html_message, email_from, alumne.classe.delegat.email, recipient_list, dry_run=dry_run)       
 
     def handle(self, *args, **options):
-        dry_run = options['dry_run']
+        try:
+            dry_run = options['dry_run']
+        except:
+            dry_run = False
 
         # TODO: locking for multi instance
 
