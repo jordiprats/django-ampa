@@ -63,6 +63,8 @@ class Command(BaseCommand):
             emails = re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", to.lower())
         else:
             emails = alumne.cessio_emails
+
+        print(str(emails))
         
         headers = { 'Reply-To': alumne.classe.delegat.email }
 
@@ -72,6 +74,7 @@ class Command(BaseCommand):
         recipient_list = emails
 
         for email in recipient_list:
+            print('Sending email to: '+email)
             self.send_html_email(subject, html_message, email_from, alumne.classe.delegat.email, [ email ], dry_run=dry_run)       
 
     def handle(self, *args, **options):
@@ -169,10 +172,9 @@ class Command(BaseCommand):
 
             for classe in Classe.objects.filter(ready_to_send=True, ultim_email=None):
                 try:
-                    print("classe: "+classe.nom)
+                    print("classe: "+classe.nom+" "+classe.etapa+" "+classe.curs)
                     for alumne in classe.alumnes.all():
-                        if alumne.cessio_emails:
-                            self.send_email_cessio_dades_alumne(alumne, dry_run=dry_run)
+                        self.send_email_cessio_dades_alumne(alumne, dry_run=dry_run)
                     classe.ready_to_send = False
                     classe.ultim_email = datetime.datetime.now()
                     classe.save()
