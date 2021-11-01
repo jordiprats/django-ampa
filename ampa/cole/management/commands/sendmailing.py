@@ -25,7 +25,8 @@ class Command(BaseCommand):
         print('Sending email to: '+str(recipient_list))
         print('Subject: '+subject)
         print('From: '+email_from)
-        print('Reply-To: '+email_reply_to)
+        if email_reply_to:
+            print('Reply-To: '+email_reply_to)
         print('Attachments: '+str(attachments))
 
         text_maker = html2text.HTML2Text()
@@ -111,8 +112,8 @@ class Command(BaseCommand):
 
                 print(str(mailing_attachments))
 
-                for email in mailing.recipient_list:
-                    print(email)
+                for each_email in mailing.recipient_list:
+                    print(each_email)
 
                     footer_html = '<br><br>Per gestionar les comunicacions que voleu rebre:<br>'
                     for manual_unsubscribe_link in mailing.get_manual_unsubscribe_links(email):
@@ -120,19 +121,19 @@ class Command(BaseCommand):
 
                     try:
                         # si el email ja l'haviem provat, skip
-                        if EmailSent.objects.filter(mailing=mailing, email=email)[0]:
+                        if EmailSent.objects.filter(mailing=mailing, email=each_email)[0]:
                             continue
                     except:
                         pass
 
-                    email = EmailSent(mailing=mailing, email=email)
+                    email = EmailSent(mailing=mailing, email=each_email)
                     try:
                         self.send_html_email(
                                                 subject=mailing.subject, 
                                                 html_message=mailing.html_message+footer_html,
                                                 email_from=email_from,
                                                 email_reply_to=email_reply_to,
-                                                recipient_list= [ email ],
+                                                recipient_list= [ each_email ],
                                                 attachments=mailing_attachments,
                                                 dry_run=dry_run
                                             )
