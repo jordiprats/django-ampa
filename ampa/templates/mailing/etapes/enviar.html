@@ -10,9 +10,9 @@
 Estas segur que vols programar l'enviament per l'etapa {{ instance_etapa.nom }}? 
 
 {% if instance_mailing.nomes_delegats %}
-<h2 class="text-danger">Aquest email serà enviat a tots els pares de la classe.</h2>
+<h2 class="text-danger"><i class="fas fa-user-tie"></i> Aquest email serà enviat NOMÉS als delegats <i class="fas fa-user-tie"></i></h2>
 {% else %}
-<h2 class="text-danger">Aquest email serà enviat a tots els pares</h2>
+<h2 class="text-danger"><i class="fas fa-users"></i> Aquest email serà enviat a TOTS els pares <i class="fas fa-users"></i></h2>
 {% endif %}
 
 <form style="display: inline" method="POST">
