@@ -52,7 +52,17 @@ class EtapaForm(forms.ModelForm):
             'ordre': 'Ordre de la etapa'
         }
 
-class ClasseMailingForm(forms.ModelForm):
+class StaffMailingForm(forms.ModelForm):
+    class Meta:
+        model = Mailing
+        fields = (['subject', 'nomes_delegats', 'html_message'])
+        labels = {
+            'subject': 'Asumpte', 
+            'nomes_delegats': 'Enviar només als delegats',
+            'html_message': 'Missatge', 
+        }
+
+class UserMailingForm(forms.ModelForm):
     class Meta:
         model = Mailing
         fields = (['subject', 'html_message'])

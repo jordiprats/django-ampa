@@ -67,6 +67,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         dry_run = options['dry_run']
 
+        # TODO: locking for multi instance
+
         if options['alumne_id']:
             try:
                 print(options['alumne_id'])
@@ -82,10 +84,10 @@ class Command(BaseCommand):
                 if settings.DEBUG:
                     print(mailing.subject)
 
-                if mailing.email_from:
-                    email_from = mailing.email_from
-                else:
-                    email_from = settings.AMPA_DEFAULT_FROM
+                # if mailing.email_from:
+                #     email_from = mailing.email_from
+                # else:
+                email_from = settings.AMPA_DEFAULT_FROM
 
                 if mailing.email_reply_to:
                     email_reply_to = mailing.email_reply_to

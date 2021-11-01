@@ -378,7 +378,7 @@ class Mailing(models.Model):
     #subject, html_message, email_from, email_reply_to, recipient_list
     subject = models.CharField(max_length=256)
     html_message = models.TextField(max_length=10000, default=None, blank=True, null=True)
-    email_from = models.CharField(max_length=256, default='', blank=True, null=True)
+    email_from = models.CharField(max_length=256, default=None, blank=True, null=True)
     email_reply_to = models.CharField(max_length=256, default=None, blank=True, null=True)
 
     classes = models.ManyToManyField(Classe, related_name='mailings')

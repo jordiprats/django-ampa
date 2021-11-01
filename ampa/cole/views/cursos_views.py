@@ -88,10 +88,10 @@ def edit_mailing_curs(request, curs_id, mailing_id=None):
         if mailing_id:
             instance_mailing = Mailing.objects.filter(curs__id=instance_curs.id, id=mailing_id)[0]
         else:
-            instance_mailing = Mailing(curs=instance_curs, email_from='', email_reply_to=request.user.email)
+            instance_mailing = Mailing(curs=instance_curs, email_from=None, email_reply_to=None)
 
         if request.method == 'POST':
-            form = ClasseMailingForm(request.POST, instance=instance_mailing)
+            form = UserMailingForm(request.POST, instance=instance_mailing)
             if form.is_valid():
                 form.save()
                 messages.info(request, 'Guardat mailing')
@@ -111,7 +111,7 @@ def edit_mailing_curs(request, curs_id, mailing_id=None):
                                                                     })
             return redirect('list.curs.mailings', curs_id=curs_id)
         else:
-            form = ClasseMailingForm(instance=instance_mailing)
+            form = UserMailingForm(instance=instance_mailing)
         return render(request, 'mailing/classes/edit.html', { 
                                                                 'form': form, 
                                                                 'instance_mailing': instance_mailing, 
