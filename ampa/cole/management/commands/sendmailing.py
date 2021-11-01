@@ -22,6 +22,12 @@ class Command(BaseCommand):
     # funció genèrica de emails
     def send_html_email(self, subject, html_message, email_from, email_reply_to, recipient_list, attachments={}, dry_run=False):
 
+        print('Sending email to: '+str(recipient_list))
+        print('Subject: '+subject)
+        print('From: '+email_from)
+        print('Reply-To: '+email_reply_to)
+        print('Attachments: '+str(attachments))
+
         text_maker = html2text.HTML2Text()
         text_maker.ignore_links = True
         text_message = text_maker.handle(html_message)
@@ -135,7 +141,7 @@ class Command(BaseCommand):
                         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
                         email.what = str(e)
-                        email.where = exc_type +' '+ fname +' '+ exc_tb.tb_lineno
+                        email.where = str(exc_type) +' '+ str(fname) +' '+ str(exc_tb.tb_lineno)
                         email.error = True
 
                         print(exc_type, fname, exc_tb.tb_lineno)

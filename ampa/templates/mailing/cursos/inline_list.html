@@ -38,9 +38,11 @@
             {% endif %}
             <td>Curs: <a href="{% url 'show.curs' curs_id=curs_instance.id %}">{{ curs_instance.curs }}</a></td>
             <td>{{ mailing.attachments.count }}
+              {% if mailing.status == '0' %}
               <form style="display: inline" action="{% url 'add.attachment.mailing' mailing_id=mailing.id %}" method="GET">
                 <button class="btn btn-success" type="submit">gestionar adjunts</button>
               </form>
+              {% endif %}
             </td>
             <td>{{ mailing.updated_at | naturaltime | default_if_none:"Never" }}</td>
         </tr>
