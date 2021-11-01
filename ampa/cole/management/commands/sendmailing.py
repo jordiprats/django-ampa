@@ -171,8 +171,8 @@ class Command(BaseCommand):
             print('checking for cessió de dades...')
 
             for classe in Classe.objects.filter(ready_to_send=True, ultim_email=None):
-                print("classe: "+classe.nom+" "+classe.etapa+" "+classe.curs)
                 try:
+                    print("classe: "+classe.nom+" "+str(classe.etapa)+" "+str(classe.curs))
                     for alumne in classe.alumnes.all():
                         self.send_email_cessio_dades_alumne(alumne, dry_run=dry_run)
                     classe.ready_to_send = False
