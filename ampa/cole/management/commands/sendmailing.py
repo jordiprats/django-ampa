@@ -114,7 +114,7 @@ class Command(BaseCommand):
 
                 if mailing.nomes_delegats:
                     destinataris = []
-                    for classe in mailing.classe.all():
+                    for classe in mailing.classes.all():
                         destinataris += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", classe.email_delegat.lower().strip())
                         destinataris += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", classe.email_subdelegat.lower().strip())
                 else:
