@@ -124,7 +124,7 @@ class Command(BaseCommand):
                     print(each_email)
 
                     footer_html = '<br><br>Per gestionar les comunicacions que voleu rebre:<br>'
-                    for manual_unsubscribe_link in mailing.get_manual_unsubscribe_links(email):
+                    for manual_unsubscribe_link in mailing.get_manual_unsubscribe_links(each_email):
                         footer_html += '<a href="'+settings.PUBLIC_DOMAIN+manual_unsubscribe_link+'">'+settings.PUBLIC_DOMAIN+manual_unsubscribe_link+'</a><br>'
 
                     try:
