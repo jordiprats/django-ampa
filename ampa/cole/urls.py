@@ -35,6 +35,7 @@ urlpatterns = [
     path('cursos/add', views.edit_curs, name='add.curs'),
     path('cursos/<curs_id>', views.show_curs, name='show.curs'),
     path('cursos/<curs_id>/edit', views.edit_curs, name='edit.curs'),
+    path('cursos/<curs_id>/cessio_dades', views.enviar_cessio_dades_curs, name='curs.cessio.dades'),
     path('cursos/<curs_id>/mailing', views.list_curs_mailings, name='list.curs.mailings'),
     path('cursos/<curs_id>/mailing/new', views.edit_mailing_curs, name='new.curs.mailing'),
     path('cursos/<curs_id>/mailing/<mailing_id>', views.edit_mailing_curs, name='edit.curs.mailing'),

@@ -6,6 +6,12 @@
 
 <h1>Curs {{ curs_instance.curs }} <a href="{% url 'edit.curs' curs_id=curs_instance.id %}"><i class="far fa-edit"></i></a></h1>
 
+{% if request.user.is_staff %}
+<form style="display: inline;" action="{% url 'curs.cessio.dades' curs_id=curs_instance.id %}" method="GET">
+    <button class="float-right btn btn-warning" style="margin: 3px;" type="submit">enviar formulari de cessió dades</button>
+</form>
+{% endif %}
+
 {% if curs_instance.modalitat %}
 Modalitat: {{ curs_instance.modalitat }}
 {% endif %}

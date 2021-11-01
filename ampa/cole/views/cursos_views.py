@@ -155,6 +155,30 @@ def show_mailing_curs(request, curs_id, mailing_id):
         return redirect('list.curs.mailings', curs_id=curs_id)
 
 @user_passes_test(lambda u: u.is_staff)
+def enviar_cessio_dades_curs(request, curs_id):
+    try:
+        instance_curs = Curs.objects.filter(id=curs_id)[0]
+    except:
+        return redirect('show.curs', curs_id=curs_id)
+    if request.method == 'POST':
+        form = AreYouSureForm(request.POST)
+        if form.is_valid():
+            for instance_classe in instance_curs.classes.all():
+                if request.user.is_staff:
+                    instance_classe.ultim_email = None
+
+                instance_classe.ready_to_send = True
+                instance_classe.save()
+            messages.info(request, 'Programat enviament cessió de dades per totes les classes')
+        else:
+            messages.error(request, 'Error programant l\'enviament')
+        return redirect('show.curs', curs_id=curs_id)
+    else:
+        form = AreYouSureForm()
+        list_users = User.objects.filter(is_staff=False, is_default_password=False)
+        return render(request, 'cursos/massiu_cessio_dades.html', {'form': form, 'instance_curs': instance_curs})
+
+@user_passes_test(lambda u: u.is_staff)
 def enviar_mailing_curs(request, curs_id, mailing_id):
     try:      
         instance_mailing = Mailing.objects.filter(id=mailing_id)[0]
