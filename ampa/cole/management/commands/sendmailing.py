@@ -90,7 +90,7 @@ class Command(BaseCommand):
             try:
                 print(options['alumne_id'])
                 alumne = Alumne.objects.filter(id=options['alumne_id'])[0]
-                self.send_email_cessio_dades_alumne(alumne, options['email'])
+                self.send_email_cessio_dades_alumne(alumne=alumne, to=options['email'])
             except Exception as e:
                 print(str(e))
                 print('Error enviament')
@@ -176,7 +176,7 @@ class Command(BaseCommand):
                 try:
                     print("classe: "+classe.nom+" "+str(classe.etapa)+" "+str(classe.curs))
                     for alumne in classe.alumnes.all():
-                        self.send_email_cessio_dades_alumne(to=None, alumne=alumne, dry_run=dry_run)
+                        self.send_email_cessio_dades_alumne(alumne=alumne, to=None, dry_run=dry_run)
                     classe.ready_to_send = False
                     classe.ultim_email = datetime.datetime.now()
                     classe.save()
