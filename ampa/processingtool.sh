@@ -5,6 +5,8 @@
 # import/export:    cada 5 segons aprox
 # email:            cada 5 minuts aprox
 
+echo "AMPA app version: ${AMPA_APP_VERSION}"
+
 echo "Processing tool - sleeping for 1 minute to startup"
 
 sleep 1m
@@ -25,6 +27,6 @@ do
         python /code/manage.py exportjuntapdf
         sleep 3
     done
-    echo "Sending email..."
+    echo "Checking for mailings..."
     python /code/manage.py sendmailing
 done
