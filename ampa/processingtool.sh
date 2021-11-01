@@ -13,6 +13,7 @@ while true
 do
     for i in $(seq 1 30);
     do
+        echo "Processing iteration $i/30"
         python /code/manage.py importxls
         sleep 2
         python /code/manage.py exportxls
@@ -20,5 +21,6 @@ do
         python /code/manage.py exportjuntapdf
         sleep 3
     done
+    echo "Sending email..."
     python /code/manage.py sendmailing
 done
