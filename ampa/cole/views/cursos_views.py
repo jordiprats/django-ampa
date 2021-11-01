@@ -91,7 +91,10 @@ def edit_mailing_curs(request, curs_id, mailing_id=None):
             instance_mailing = Mailing(curs=instance_curs, email_from=None, email_reply_to=None)
 
         if request.method == 'POST':
-            form = UserMailingForm(request.POST, instance=instance_mailing)
+            if request.user.is_staff:
+                form = StaffMailingForm(request.POST, instance=instance_mailing)    
+            else:
+                form = UserMailingForm(request.POST, instance=instance_mailing)
             if form.is_valid():
                 form.save()
                 messages.info(request, 'Guardat mailing')
@@ -109,9 +112,11 @@ def edit_mailing_curs(request, curs_id, mailing_id=None):
                                                                         'image_hash': instance_mailing.images_hash,
                                                                         'attachment_hash': instance_mailing.attachment_hash
                                                                     })
-            return redirect('list.curs.mailings', curs_id=curs_id)
         else:
-            form = UserMailingForm(instance=instance_mailing)
+            if request.user.is_staff:
+                form = StaffMailingForm(instance=instance_mailing)
+            else:
+                form = UserMailingForm(instance=instance_mailing)
         return render(request, 'mailing/classes/edit.html', { 
                                                                 'form': form, 
                                                                 'instance_mailing': instance_mailing, 

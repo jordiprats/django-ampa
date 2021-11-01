@@ -368,7 +368,7 @@ MAILING_STATUS = [
     (MAILING_STATUS_DRAFT, 'borrador'),
     (MAILING_STATUS_PROGRAMAT, 'enviament programat'),
     (MAILING_STATUS_ENVIANT, 'enviant...'),
-    (MAILING_STATUS_ENVIAT, 'enviament completat'),
+    (MAILING_STATUS_ENVIAT, 'completat'),
     (MAILING_STATUS_ERROR_GENERAL, 'error general d\'enviament')
 ]
 

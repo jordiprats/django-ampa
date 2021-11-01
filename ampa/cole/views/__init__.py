@@ -128,7 +128,10 @@ def edit_mailing_classe(request, classe_id, mailing_id=None):
             instance_mailing = Mailing(email_from=None, email_reply_to=None)
         
         if request.method == 'POST':
-            form = UserMailingForm(request.POST, instance=instance_mailing)
+            if request.user.is_staff:
+                form = StaffMailingForm(request.POST, instance=instance_mailing)
+            else:
+                form = UserMailingForm(request.POST, instance=instance_mailing)
             if form.is_valid():
                 form.save()
                 instance_mailing.classes.add(instance_classe)
@@ -150,7 +153,10 @@ def edit_mailing_classe(request, classe_id, mailing_id=None):
                                                                     })
             return redirect('list.classe.mailings', classe_id=instance_classe.id)
         else:
-            form = UserMailingForm(instance=instance_mailing)
+            if request.user.is_staff:
+                form = StaffMailingForm(instance=instance_mailing)
+            else:
+                form = UserMailingForm(instance=instance_mailing)
         return render(request, 'mailing/classes/edit.html', { 
                                                                 'form': form, 
                                                                 'instance_mailing': instance_mailing, 

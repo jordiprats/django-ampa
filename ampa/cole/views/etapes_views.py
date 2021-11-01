@@ -92,7 +92,10 @@ def edit_mailing_etapa(request, etapa_id, mailing_id=None):
             instance_mailing = Mailing(etapa=instance_etapa, email_from=None, email_reply_to=None)
 
         if request.method == 'POST':
-            form = UserMailingForm(request.POST, instance=instance_mailing)
+            if request.user.is_staff:
+                form = StaffMailingForm(request.POST, instance=instance_mailing)
+            else:
+                form = UserMailingForm(request.POST, instance=instance_mailing)
             if form.is_valid():
                 form.save()
                 messages.info(request, 'Guardat mailing')
@@ -111,7 +114,10 @@ def edit_mailing_etapa(request, etapa_id, mailing_id=None):
                                                                         'attachment_hash': instance_mailing.attachment_hash
                                                                     })
         else:
-            form = UserMailingForm(instance=instance_mailing)
+            if request.user.is_staff:
+                form = StaffMailingForm(instance=instance_mailing)
+            else:
+                form = UserMailingForm(instance=instance_mailing)
         return render(request, 'mailing/classes/edit.html', { 
                                                                 'form': form, 
                                                                 'instance_mailing': instance_mailing, 

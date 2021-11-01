@@ -112,7 +112,15 @@ class Command(BaseCommand):
 
                 print(str(mailing_attachments))
 
-                for each_email in mailing.recipient_list:
+                if mailing.nomes_delegats:
+                    destinataris = []
+                    for classe in mailing.classe.all():
+                        destinataris += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", classe.email_delegat.lower().strip())
+                        destinataris += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", classe.email_subdelegat.lower().strip())
+                else:
+                    destinataris = mailing.recipient_list
+
+                for each_email in destinataris:
                     print(each_email)
 
                     footer_html = '<br><br>Per gestionar les comunicacions que voleu rebre:<br>'
