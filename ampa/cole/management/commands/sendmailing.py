@@ -75,7 +75,7 @@ class Command(BaseCommand):
 
         for email in recipient_list:
             print('Sending email to: '+email)
-            self.send_html_email(subject, html_message, email_from, alumne.classe.delegat.email, [ email ], dry_run=dry_run)       
+            self.send_html_email(subject=subject, html_message=html_message, email_from=email_from, email_reply_to=alumne.classe.delegat.email, recipient_list=[ email ], attachments={}, dry_run=dry_run)
 
     def handle(self, *args, **options):
         try:
