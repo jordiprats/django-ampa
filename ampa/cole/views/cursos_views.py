@@ -164,9 +164,6 @@ def enviar_cessio_dades_curs(request, curs_id):
         form = AreYouSureForm(request.POST)
         if form.is_valid():
             for instance_classe in instance_curs.classes.all():
-                if request.user.is_staff:
-                    instance_classe.ultim_email = None
-
                 instance_classe.ready_to_send = True
                 instance_classe.save()
             messages.info(request, 'Programat enviament cessió de dades per totes les classes')
