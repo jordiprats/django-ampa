@@ -5,6 +5,10 @@
 # import/export:    cada 5 segons aprox
 # email:            cada 5 minuts aprox
 
+sleep 1m
+
+python /code/manage.py migrate
+
 while true
 do
     for i in $(seq 1 30);
