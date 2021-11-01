@@ -511,13 +511,13 @@ def login_builtin_user(request):
         if user is not None:
             if user.is_default_password:
                 max_allowed = timezone.now() - datetime.timedelta(days=7)
-                if user.last_password_change < max_allowed:
+                if user.last_password_change and user.last_password_change < max_allowed:
                     messages.error(request, 'El compte està bloquejat. Si us plau, contacti amb l\'administrador.')
                     return redirect('home')
             else:
                 if not user.is_staff:
                     max_allowed = timezone.now() - datetime.timedelta(days=400)
-                    if user.last_password_change < max_allowed:
+                    if user.last_password_change and user.last_password_change < max_allowed:
                         messages.error(request, 'El compte està bloquejat. Si us plau, contacti amb l\'administrador.')
                         return redirect('home')
 

@@ -113,13 +113,13 @@ def users_list(request):
     for user in list_users:
         if user.is_default_password:
             max_allowed = timezone.now() - datetime.timedelta(days=7)
-            if user.last_password_change < max_allowed:
+            if user.last_password_change and user.last_password_change < max_allowed:
                 user.is_locked = True
                 user.save()
         else:
             if not user.is_staff:
                 max_allowed = timezone.now() - datetime.timedelta(days=400)
-                if user.last_password_change < max_allowed:
+                if user.last_password_change and user.last_password_change < max_allowed:
                     user.is_locked = True
                     user.save()
     return render(request, 'staff/users/list.html', {
