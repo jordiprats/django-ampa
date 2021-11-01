@@ -5,9 +5,13 @@
 # import/export:    cada 5 segons aprox
 # email:            cada 5 minuts aprox
 
+echo "Processing tool - sleeping for 1 minute to startup"
+
 sleep 1m
 
 python /code/manage.py migrate
+
+echo "Processing tool - starting loop"
 
 while true
 do
