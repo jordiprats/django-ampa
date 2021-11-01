@@ -33,7 +33,7 @@
             <a href="{% url 'form.pares.edit.alumne' alumne_id=alumne.id %}">{{ alumne.print_name }}</a>
           </td>
           {% if alumne.classe %}
-          <td><a href="{% url 'show.classe' classe_id=alumne.classe.id %}">{{ alumne.classe.nom }}</a></td>
+          <td><a href="{% url 'show.classe' classe_id=alumne.classe.id %}">{{ alumne.classe.nom }}</a> - {{ alumne.classe.etapa }} / Curs {{ alumne.classe.curs }}</td>
           {% else %}
           <td>-</td>
           {% endif %}

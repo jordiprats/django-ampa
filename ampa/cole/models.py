@@ -260,7 +260,7 @@ class Alumne(models.Model):
 
     def _get_classe_actual(self):
         try:
-            return self.classes.order_by('-curs').first()
+            return self.classes.order_by('curs').first()
         except:
             return None
 

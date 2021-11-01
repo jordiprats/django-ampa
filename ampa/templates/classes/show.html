@@ -67,7 +67,7 @@
   </form>
   {% endif %}
 
-<h1>{{ instance_classe.nom }} <a href="{% url 'edit.classe' classe_id=instance_classe.id %}"><i class="far fa-edit"></i></a></h1>
+<h1>{{ instance_classe.nom }} <a href="{% url 'edit.classe' classe_id=instance_classe.id %}"><i class="far fa-edit"></i></a> - {{ instance_classe.etapa }} / {{ instance_classe.curs }}</h1>
 {{ instance_classe.curs }}
 
 {% if instance_classe.latest_export and not instance_classe.waiting_export %}
