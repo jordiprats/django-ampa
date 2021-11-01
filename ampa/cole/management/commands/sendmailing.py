@@ -58,7 +58,7 @@ class Command(BaseCommand):
         headers = { 'Reply-To': alumne.classe.delegat.email }
 
         subject = 'Revisió dades AMPA - '+alumne.classe.nom
-        html_message = '<html><body>Hola,<br>Des de l\'AMPA em demanen si podeu revisar les dades del vostre fill i donar el consentiment als delegats per fer-les servir per contactar amb vosaltres per temes del cole:<br><br><a href="http://ampa.systemadmin.es/alumnes/'+str(alumne.id)+'">http://ampa.systemadmin.es/alumnes/'+str(alumne.id)+'</a><br><br>Cal marcar la opció de cessió de dades per cada un dels pares, si voleu, rectificar si hi ha alguna dada incorrecte i al final hi ha també la opció per confirmar que les dades són correctes<br><br>Si us plau, no contesteu a aquest email, per qualsevol dubte contacteu amb el vostre delegat pels canals habituals<br><br>salutacions,</body></html>'
+        html_message = '<html><body>Hola,<br>Per tal de poder rebre comunicacions de l\'AMPA cal donar el consentiment a l\'AMPA i als delegats per fer servir les vostres dades per tal de contactar amb vosaltres per temes del cole:<br><br><a href="http://ampa.systemadmin.es/alumnes/'+str(alumne.id)+'">http://ampa.systemadmin.es/alumnes/'+str(alumne.id)+'</a><br><br>Cal marcar la opció de cessió de dades per cada un dels tutors<br><br>Si us plau, no contesteu a aquest email, per qualsevol dubte contacteu amb el vostre delegat pels canals habituals<br><br>Delegats '+alumne.classe.nom+' '+alumne.classe.etapa+',</body></html>'
         email_from = settings.AMPA_DEFAULT_FROM
         recipient_list = emails
 
@@ -74,6 +74,7 @@ class Command(BaseCommand):
         # TODO: locking for multi instance
 
         if options['alumne_id']:
+            print('mailing '+options['alumne_id'])
             try:
                 print(options['alumne_id'])
                 alumne = Alumne.objects.filter(id=options['alumne_id'])[0]
@@ -83,10 +84,10 @@ class Command(BaseCommand):
                 print('Error enviament')
                 return False           
         else:
+            print('checking for mailings...')
             # mailing programats
             for mailing in Mailing.objects.filter(status=MAILING_STATUS_PROGRAMAT):
-                if settings.DEBUG:
-                    print(mailing.subject)
+                print(mailing.subject)
 
                 # if mailing.email_from:
                 #     email_from = mailing.email_from
@@ -100,12 +101,10 @@ class Command(BaseCommand):
 
                 mailing_attachments = mailing.localfile_attachment_hash
 
-                if settings.DEBUG:
-                    print(str(mailing_attachments))
+                print(str(mailing_attachments))
 
                 for email in mailing.recipient_list:
-                    if settings.DEBUG:
-                        print(email)
+                    print(email)
 
                     footer_html = '<br><br>Per gestionar les comunicacions que voleu rebre:<br>'
                     for manual_unsubscribe_link in mailing.get_manual_unsubscribe_links(email):
@@ -132,16 +131,23 @@ class Command(BaseCommand):
                         email.sent = True
                     except Exception as e:
                         email.error = True
-                        if settings.DEBUG:
-                            exc_type, exc_obj, exc_tb = sys.exc_info()
-                            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-                            print(exc_type, fname, exc_tb.tb_lineno)
-                            print(str(e))
+                        exc_type, exc_obj, exc_tb = sys.exc_info()
+                        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+
+                        email.what = str(e)
+                        email.where = exc_type +' '+ fname +' '+ exc_tb.tb_lineno
+                        email.error = True
+
+                        print(exc_type, fname, exc_tb.tb_lineno)
+                        print(str(e))
                     email.save()
 
                 mailing.status = MAILING_STATUS_ENVIAT
                 mailing.save()
+            
             # cessió de dades
+            print('checking for cessió de dades...')
+
             for classe in Classe.objects.filter(ready_to_send=True, ultim_email=None):
                 try:
                     print("classe: "+classe.nom)

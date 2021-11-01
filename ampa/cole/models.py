@@ -487,6 +487,9 @@ class EmailSent(models.Model):
     sent = models.BooleanField(default=False)
     error = models.BooleanField(default=False)
 
+    where = models.TextField(max_length=10000, default='', blank=True, null=True)
+    what = models.TextField(max_length=10000, default='', blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
