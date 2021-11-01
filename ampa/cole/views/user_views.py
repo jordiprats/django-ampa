@@ -29,7 +29,32 @@ def switch_user(request, user_slug):
     except Exception as e:
         if request.user.is_superuser:
             messages.error(request, str(e))
-        return redirect('list.users')   
+        return redirect('list.users')
+
+@user_passes_test(lambda u: u.is_staff)
+def reset_proteccio_dades(request):
+    if request.method == 'POST':
+        form = AreYouSureForm(request.POST)
+        curs = Curs.objects.first()
+        if form.is_valid():
+            classes = Classe.objects.filter(curs=curs)
+            for classe in classes:
+                for alumne in classe.alumnes.all():
+                    try:
+                        alumne.tutor1_cessio = False
+                        alumne.tutor2_cessio = False
+                        alumne.save()
+                    except:
+                        pass
+            messages.info(request, 'Eliminada configuració d\'enviaments')
+        else:
+            messages.error(request, 'Error resetejant')
+        return redirect('list.users')
+    else:
+        form = AreYouSureForm()
+        list_users = User.objects.filter(is_staff=False, is_default_password=False)
+        return render(request, 'staff/users/reset_proteccio_dades.html', {'form': form, 'list_users': list_users})
+
 @user_passes_test(lambda u: u.is_staff)
 def reset_password_all_users(request):
     if request.method == 'POST':
@@ -37,10 +62,13 @@ def reset_password_all_users(request):
         entitat = Entitat.objects.all().first()
         if form.is_valid():
             for user in User.objects.filter(is_staff=False, is_default_password=False):
-                user.set_password(entitat.password_default)
-                user.is_default_password = True
-                user.last_password_change = datetime.datetime.now()
-                user.save()
+                try:
+                    user.set_password(entitat.password_default)
+                    user.is_default_password = True
+                    user.last_password_change = datetime.datetime.now()
+                    user.save()
+                except:
+                    pass
             messages.info(request, 'Contrasenyes resetejades')
         else:
             messages.error(request, 'Error resetejant les contrasenyes')

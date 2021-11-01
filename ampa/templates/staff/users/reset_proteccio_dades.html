@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="tab-modules" role="tabpanel" aria-labelledby="pills-home-tab">
+        <h1 class="text-danger"><i class="fas fa-radiation-alt"></i> <i class="fas fa-radiation"></i> RESETEJAR CONFIGURACIÓ D'ENVIAMENT <i class="fas fa-radiation"></i> <i class="fas fa-radiation-alt"></i></h1>
+        <i class="fas fa-exclamation-circle"></i> Estas segur que vols resetejar la configuració d'enviarment de comunicacions? <i class="fas fa-exclamation-circle"></i>
+        
+        Caldrà que els pares torning a confirmar que volen rebre comunicacions.
+
+        <h2 class="text-danger"><center><i class="fas fa-skull-crossbones"></i></center></h2>
+
+        <form class="home-hero-signup text-gray-dark js-signup-form js-signup-form-submit" method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <hr>
+            <center>
+            <button class="btn btn-danger" type="submit"><i class="fas fa-dumpster-fire"></i> RESET CONFIGURACIÓ <i class="fas fa-dumpster-fire"></i></button>
+            </center>
+            <hr>
+        </form>
+
+        <h2 class="text-danger"><center><i class="fas fa-skull-crossbones"></i></center></h2>
+    </div>
+</div>
+{% endblock %}
