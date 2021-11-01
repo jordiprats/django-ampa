@@ -170,11 +170,13 @@ class Command(BaseCommand):
             # cessió de dades
             print('checking for cessió de dades...')
 
+            # TODO: check mails enviats
+
             for classe in Classe.objects.filter(ready_to_send=True, ultim_email=None):
                 try:
                     print("classe: "+classe.nom+" "+str(classe.etapa)+" "+str(classe.curs))
                     for alumne in classe.alumnes.all():
-                        self.send_email_cessio_dades_alumne(alumne, dry_run=dry_run)
+                        self.send_email_cessio_dades_alumne(to=None, alumne=alumne, dry_run=dry_run)
                     classe.ready_to_send = False
                     classe.ultim_email = datetime.datetime.now()
                     classe.save()
