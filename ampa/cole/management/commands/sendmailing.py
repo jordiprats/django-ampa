@@ -62,7 +62,8 @@ class Command(BaseCommand):
         email_from = settings.AMPA_DEFAULT_FROM
         recipient_list = emails
 
-        self.send_html_email(subject, html_message, email_from, alumne.classe.delegat.email, recipient_list, dry_run=dry_run)       
+        for email in recipient_list:
+            self.send_html_email(subject, html_message, email_from, alumne.classe.delegat.email, [ email ], dry_run=dry_run)       
 
     def handle(self, *args, **options):
         try:
