@@ -7,7 +7,14 @@
 {% include 'mailing/show.html' %}
 
 <b>Enviar</b>
-Estas segur que vols programar l'enviament per {{ instance_curs.curs }}? 
+Estas segur que vols programar l'enviament per tot el curs {{ instance_curs.curs }}? 
+
+{% if instance_mailing.nomes_delegats %}
+<h2 class="text-danger">Aquest email serà enviat a tots els pares de la classe.</h2>
+{% else %}
+<h2 class="text-danger">Aquest email serà enviat a tots els pares</h2>
+{% endif %}
+
 <form style="display: inline" method="POST">
     {% csrf_token %}
     {{ form.as_p }}
