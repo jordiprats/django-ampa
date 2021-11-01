@@ -36,6 +36,8 @@ class Command(BaseCommand):
             headers = { 'Reply-To': email_reply_to }
         else:
             headers = {}
+        
+        print('Headers: '+str(headers))
 
         # send_mail(subject=subject, message=text_email, from_email=email_from, recipient_list=recipient_list, html_message=html_message, headers=headers)
 
