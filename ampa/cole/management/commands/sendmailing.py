@@ -69,7 +69,7 @@ class Command(BaseCommand):
         headers = { 'Reply-To': alumne.classe.delegat.email }
 
         subject = 'Revisió dades AMPA - '+alumne.classe.nom
-        html_message = '<html><body>Hola,<br>Per tal de poder rebre comunicacions de l\'AMPA cal donar el consentiment a l\'AMPA i als delegats per fer servir les vostres dades per tal de contactar amb vosaltres per temes del cole:<br><br><a href="http://ampa.systemadmin.es/alumnes/'+str(alumne.id)+'">http://ampa.systemadmin.es/alumnes/'+str(alumne.id)+'</a><br><br>Cal marcar la opció de cessió de dades per cada un dels tutors<br><br>Si us plau, no contesteu a aquest email, per qualsevol dubte contacteu amb el vostre delegat pels canals habituals<br><br>Delegats '+alumne.classe.nom+' '+alumne.classe.etapa+',</body></html>'
+        html_message = '<html><body>Hola,<br>Per tal de poder rebre comunicacions de l\'AMPA cal donar el consentiment tant als delegats com a l\'AMPA en si per fer servir les vostres dades. L\'Ús que es farà de les mateixes serà per poder contactar amb vosaltres per temes del cole.<br><br><a href="http://ampa.systemadmin.es/alumnes/'+str(alumne.id)+'">http://ampa.systemadmin.es/alumnes/'+str(alumne.id)+'</a><br><br>Cal marcar la opció de cessió de dades per cada un dels tutors<br><br>Si us plau, no contesteu a aquest email, per qualsevol dubte contacteu amb el vostre delegat pels canals habituals<br><br>Delegats '+alumne.classe.nom+' '+str(alumne.classe.etapa)+',</body></html>'
         email_from = settings.AMPA_DEFAULT_FROM
         recipient_list = emails
 
