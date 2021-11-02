@@ -229,8 +229,10 @@ class Alumne(models.Model):
 
     def _get_cessio_emails(self):
         emails = []
-        emails += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", self.email_tutor1.lower().strip())
-        emails += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", self.email_tutor2.lower().strip())
+        if self.email_tutor1:
+            emails += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", self.email_tutor1.lower().strip())
+        if self.email_tutor2:
+            emails += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", self.email_tutor2.lower().strip())
 
         return emails
 
