@@ -4,8 +4,6 @@
 
 {% block content %}
 
-{% static 'img/bored_kid.gif' %}
-
 <h1><a href="{% url 'show.classe' classe_id=instance_classe.id %}">{{ instance_classe.nom }}</a></h1>
 {{ instance_classe.curs }}
 
@@ -13,7 +11,6 @@
 
 <center>
     <h2>procesant exportació de dades</h2>
-    <!-- <img src="{% static 'img/bored_kid.gif' %}"> -->
     </center>
     
     <input type="hidden" id="refresh_interval_ms" name="refresh_interval_ms" value="10000">
