@@ -24,11 +24,11 @@ def alumne_signup(request):
                                     ).filter(
                                         full_name__iexact=query
                                         )
-            if len(results) != 1:
+            if results and len(results) != 1:
                 alumne_instance = None
                 form = None
-            else:
-                alumne_instance = results[0]
+            elif results and len(results) == 1:
+                alumne_instance = results.first()
                 form = EditAlumneParesForm(alumne_instance)
                 
                 # make sure the user is not already registered
