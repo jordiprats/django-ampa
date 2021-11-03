@@ -57,9 +57,9 @@
   {% endif %}
   {% endif %}
 
-  <!-- <form style="display: inline;" action="{% url 'exportar.xls' classe_id=instance_classe.id %}" method="GET">
+  <form style="display: inline;" action="{% url 'exportar.xls' classe_id=instance_classe.id %}" method="GET">
     <button class="float-right btn btn-info" style="margin: 3px;" type="submit">exportar Excel</button>
-  </form> -->
+  </form>
 
   {% if is_staff %}
   <form style="display: inline;" action="{% url 'copy.curs.classe' classe_id=instance_classe.id %}" method="GET">

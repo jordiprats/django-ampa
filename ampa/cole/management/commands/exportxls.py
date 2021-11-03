@@ -104,12 +104,12 @@ class Command(BaseCommand):
                 'E': 'Data de naixement',
                 'F': 'Tutor 1',
                 'G': 'Telèfon',
-                'H': 'Cessió de dades *',
-                'I': 'Tutor 2',
-                'J': 'Telèfon',
-                'K': 'Cessió de dades *',
-                'L': 'e-Mails',
-                'M': 'Ús responsable de les dades ** (signatura)',
+                'H': 'eMail',
+                'I': 'Cessió de dades *',
+                'J': 'Tutor 2',
+                'K': 'Telèfon',
+                'L': 'eMail',
+                'M': 'Cessió de dades *',
             }
 
             for item in header:
@@ -131,24 +131,21 @@ class Command(BaseCommand):
 
                 worksheet.write('F'+str(linea), alumne.tutor1, text_normal_taula)
                 worksheet.write('G'+str(linea), alumne.telf_tutor1, text_normal_taula)
+                worksheet.write('H'+str(linea), alumne.email_tutor1, text_normal_taula)
                 if alumne.tutor1_cessio:
-                    worksheet.write('H'+str(linea), 'SI', text_normal_taula)
+                    worksheet.write('I'+str(linea), 'SI', text_normal_taula)
                 else:
-                    worksheet.write('H'+str(linea), 'NO', text_normal_taula_bg_vermell)
+                    worksheet.write('I'+str(linea), 'NO', text_normal_taula_bg_vermell)
 
-                worksheet.write('I'+str(linea), alumne.tutor2, text_normal_taula)
-                worksheet.write('J'+str(linea), alumne.telf_tutor2, text_normal_taula)
+                worksheet.write('J'+str(linea), alumne.tutor2, text_normal_taula)
+                worksheet.write('K'+str(linea), alumne.telf_tutor2, text_normal_taula)
+                worksheet.write('L'+str(linea), alumne.email_tutor2, text_normal_taula)
                 if alumne.tutor2_cessio:
-                    worksheet.write('K'+str(linea), 'SI', text_normal_taula)
-                else:
-                    worksheet.write('K'+str(linea), 'NO', text_normal_taula_bg_vermell)
-
-                worksheet.write('L'+str(linea), alumne.emails, text_normal_taula)
-
-                if alumne.validat:
                     worksheet.write('M'+str(linea), 'SI', text_normal_taula)
                 else:
                     worksheet.write('M'+str(linea), 'NO', text_normal_taula_bg_vermell)
+
+
                 linea += 1
 
             linea += 1
