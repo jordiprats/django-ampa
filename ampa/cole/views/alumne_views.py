@@ -25,7 +25,8 @@ def alumne_signup(request):
                                         full_name__iexact=query
                                         )
             if len(results) != 1:
-                instance = None
+                alumne_instance = None
+                form = None
             else:
                 alumne_instance = results[0]
                 form = EditAlumneParesForm(alumne_instance)
@@ -41,7 +42,8 @@ def alumne_signup(request):
                     alumne_instance = None
                     form = None
         else:
-            instance = None
+            alumne_instance = None
+            form = None
         return render(request, 'alumnes/signup.html', {
                                                         'form': form,
                                                         'instance': alumne_instance, 
