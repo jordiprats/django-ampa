@@ -15,6 +15,38 @@ Estas segur que vols programar l'enviament per tot el curs {{ instance_curs.curs
 <h2 class="text-danger"><i class="fas fa-users"></i> Aquest email serà enviat a TOTS els pares <i class="fas fa-users"></i></h2>
 {% endif %}
 
+{% if request.user.is_staff %}
+<div id="accordion">
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          emails
+        </button>
+      </h5>
+    </div>
+
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+      <div class="card-body">
+        <ul>
+          {% if instance_mailing.nomes_delegats %}
+            {% for classe in instance_mailing.classes.all %}
+          <li>{{ classe.email_delegat }}</li>
+          <li>{{ classe.email_subdelegat }}</li>
+            {% endfor %}
+          {% else %}
+            {% for email in instance_mailing.classes.recipient_list %}
+          <li>{{ email }}</li>
+            {% endfor %}
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+</div>
+{% endif %}
+
 <form style="display: inline" method="POST">
     {% csrf_token %}
     {{ form.as_p }}
