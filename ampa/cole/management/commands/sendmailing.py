@@ -1,12 +1,16 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
+
 from cole.models import *
+
+from random import randrange
 
 import html2text
 import datetime
 import pandas
 import magic
+import time
 import sys
 import os
 import re
@@ -163,6 +167,7 @@ class Command(BaseCommand):
                         print(exc_type, fname, exc_tb.tb_lineno)
                         print(str(e))
                     email.save()
+                    time.sleep(randrange(10))
 
                 mailing.status = MAILING_STATUS_ENVIAT
                 mailing.save()
@@ -177,6 +182,7 @@ class Command(BaseCommand):
                     print("classe: "+classe.nom+" "+str(classe.etapa)+" "+str(classe.curs))
                     for alumne in classe.alumnes.all():
                         self.send_email_cessio_dades_alumne(alumne=alumne, to=None, dry_run=dry_run)
+                        time.sleep(randrange(15))
                     classe.ready_to_send = False
                     classe.ultim_email = datetime.datetime.now()
                     classe.save()
