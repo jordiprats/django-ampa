@@ -16,14 +16,17 @@ import os
 
 def alumne_signup(request):
     print("alumne_signup")
+    alumne_instance = None
+    form = None
     try:
         query = request.GET.get('q', '').lower().strip()
         if query:
             results = Alumne.objects.annotate(
                                     full_name=Concat('nom_unaccented', V(' '), 'cognom1_unaccented', V(' '), 'cognom2_unaccented', )
                                     ).filter(
-                                        full_name__iexact=query
+                                        full_name__icontains=query
                                         )
+            print(len(results))
             if results and len(results) != 1:
                 alumne_instance = None
                 form = None
@@ -31,16 +34,34 @@ def alumne_signup(request):
                 alumne_instance = results.first()
                 form = EditAlumneParesForm(alumne_instance)
                 
-                # make sure the user is not already registered
-                if alumne_instance.tutor1 or alumne_instance.tutor2:
+                # make sure tenim el que toca
+                nom_complet_unaccented = alumne_instance.nom_unaccented + " " + alumne_instance.cognom1_unaccented + " " + alumne_instance.cognom2_unaccented
+                nom_complet_unaccented = nom_complet_unaccented.strip()
+
+                print("nom_complet_unaccented: " + nom_complet_unaccented)
+                print("query: " + query)
+
+                if nom_complet_unaccented != query:
                     alumne_instance = None
                     form = None
+                    print('query no coincideix exactament')
+                # make sure the user is not already registered
+                elif alumne_instance.tutor1 or alumne_instance.tutor2:
+                    alumne_instance = None
+                    form = None
+                    print('tutor no empty')
                 elif alumne_instance.email_tutor1 or alumne_instance.email_tutor2:
                     alumne_instance = None
                     form = None
+                    print('email no empty')
                 elif alumne_instance.telf_tutor1 or alumne_instance.telf_tutor2:
                     alumne_instance = None
                     form = None
+                    print('telf no empty')
+
+                if alumne_instance:
+                    return redirect('form.pares.edit.alumne', alumne_id=alumne_instance.id)
+                    
         else:
             alumne_instance = None
             form = None
