@@ -31,8 +31,12 @@ Estas segur que vols programar l'enviament per tot el curs {{ instance_curs.curs
         <ul>
           {% if instance_mailing.nomes_delegats %}
             {% for classe in instance_mailing.classes.all %}
+              {% if classe.email_delegat %}
           <li>{{ classe.email_delegat }}</li>
+              {% endif %}
+              {% if classe.email_subdelegat %}
           <li>{{ classe.email_subdelegat }}</li>
+              {% endif %}
             {% endfor %}
           {% else %}
             {% for email in instance_mailing.classes.recipient_list %}

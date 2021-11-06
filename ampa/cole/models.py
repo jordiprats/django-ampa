@@ -390,6 +390,8 @@ class Mailing(models.Model):
     attachments = models.ManyToManyField(FileAttachment, related_name='mailings')
     nomes_delegats = models.BooleanField(default=False)
 
+    representants = models.ManyToManyField('peticions.Representant', related_name='mailings')
+
     status = models.CharField(
         max_length=1,
         choices=MAILING_STATUS,
