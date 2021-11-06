@@ -108,7 +108,10 @@ class Command(BaseCommand):
             if not dry_run:
               alumne = Alumne(nom=nom_filtered_alumne_parts[1].strip(), cognom1=cognom1, cognom2=cognom2)
               alumne.save()
-              alumne.classes.add(new_classe)
+              if existing_classe:
+                alumne.classes.add(existing_classe)
+              else:
+                alumne.classes.add(new_classe)
               alumne.save()
 
           elif len(alumnes) == 1:
@@ -120,8 +123,11 @@ class Command(BaseCommand):
                 continue
                 
             print("Promoting student: "+alumnes[0].print_name)
-            if not dry_run:  
-              alumnes[0].classes.add(new_classe)
+            if not dry_run:
+              if existing_classe:
+                alumnes[0].classes.add(existing_classe)
+              else:
+                alumnes[0].classes.add(new_classe)
               alumnes[0].save()
 
           else:
