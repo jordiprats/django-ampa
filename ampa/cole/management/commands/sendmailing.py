@@ -119,15 +119,21 @@ class Command(BaseCommand):
 
                 print(str(mailing_attachments))
 
-                if mailing.nomes_delegats:
-                    destinataris = []
-                    for classe in mailing.classes.all():
-                        if classe.email_delegat:
-                            destinataris += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", classe.email_delegat.lower().strip())
-                        if classe.email_subdelegat:
-                            destinataris += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", classe.email_subdelegat.lower().strip())
+                destinataris = []
+                if not mailing.nomes_representants:
+                    if mailing.nomes_delegats:
+                        destinataris = []
+                        for classe in mailing.classes.all():
+                            if classe.email_delegat:
+                                destinataris += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", classe.email_delegat.lower().strip())
+                            if classe.email_subdelegat:
+                                destinataris += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", classe.email_subdelegat.lower().strip())
+                    else:
+                        destinataris = mailing.recipient_list
                 else:
-                    destinataris = mailing.recipient_list
+                    for representant in mailing.representants.all():
+                        for user in User.objects.filter(representant=representant):
+                            destinataris += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", user.email.lower().strip())
 
                 for each_email in destinataris:
                     print(each_email)
@@ -167,7 +173,8 @@ class Command(BaseCommand):
                         print(exc_type, fname, exc_tb.tb_lineno)
                         print(str(e))
                     email.save()
-                    time.sleep(randrange(10))
+                    if not dry_run:
+                        time.sleep(randrange(10))
 
                 mailing.status = MAILING_STATUS_ENVIAT
                 mailing.save()
@@ -182,7 +189,8 @@ class Command(BaseCommand):
                     print("classe: "+classe.nom+" "+str(classe.etapa)+" "+str(classe.curs))
                     for alumne in classe.alumnes.all():
                         self.send_email_cessio_dades_alumne(alumne=alumne, to=None, dry_run=dry_run)
-                        time.sleep(randrange(15))
+                        if not dry_run:
+                            time.sleep(randrange(15))
                     classe.ready_to_send = False
                     classe.ultim_email = datetime.datetime.now()
                     classe.save()

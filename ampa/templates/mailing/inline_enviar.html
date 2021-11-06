@@ -1,0 +1,79 @@
+
+{% if not instance_mailing.nomes_representants %}
+{% if instance_mailing.nomes_delegats %}
+<h2 class="text-danger"><i class="fas fa-user-tie"></i> Aquest email serà enviat NOMÉS als delegats <i class="fas fa-user-tie"></i></h2>
+{% else %}
+<h2 class="text-danger"><i class="fas fa-users"></i> Aquest email serà enviat a TOTS els pares <i class="fas fa-users"></i></h2>
+{% endif %}
+{% endif %}
+
+{% if request.user.is_staff %}
+
+<div id="accordion">
+
+    {% if not instance_mailing.nomes_representants %}
+    <div class="card">
+      <div class="card-header" id="headingOne">
+        <h5 class="mb-0">
+          <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            {% if instance_mailing.nomes_delegats %}
+            emails delegats
+            {% else %}
+            emails pares
+            {% endif %}
+          </button>
+        </h5>
+      </div>
+  
+      <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="card-body">
+            <ul>
+                {% if instance_mailing.nomes_delegats %}
+                  {% for classe in instance_mailing.classes.all %}
+                <li>{{ classe.email_delegat }}</li>
+                <li>{{ classe.email_subdelegat }}</li>
+                  {% endfor %}
+                {% else %}
+                  {% for email in instance_mailing.recipient_list %}
+                <li>{{ email }}</li>
+                  {% endfor %}
+                {% endif %}
+              </ul>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+
+    {% if instance_mailing.representants %}
+    <div class="card">
+      <div class="card-header" id="headingTwo">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            emails representants
+          </button>
+        </h5>
+      </div>
+      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+        <div class="card-body">
+            <ul>
+                {% for representant in instance_mailing.representants.all %}
+                  <li><b>{{ representant }}</b>:
+                    <ul>
+                      {% for user in representant.users.all %}
+                      <li>{{ user.email }}</li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                {% endfor %}
+                </ul>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+
+
+
+{% endif %}

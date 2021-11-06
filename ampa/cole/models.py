@@ -240,10 +240,10 @@ class Alumne(models.Model):
 
     def _get_mailing_emails(self):
         emails = []
-        if self.tutor1_cessio:
+        if self.tutor1_cessio and self.email_tutor1:
             emails += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", self.email_tutor1.lower().strip())
         
-        if self.tutor2_cessio:
+        if self.tutor2_cessio and self.email_tutor2:
             emails += re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", self.email_tutor2.lower().strip())
 
         return emails
@@ -389,6 +389,8 @@ class Mailing(models.Model):
 
     attachments = models.ManyToManyField(FileAttachment, related_name='mailings')
     nomes_delegats = models.BooleanField(default=False)
+
+    nomes_representants = models.BooleanField(default=False)
 
     representants = models.ManyToManyField('peticions.Representant', related_name='mailings')
 
