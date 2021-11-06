@@ -201,3 +201,5 @@ class Command(BaseCommand):
                     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
                     print(exc_type, fname, exc_tb.tb_lineno)
                     print(str(e))
+                if not dry_run:
+                    time.sleep(randrange(60, 120))
