@@ -8,15 +8,20 @@ import unidecode
 import pandas
 import re
 
-dry_run = False
-
 class Command(BaseCommand):
-  help = 'Import uploaded XLS files'
+  help = 'Import llistes cole'
 
   def add_arguments(self, parser):
     parser.add_argument('file', nargs='+', type=str)
+    parser.add_argument('--dry-run', action='store_true')
+
 
   def handle(self, *args, **options):
+    try:
+        dry_run = options['dry_run']
+    except:
+        dry_run = False
+
     filename = options['file'][0]
 
     admin_user = User.objects.filter(is_superuser=True).first()
@@ -63,9 +68,16 @@ class Command(BaseCommand):
           print("== "+row['classe']+' '+sheet_name)
           current_classe = row['classe']
 
-          if not dry_run:
-            new_classe = Classe(nom=row['classe'], curs=curs, etapa=etapa, delegat=admin_user)
-            new_classe.save()
+          print("== "+current_classe[:-1]+'/'+current_classe[-1])
+          existing_classe = Classe.objects.filter(nom__startswith=current_classe[:-1], nom__contains=current_classe[-1], curs=curs).first()
+
+          if existing_classe:
+            print("Found classe {} for {}".format(existing_classe, current_classe))
+          else:
+            print("Creating classe {}".format(current_classe))
+            if not dry_run:
+              new_classe = Classe(nom=row['classe'], curs=curs, etapa=etapa, delegat=admin_user)
+              new_classe.save()
 
           continue
 
@@ -100,9 +112,15 @@ class Command(BaseCommand):
               alumne.save()
 
           elif len(alumnes) == 1:
-            print("Promoting student: "+alumnes[0].print_name)
+            
 
-            if not dry_run:
+            if existing_classe:
+              if existing_classe.alumnes.filter(pk=alumnes[0].pk).count() != 0:
+                print("Alumne {} already in classe {}".format(alumnes[0], existing_classe))
+                continue
+                
+            print("Promoting student: "+alumnes[0].print_name)
+            if not dry_run:  
               alumnes[0].classes.add(new_classe)
               alumnes[0].save()
 
