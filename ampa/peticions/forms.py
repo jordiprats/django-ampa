@@ -25,7 +25,7 @@ class IssueFilterForm(forms.Form):
 class IssueForm(forms.ModelForm):
     class Meta:
         model = Issue
-        fields = (['titol', 'categories', 'public', 'html_message'])
+        fields = (['titol', 'categories', 'html_message'])
         labels = {
             'titol': 'Titol petició',
             'categories': 'Categories',
