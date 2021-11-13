@@ -163,6 +163,8 @@ class Classe(models.Model):
                 str_nom = self.nom+' ('+self.alias+')'
             else:
                 str_nom =  self.nom
+            if self.etapa:
+                str_nom += ' '+str(self.etapa)
             return str_nom
         except:
             return str(self.id)

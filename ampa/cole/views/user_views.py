@@ -159,17 +159,28 @@ def change_password(request, user_slug=None):
                             password_actual = form.data['password_actual'][0]
                         except:
                             password_actual = ""
+                        
+                        is_default = False
+                        if request.user.is_staff:
+                            try:
+                                is_default = form.data['is_default'][0] == "on"
+                            except:
+                                is_default = False                        
+
                         if user_instance.check_password(password_actual) or request.user.is_staff:
                             user_instance.set_password(form.data['password1'][0])
                             user_instance.last_password_change = datetime.datetime.now()
-                            user_instance.is_default_password = False
+                            user_instance.is_default_password = is_default
                             if request.user.is_staff:
                                 user_instance.is_locked = False
                             user_instance.save()
                             if not request.user.is_staff:
                                 update_session_auth_hash(request, user_instance)
                             messages.info(request, 'Contrasenya actualitzada')
-                            return redirect('home')
+                            if request.user.is_staff:
+                                return redirect('list.users')
+                            else:
+                                return redirect('home')
                         else:
                             messages.error(request, 'Contrasenya actual incorrecte')
                     except Exception as e:

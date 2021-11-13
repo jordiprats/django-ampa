@@ -709,6 +709,14 @@ def edit_issue(request, issue_id=None):
             if form.is_valid():
                 form.save()
                 messages.info(request, 'Petició guardada correctament')
+
+                try:
+                    junta = issue_instance.juntes.order_by('-celebracio').first()
+                    if junta:
+                        return redirect('peticions.edit.junta', junta_id=junta.id)
+                except:
+                    pass
+
                 return redirect('peticions.list.issues')
             else:
                 messages.error(request, 'Formulari incorrecte')
@@ -736,6 +744,12 @@ def edit_issue(request, issue_id=None):
     except Exception as e:
         if request.user.is_superuser:
             messages.error(request, str(e))
+        try:
+            junta = issue_instance.juntes.order_by('-celebracio').first()
+            if junta:
+                return redirect('peticions.edit.junta', junta_id=junta.id)
+        except:
+            pass
         return redirect('peticions.list.issues')
 
 @login_required

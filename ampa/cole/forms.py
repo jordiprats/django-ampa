@@ -281,6 +281,7 @@ class PasswordChangeForm(forms.Form):
 class StaffPasswordChangeForm(forms.Form):
     password1 = forms.CharField(label='Contrasenya', required=False, widget=forms.PasswordInput)
     password2 = forms.CharField(label='Repeteix contrasenya', required=False, widget=forms.PasswordInput)
+    is_default = forms.BooleanField(label='Forçar canvi de contrasenya', required=False)
 
     def __init__(self, data, **kwargs):
         initial = kwargs.get('initial', {})
@@ -291,6 +292,10 @@ class StaffPasswordChangeForm(forms.Form):
         try:
             password1 = self.data['password1'][0]
             password2 = self.data['password2'][0]
+            try:
+                is_default = self.data['is_default'][0]
+            except:
+                is_default = True
         except:
             return
 
@@ -313,7 +318,7 @@ class StaffPasswordChangeForm(forms.Form):
             )
         
     class Meta:
-        fields = (['password1', 'password2'])
+        fields = (['password1', 'password2', 'is_default'])
 
 class AreYouSureForm(forms.Form):
     pass

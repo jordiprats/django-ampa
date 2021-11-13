@@ -68,6 +68,8 @@ class Issue(models.Model):
 
     categories = models.ManyToManyField(Category, related_name='issues')
 
+    classes = models.ManyToManyField(Classe, related_name='issues')
+
     likes = models.ManyToManyField(User, related_name='liked_issues')
     dislikes = models.ManyToManyField(User, related_name='disliked_issues')
 
