@@ -761,9 +761,9 @@ def list_issues(request):
     # print(str(issue_status))
 
     if request.user.is_staff:
-        list_issues_raw = Issue.objects.all()
+        list_issues_raw = Issue.objects.filter(juntes=None)
     else:
-        list_issues_raw = Issue.objects.filter(public=True)
+        list_issues_raw = Issue.objects.filter(juntes=None, public=True)
 
     # print(list_issues_raw.count())
 
