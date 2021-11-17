@@ -81,6 +81,7 @@
 {% if content == 'overview' %}
   {% include 'classes/inline_show.html' %}
 
+  {% if request.user.is_staff %}
   <form style="display: inline" action="{% url 'add.alumne' classe_id=instance_classe.id %}" method="GET">
     <button class="float-left btn btn-info" type="submit"><i class="fas fa-plus"></i> alumne</button>
   </form>
@@ -88,6 +89,7 @@
   <form style="display: inline" action="{% url 'add.classe.search.alumne' classe_id=instance_classe.id %}" method="GET">
     <button style="margin-left: 6px;" class="float-left btn btn-info" type="submit"><i class="fas fa-search"></i> alumne</button>
   </form>
+  {% endif %}
 {% elif content == 'mailing' %}
   {% include 'mailing/classes/inline_list.html' %}
 
@@ -95,6 +97,11 @@
     <button class="float-left btn btn-info" type="submit"><i class="fas fa-plus"></i> nova comunicació</button>
   </form>
 {% endif %}
+
+<br><br><hr>
+
+<a href="{% url 'alumne.signup' %}">Formulari auto-registre</a>: Fent servir aquest enllaç els pares, introduint el nom complet del alumne poden fer la càrrega inicial de dades
+
 
 {% endif %}
 
