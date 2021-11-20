@@ -102,7 +102,7 @@ class Command(BaseCommand):
         else:
             print('checking for mailings...')
             # mailing programats
-            for mailing in Mailing.objects.filter(status=MAILING_STATUS_PROGRAMAT):
+            for mailing in Mailing.objects.filter(status=MAILING_STATUS_PROGRAMAT, nomes_plataforma=False):
                 print(mailing.subject)
 
                 # if mailing.email_from:

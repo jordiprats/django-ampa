@@ -55,21 +55,23 @@ class EtapaForm(forms.ModelForm):
 class StaffMailingForm(forms.ModelForm):
     class Meta:
         model = Mailing
-        fields = (['subject', 'nomes_delegats', 'nomes_representants', 'representants', 'html_message'])
+        fields = (['subject', 'nomes_delegats', 'nomes_representants', 'representants', 'nomes_plataforma', 'html_message'])
         labels = {
             'subject': 'Asumpte', 
             'nomes_delegats': 'Enviar només als delegats de les classes',
             'nomes_representants': 'Enviar només als representants seleccionats',
             'representants': 'Afegir representants',
+            'nomes_plataforma': 'Missatge només per la plataforma, no enviar per e-mail',
             'html_message': 'Missatge', 
         }
 
 class UserMailingForm(forms.ModelForm):
     class Meta:
         model = Mailing
-        fields = (['subject', 'html_message'])
+        fields = (['subject', 'nomes_plataforma', 'html_message'])
         labels = {
-            'subject': 'Asumpte', 
+            'subject': 'Asumpte',
+            'nomes_plataforma': 'Missatge només per la plataforma, no enviar per e-mail',
             'html_message': 'Missatge', 
         }
 
