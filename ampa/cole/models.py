@@ -393,7 +393,7 @@ class Mailing(models.Model):
     nomes_delegats = models.BooleanField(default=False)
 
     nomes_representants = models.BooleanField(default=False)
-    representants = models.ManyToManyField('peticions.Representant', related_name='mailings', blank=True, null=True, default=None)
+    representants = models.ManyToManyField('peticions.Representant', related_name='mailings', blank=True, default=None)
 
     nomes_plataforma = models.BooleanField(default=False)
 
