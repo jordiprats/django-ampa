@@ -310,7 +310,19 @@ def edit_alumne_form_pares(request, alumne_id):
         return redirect('home')
 
 def home(request):
-    return render(request, 'home.html')
+
+    try:
+        curs_instance = Curs.objects.filter(modalitat=None).first()
+        curs_id = curs_instance.id
+
+        if curs_id:
+            list_classes = Classe.objects.filter(curs__id=curs_id).filter(Q(delegat=request.user) | Q(subdelegat=request.user)).order_by('curs', 'etapa', 'nom')
+        else:
+            list_classes = Classe.objects.filter(Q(delegat=request.user) | Q(subdelegat=request.user)).order_by('curs', 'etapa', 'nom')
+    except:
+        list_classes = Classe.objects.none()
+
+    return render(request, 'home.html', { 'list_classes': list_classes, 'admin_view': False, 'user_admin': request.user.is_staff })
 
 def wait_export(request, classe_id):
     if request.user.is_authenticated:
