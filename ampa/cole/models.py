@@ -229,6 +229,9 @@ class Alumne(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     classes = models.ManyToManyField(Classe, related_name='alumnes')
 
+    def conte_dades_contacte(self):
+        return self.tutor1 or self.tutor2 or self.telf_tutor1 or self.telf_tutor2 or self.email_tutor1 or self.email_tutor2
+
     def _get_cessio_emails(self):
         emails = []
         if self.email_tutor1 and not self.tutor1_cessio:
