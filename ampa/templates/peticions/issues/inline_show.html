@@ -27,7 +27,7 @@
     {% endif %}
     {% endif %}
 
-    {{ issue_instance.html_message | safe}}
+    {{ issue_instance.html_message | unstyle | safe}}
 
     {% if not is_pdf %}
     <br><hr>
@@ -48,7 +48,7 @@
         {% else %}
         <p>{{ comment.user }}</p>
         {% endif %}
-        <p>{{ comment.html_message | safe }}</p>
+        <p>{{ comment.html_message | unstyle | safe }}</p>
 
         {% if not is_pdf %}
         <hr>
