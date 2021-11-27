@@ -61,7 +61,7 @@ def reset_password_all_users(request):
         form = AreYouSureForm(request.POST)
         entitat = Entitat.objects.all().first()
         if form.is_valid():
-            for user in User.objects.filter(is_staff=False, is_default_password=False):
+            for user in User.objects.filter(is_staff=False, is_default_password=False, is_colegi=False):
                 try:
                     user.set_password(entitat.password_default)
                     user.is_default_password = True

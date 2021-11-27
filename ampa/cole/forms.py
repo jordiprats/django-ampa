@@ -216,10 +216,11 @@ class WIUserCreationForm(UserCreationForm):
 class AdminEditUser(ModelForm):
     class Meta:
         model = User
-        fields = (['name', 'representant', 'is_staff'])
+        fields = (['name', 'representant', 'is_staff', 'is_colegi'])
         labels = {
             'name': 'Nom',
             'is_staff': 'Administrador',
+            'is_colegi': 'Usuari del Centre',
             'representant': 'Funció principal'
         }
 

@@ -30,6 +30,8 @@ class User(AbstractUser):
 
     is_locked = models.BooleanField(default=False)
 
+    is_colegi = models.BooleanField(default=False)
+
     def __str__(self):
         if self.name:
             return self.name
