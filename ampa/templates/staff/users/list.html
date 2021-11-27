@@ -21,9 +21,9 @@
       <tr>
         <th>Nom</th>
         <th>email</th>
+        <th></th>
         <th>representant</th>
         <th>administrador</th>
-        <th></th>
         <th>password per defecte</th>
         <th>bloquejat</th>
       </tr>
@@ -33,9 +33,9 @@
         <tr>
           <td>{{ user.name|default_if_none:"" }}</td>
           <td><a href="{% url 'edit.user' user_slug=user.slug %}">{{ user.email }}</a></td>
+          <td>{{ user.is_colegi|yesno:"<p style=\"color:red\"><i class=\"fas fa-school\"></i></p>,<p style=\"color:green\"><i class=\"fas fa-users\"></i></p>" | safe }}</td>
           <td>{{ user.representant|default_if_none:"" }}</td>
           <td>{{ user.is_staff|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
-          <td>{{ user.is_colegi|yesno:"<p style=\"color:red\"><i class=\"fas fa-school\"></i></p>,<p style=\"color:green\"><i class=\"fas fa-users\"></i></p>" | safe }}</td>
           {% if user.is_locked %}
           <td>{{ user.is_default_password|yesno:"<p style=\"color:red\"><i class=\"fas fa-skull-crossbones\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
           {% else %}
