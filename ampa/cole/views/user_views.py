@@ -108,7 +108,7 @@ def edit_user(request, user_slug):
 
 @user_passes_test(lambda u: u.is_staff)
 def users_list(request):
-    list_users = User.objects.all()
+    list_users = User.objects.all().order_by('-is_staff', '-is_colegi', 'is_locked', 'name', 'email')
 
     for user in list_users:
         if user.is_default_password:

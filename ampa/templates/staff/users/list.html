@@ -19,29 +19,35 @@
 <table class="table table-bordred table-striped">
     <thead>
       <tr>
-        <th>Nom</th>
-        <th>email</th>
+        <th></th>
+        <th>Usuari</th>
         <th></th>
         <th>representant</th>
-        <th>administrador</th>
-        <th>password per defecte</th>
         <th>bloquejat</th>
+        <th>password per defecte</th>
       </tr>
     </thead>
     <tbody>
       {% for user in list_users %}
         <tr>
-          <td>{{ user.name|default_if_none:"" }}</td>
-          <td><a href="{% url 'edit.user' user_slug=user.slug %}">{{ user.email }}</a></td>
-          <td>{{ user.is_colegi|yesno:"<p style=\"color:red\"><i class=\"fas fa-school\"></i></p>,<p style=\"color:green\"><i class=\"fas fa-users\"></i></p>" | safe }}</td>
-          <td>{{ user.representant|default_if_none:"" }}</td>
-          <td>{{ user.is_staff|yesno:"<p style=\"color:green\"><i class=\"fas fa-check\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
-          {% if user.is_locked %}
-          <td>{{ user.is_default_password|yesno:"<p style=\"color:red\"><i class=\"fas fa-skull-crossbones\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
+          {% if user.is_colegi %}
+          <td>{{ user.is_staff|yesno:"<p style=\"color:red\"><i class=\"fas fa-school\"></i></p>,<p style=\"color:blue\"><i class=\"fas fa-school\"></i></p>" | safe }}</td>
           {% else %}
-          <td>{{ user.is_default_password|yesno:"<p style=\"color:orange\"><i class=\"fas fa-skull-crossbones\"></i></p>,<p style=\"color:green\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
+          <td>{{ user.is_staff|yesno:"<p style=\"color:orange\"><i class=\"fas fa-bolt\"></i></p>,<p style=\"color:green\"><i class=\"fas fa-user\"></i></p>" | safe }}</td>
           {% endif %}
+          {% if user.name %}
+          <td><a href="{% url 'edit.user' user_slug=user.slug %}">{{ user.name }}</a> / <a href="{% url 'edit.user' user_slug=user.slug %}">{{ user.email }}</a></td>
+          {% else %}
+          <td><a href="{% url 'edit.user' user_slug=user.slug %}">{{ user.email }}</a></td>
+          {% endif %}
+          <td>{{ user.is_colegi|yesno:"<p style=\"color:orange\"><i class=\"fas fa-school\"></i></p>,<p style=\"color:green\"><i class=\"fas fa-users\"></i></p>" | safe }}</td>
+          <td>{{ user.representant|default_if_none:"" }}</td>
           <td>{{ user.is_locked|yesno:"<p style=\"color:red\"><i class=\"fas fa-skull-crossbones\"></i></p>,<p style=\"color:green\"><i class=\"fas fa-lock-open\"></i></p>" | safe }}</td>
+          {% if user.is_locked %}
+          <td>{{ user.is_default_password|yesno:"<p style=\"color:red\"><i class=\"fas fa-book-dead\"></i></p>,<p style=\"color:red\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
+          {% else %}
+          <td>{{ user.is_default_password|yesno:"<p style=\"color:orange\"><i class=\"fas fa-book-dead\"></i></p>,<p style=\"color:green\"><i class=\"fas fa-times-circle\"></i></p>" | safe }}</td>
+          {% endif %}
       {% endfor %}
     </tbody>
   </table>
