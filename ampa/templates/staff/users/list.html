@@ -21,7 +21,6 @@
       <tr>
         <th></th>
         <th>Usuari</th>
-        <th></th>
         <th>representant</th>
         <th>bloquejat</th>
         <th>password per defecte</th>
@@ -40,7 +39,7 @@
           {% else %}
           <td><a href="{% url 'edit.user' user_slug=user.slug %}">{{ user.email }}</a></td>
           {% endif %}
-          <td>{{ user.is_colegi|yesno:"<p style=\"color:orange\"><i class=\"fas fa-school\"></i></p>,<p style=\"color:green\"><i class=\"fas fa-users\"></i></p>" | safe }}</td>
+          <!-- <td>{{ user.is_colegi|yesno:"<p style=\"color:orange\"><i class=\"fas fa-school\"></i></p>,<p style=\"color:green\"><i class=\"fas fa-users\"></i></p>" | safe }}</td> -->
           <td>{{ user.representant|default_if_none:"" }}</td>
           <td>{{ user.is_locked|yesno:"<p style=\"color:red\"><i class=\"fas fa-skull-crossbones\"></i></p>,<p style=\"color:green\"><i class=\"fas fa-lock-open\"></i></p>" | safe }}</td>
           {% if user.is_locked %}
