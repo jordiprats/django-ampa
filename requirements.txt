@@ -2,6 +2,8 @@ pytz
 xlrd
 numpy
 pandas
+pillow
+qrcode
 django
 docxtpl
 unidecode
