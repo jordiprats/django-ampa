@@ -62,6 +62,7 @@ class Command(BaseCommand):
 
       excel_data_df.columns = [ "classe", "alumne" ]
 
+      existing_classe = None
       current_classe = ""
       for index, row in excel_data_df.iterrows():
         if type(row['classe']) == str and row['classe']:
@@ -69,7 +70,7 @@ class Command(BaseCommand):
           current_classe = row['classe']
 
           print("== "+current_classe[:-1]+'/'+current_classe[-1])
-          existing_classe = Classe.objects.filter(nom__startswith=current_classe[:-1], nom__contains=current_classe[-1], curs=curs).first()
+          existing_classe = Classe.objects.filter(nom__startswith=current_classe[:-1], nom__contains=current_classe[-1], curs=curs, etapa=etapa).first()
 
           if existing_classe:
             print("Found classe {} for {}".format(existing_classe, current_classe))
