@@ -14,6 +14,31 @@ import time
 import sys
 import os
 
+def alumne_forgot(request):
+    print("alumne_forgot")
+    form = None
+    try:
+        # TODO: enviament mail + filtre
+        query = request.GET.get('q', '').lower().strip()
+        if query:
+            results = Alumne.objects.filter(email_tutor1__icontains=query)
+
+            messages.info(request, "Si aquest mail esta registrat en el sistema rebras els enllaços en breu")  
+        else:
+            form = None
+        
+        return render(request, 'alumnes/forgot.html', {
+                                                        'form': form,
+                                                    })
+    except Exception as e:
+        # if request.user.is_staff:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+        print(str(e))
+        messages.error(request, str(e))
+        return redirect('home')
+
 def alumne_signup(request):
     print("alumne_signup")
     alumne_instance = None

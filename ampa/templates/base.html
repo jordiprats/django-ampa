@@ -106,7 +106,10 @@ ul.timeline > li:before {
             {% else %}
             {% if not is_pdf %}
             <li class="nav-item active">
-              <a class="nav-link" href="{% url 'alumne.signup' %}">Registre</a>
+              <a class="nav-link" href="{% url 'alumne.signup' %}">Alta</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'alumne.forgot' %}">Actualitza</a>
             </li>
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'login' %}">Sign in</a>

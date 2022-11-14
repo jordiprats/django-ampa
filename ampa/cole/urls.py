@@ -78,6 +78,7 @@ urlpatterns = [
 
     # alumnes
     path('alumnes/signup', views.alumne_signup, name='alumne.signup'),
+    path('alumnes/forgot', views.alumne_forgot, name='alumne.forgot'),
     path('alumnes/search', views.add_classe_search_alumne, name='alumne.search'),
     path('alumnes/phone/search', views.search_alumne_by_phone, name='alumne.search.by.phone'),
     path('alumnes/<alumne_id>', views.edit_alumne_form_pares, name='form.pares.edit.alumne'),

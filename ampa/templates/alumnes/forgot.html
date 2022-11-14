@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<h1>Actualizació de dades</h1>
+
+  Introdueix en el següent formulari el mail que tens registrat. S'enviarà un mail amb el enllaç (o enllaços per més d'un alumne). 
+
+  <br><br>
+  <form method="GET">
+      <div class="form-group has-search">
+          <input name="q" type="text" value="" class="form-control" placeholder="Search">
+      </div>
+      <button class="btn btn-primary" type="submit">buscar</button>
+  </form>
+  <br>
+
+  <b>Atenció</b>: Només es pot fer servir aquest formulari una vegada al mes, en cas que ja l'hagis fet servir durant aquest periode, si us plau, busca el mail anterior.
+{% endblock %}
