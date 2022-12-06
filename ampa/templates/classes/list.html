@@ -16,8 +16,10 @@
 
 {% include 'classes/inline_list.html' %}
 
+{% if user_admin %}
   <form style="display: inline;" action="{% url 'add.classe' %}" method="GET">
     <button class="float-left btn btn-info" style="margin: 3px;" type="submit"><i class="fas fa-plus"></i> classe</button>
   </form>
+{% endif %}
 
 {% endblock %}

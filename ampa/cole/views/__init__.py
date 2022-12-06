@@ -209,7 +209,11 @@ def edit_classe(request, classe_id=None):
             classe_instance = Classe.objects.filter(id=classe_id)[0]
         else:
             curs_instance = Curs.objects.filter(modalitat=None)[0]
-            classe_instance = Classe(delegat=request.user, curs=curs_instance)
+
+            if request.user.is_staff:
+                classe_instance = Classe(delegat=request.user, curs=curs_instance)
+            else:
+                return redirect('list.classes')
         if request.method == 'POST':
             if request.user.is_staff:
                 form = StaffClasseForm(request.POST, instance=classe_instance)
